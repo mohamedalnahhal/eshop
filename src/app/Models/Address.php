@@ -2,18 +2,32 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\AddressType;
 
 class Address extends Model
 {
-    use HasUuid;
+    use HasUuids;
 
-    protected $primaryKey = 'address_id';
-    protected $fillable = ['user_id', 'type', 'address_line_1', 'city', 'state', 'postal_code', 'country'];
+    protected $fillable = [
+        'addressable_id',
+        'addressable_type',
+        'type', 
+        'address_line_1',
+        'city',
+        'state',
+        'postal_code', 
+        'country',
+        'lng',
+        'lat'
+    ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
+    protected $casts = [
+        'lng' => 'decimal:8',
+        'lat' => 'decimal:8',
+        'type' => AddressType::class,
+    ];
+
+    public function addressable() { return $this->morphTo(); }
 }

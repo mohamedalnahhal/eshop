@@ -11,9 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
-            $table->uuid('order_item_id')->primary();
-            $table->foreignUuid('order_id')->constrained('orders', 'order_id')->onDelete('cascade');
-            $table->foreignUuid('product_id')->constrained('products', 'product_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained('products');
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
             $table->timestamp('created_at')->useCurrent();
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders_items_tabl');
+        Schema::dropIfExists('orders_items');
     }
 };

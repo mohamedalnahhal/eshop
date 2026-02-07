@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('themes', function (Blueprint $table) {
-    $table->uuid('theme_id')->primary();
-    $table->string('name', 45); 
-    $table->string('color', 45); 
-    $table->string('background', 45); 
-    $table->string('font', 45); 
-    $table->string('icon_style', 45);
-    $table->timestamps();
-});
+            $table->uuid('id')->primary();
+            $table->string('name', 100); 
+            $table->jsonb('palette'); 
+            $table->string('font', 100); 
+            $table->string('icon_style', 50);
+            $table->timestamps();
+        });
     }
 
     /**

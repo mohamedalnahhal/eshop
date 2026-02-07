@@ -11,12 +11,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->uuid('category_id')->primary();
-            $table->foreignUuid('tenant_id')
-                ->constrained('tenants', 'tenant_id')
-                ->onDelete('cascade');
-            $table->string('name', 45);
-            $table->string('type', 45)->nullable(); // مثال: 'electronics', 'clothing'
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->string('name', 100);
+            $table->enum('type', ['main', 'sub', 'collection', 'hidden'])->default('main'); 
             $table->timestamps();
         });
     }

@@ -2,32 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class OrderItem extends Model
 {
-    use HasUuid;
-
-    protected $primaryKey = 'order_item_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    use HasUuids;
 
     protected $fillable = [
         'order_id',
         'product_id',
         'quantity',
-        'unit_price',
-        'total_price'
+        'unit_price'
     ];
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'order_id');
-    }
+    protected $casts = [
+        'unit_price' => 'decimal:2',
+        'quantity' => 'integer',
+    ];
 
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id', 'product_id');
-    }
+    public function order() { return $this->belongsTo(Order::class); }
+    public function product() { return $this->belongsTo(Product::class); }
 }

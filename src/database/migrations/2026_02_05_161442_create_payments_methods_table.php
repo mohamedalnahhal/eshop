@@ -11,10 +11,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('payment_methods', function (Blueprint $table) {
-            $table->string('payment_method', 45)->primary(); 
-            $table->string('provider', 255); 
+            $table->string('payment_method', 50)->primary(); 
+            $table->string('provider', 50); 
             $table->boolean('is_active')->default(true);
-            $table->json('config')->nullable(); 
+            $table->jsonb('config')->nullable(); 
             $table->timestamps();
         });
     }

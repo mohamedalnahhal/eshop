@@ -11,11 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tenant_users', function (Blueprint $table) {
-            $table->foreignUuid('user_id')->constrained('users', 'user_id')->onDelete('cascade');
-            $table->foreignUuid('tenant_id')->constrained('tenants', 'tenant_id')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->integer('role');
             $table->timestamps();
-            $table->primary(['user_id', 'tenant_id']); // مفتاح مركب
         });
     }
 

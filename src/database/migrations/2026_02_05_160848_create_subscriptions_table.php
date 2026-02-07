@@ -11,12 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->uuid('subscription_id')->primary();
-            $table->string('name', 45);
+            $table->uuid('id')->primary();
+            $table->string('name', 100);
             $table->decimal('price', 10, 2);
             $table->integer('duration_days');
             $table->integer('max_products');
-            $table->json('features')->nullable();
+            $table->jsonb('features')->nullable();
             $table->timestamps();
         });
     }

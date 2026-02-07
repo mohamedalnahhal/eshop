@@ -2,21 +2,33 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\TenantStatus;
 
 class Tenant extends Model
 {
-    use HasUuid;
+    use HasUuids;
 
-    protected $primaryKey = 'tenant_id';
     protected $fillable = ['name', 'subdomain', 'status'];
 
-    public function products() {
-        return $this->hasMany(Product::class, 'tenant_id', 'tenant_id');
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'tenant_users')
+        ->withPivot('role')
+        ->withTimestamps();
     }
-    public function theme()
-{
-    return $this->belongsTo(Theme::class, 'theme_id', 'theme_id');
-}
+
+    protected $casts = [
+        'status' => TenantStatus::class,
+    ];
+
+    public function products() { return $this->hasMany(Product::class); }
+    public function orders() { return $this->hasMany(Order::class); }
+    public function locations() { return $this->hasMany(Location::class); }
+    public function carts() { return $this->hasMany(Cart::class); }
+    public function categories() { return $this->hasMany(Category::class); }
+    public function settings() { return $this->hasOne(TenantSetting::class); }
+    public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
+    public function payments() { return $this->hasMany(Payment::class); }
 }

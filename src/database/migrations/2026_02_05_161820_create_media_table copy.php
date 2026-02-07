@@ -11,14 +11,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('media', function (Blueprint $table) {
-            $table->uuid('media_id')->primary();
-            $table->string('model_type');
-            $table->uuid('model_id');
-            $table->string('file_path', 255);
-            $table->enum('file_type', ['image', 'video', 'pdf', 'archive']);
+            $table->uuid('id')->primary();
+            $table->uuidMorphs('mediable');
+            $table->string('collection_name', 255);
+            $table->text('file_path');
+            $table->enum('file_type', ['image', 'video', 'document', 'thumbnail']);
             $table->decimal('file_size', 12, 2);
             $table->timestamps();
-            $table->index(['model_type', 'model_id']);
         });
     }
 

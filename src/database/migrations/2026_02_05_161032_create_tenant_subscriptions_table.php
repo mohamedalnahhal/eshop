@@ -11,15 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tenant_subscriptions', function (Blueprint $table) {
-            $table->uuid('tenant_subscription_id')->primary();
-            $table->foreignUuid('tenant_id')
-                ->constrained('tenants', 'tenant_id')
-                ->onDelete('cascade');
-            $table->foreignUuid('subscription_id')
-                ->constrained('subscriptions', 'subscription_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->foreignUuid('subscription_id')->constrained('subscriptions');
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');
-            $table->enum('status', ['active', 'expired', 'canceled', 'pending']);
+            $table->enum('status', ['trialing', 'active', 'expired', 'cancelled', 'pending', 'past_due']);
             $table->timestamps();
         });
     }

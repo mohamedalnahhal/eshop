@@ -2,29 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Media extends Model
 {
-    use HasUuid;
-
-    protected $primaryKey = 'media_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
+    use HasUuids;
 
     protected $fillable = [
-        'model_type',
-        'model_id',
+        'mediable_id',
+        'mediable_type',
+        'collection_name', 
         'file_path',
         'file_type',
-        'file_size',
-        'collection_name'
+        'file_size'
     ];
 
-    public function model()
-    {
-        return $this->morphTo();
-    }
+    protected $casts = [
+        'file_size' => 'decimal:2',
+    ];
+
+    public function mediable() { return $this->morphTo(); }
 }

@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Models;
-use App\Models\Traits\HasUuid;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class TenantSetting extends Model
 {
-    use HasUuid;
-    protected $primaryKey = 'setting_id';
-    protected $fillable = ['tenant_id', 'key', 'value'];
+    use HasUuids;
+    
+    protected $fillable = ['tenant_id', 'language', 'theme_id'];
+
+    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public function theme() { return $this->belongsTo(Theme::class); }
 }

@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\OrderStatus;
 
 class Order extends Model
 {
-    use HasUuid;
-
-    protected $primaryKey = 'order_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    use HasUuids;
 
     protected $fillable = [
         'tenant_id',
@@ -20,35 +17,27 @@ class Order extends Model
         'total_price',
         'discount',
         'final_price',
-        'status',
-        'payment_status',
-        'notes'
+        'status'
     ];
 
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class, 'tenant_id', 'tenant_id');
-    }
+    protected $casts = [
+        'total_price' => 'decimal:2',
+        'discount' => 'decimal:2',
+        'final_price' => 'decimal:2',
+        'created_at' => 'datetime',
+        'status' => OrderStatus::class,
+    ];
 
-    // الطلب يخص  (User) واحداً
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
-
-    // الطلب يحتوي على تفاصيل كثيرة (منتجات)
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
-    }
-
+    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public function user() { return $this->belongsTo(User::class); }
+    public function items(){ return $this->hasMany(OrderItem::class); }
     public function shippingAddress()
     {
-        return $this->belongsTo(Address::class, 'shipping_address_id', 'address_id');
+        return $this->belongsTo(Address::class, 'shipping_address_id');
     }
-
-    public function payments()
+    public function payments() { return $this->morphMany(Payment::class, 'paymentable'); }
+    public function successfulPayment()
     {
-        return $this->hasMany(Payment::class, 'order_id', 'order_id');
+        return $this->morphOne(Payment::class, 'paymentable')->where('status', 'completed');
     }
 }

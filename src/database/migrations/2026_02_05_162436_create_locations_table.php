@@ -9,12 +9,12 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('cart_items', function (Blueprint $table) {
+    
+        Schema::create('locations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('cart_id')->constrained('carts')->onDelete('cascade');
-            $table->foreignUuid('product_id')->constrained('products')->onDelete('cascade');
-            $table->integer('quantity')->default(1);
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->string('name', 100);
+            $table->boolean('is_pickup_point');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('locations');
     }
 };

@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class PaymentMethod extends Model
 {
-    use HasUuid;
-
     protected $primaryKey = 'payment_method'; 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -20,12 +17,10 @@ class PaymentMethod extends Model
         'config'          
     ];
 
+    protected $hidden = ['config'];
+
     protected $casts = [
         'config' => 'array',
         'is_active' => 'boolean',
     ];
-    public function payments()
-    {
-        return $this->hasMany(Payment::class, 'payment_method', 'payment_method');
-    }
 }

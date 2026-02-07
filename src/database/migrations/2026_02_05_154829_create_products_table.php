@@ -11,9 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->uuid('product_id')->primary();
-            $table->foreignUuid('tenant_id')->constrained('tenants', 'tenant_id')->onDelete('cascade');
-            $table->string('name', 45);
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->string('name', 100);
             $table->decimal('price', 10, 2);
             $table->text('description')->nullable();
             $table->integer('stock')->default(0);
@@ -26,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('products_tabl');
+        Schema::dropIfExists('products');
     }
 };

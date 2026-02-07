@@ -11,17 +11,17 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->uuid('payment_id')->primary();
-            $table->foreignUuid('tenant_id')->constrained('tenants', 'tenant_id')->onDelete('cascade');
-            $table->foreignUuid('order_id')->nullable()->constrained('orders', 'order_id');
-            $table->foreignUuid('subscription_payment_id')->nullable()->constrained('subscriptions', 'subscription_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->uuidMorph('paymentable');
             $table->decimal('amount', 10, 2);
-            $table->string('currency', 10)->default('USD');
+            $table->string('currency', 3)->default('USD');
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded']);
-            $table->string('payment_method', 45);
+            $table->string('payment_method', 50);
             $table->foreign('payment_method')->references('payment_method')->on('payment_methods');
-            $table->json('gateway_response')->nullable();
-            $table->json('metadata')->nullable();
+            $table->string('transaction_reference', 255);
+            $table->jsonb('gateway_response')->nullable();
+            $table->jsonb('metadata')->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
     }

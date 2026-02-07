@@ -11,15 +11,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tenant_settings', function (Blueprint $table) {
-            $table->uuid('tenant_settings_id')->primary();
-            $table->foreignUuid('tenant_id')
-                ->constrained('tenants', 'tenant_id')
-                ->onDelete('cascade');
-
-            $table->string('language', 45)->default('ar'); 
-            $table->string('logo_url', 255)->nullable(); 
-            $table->foreignUuid('theme_id')
-                ->constrained('themes', 'theme_id');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->string('language', 10)->default('ar');
+            $table->foreignUuid('theme_id')->constrained('themes');
             $table->timestamps();
         });
     }

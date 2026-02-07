@@ -11,15 +11,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('tenants', function (Blueprint $table) {
-            $table->uuid('tenant_id')->primary();
-            $table->string('name', 45);
-            $table->string('subdomain', 45)->unique();
-            $table->enum('status', ['active', 'inactive', 'suspended']);
+            $table->uuid('id')->primary();
+            $table->string('name', 100);
+            $table->string('subdomain', 63)->unique();
+            $table->enum('status', ['active', 'inactive', 'pending', 'banned', 'maintenance']);
             $table->timestamps();
         });
     }
 
-    
     /**
      * Reverse the migrations.
      */

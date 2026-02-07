@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Models;
-use App\Models\Traits\HasUuid;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class CartItem extends Model
 {
-    use HasUuid;
-    protected $primaryKey = 'cart_item_id';
+    use HasUuids;
+
     protected $fillable = ['cart_id', 'product_id', 'quantity'];
 
-    public function product() {
-        return $this->belongsTo(Product::class, 'product_id', 'product_id');
-    }
+    protected $casts = [
+        'quantity' => 'integer',
+    ];
+
+    public function cart() { return $this->belongsTo(Cart::class); }
+    public function product() { return $this->belongsTo(Product::class); }
 }

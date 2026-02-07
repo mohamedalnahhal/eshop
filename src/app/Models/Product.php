@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Product extends Model
 {
-    use HasUuid;
-
-    protected $primaryKey = 'product_id';
+    use HasUuids;
     protected $fillable = ['name', 'price', 'description', 'stock', 'tenant_id'];
+    protected $casts = [
+        'price' => 'decimal:2',
+        'stock' => 'integer',
+    ];
 
-    public function tenant() {
-        return $this->belongsTo(Tenant::class, 'tenant_id', 'tenant_id');
-    }
-    public function media()
-{
-    return $this->morphMany(Media::class, 'model', 'model_type', 'model_id');
-}
+    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public function categories() { return $this->belongsToMany(Category::class, 'category_product'); }
+    public function media() { return $this->morphMany(Media::class, 'mediable'); }
 }

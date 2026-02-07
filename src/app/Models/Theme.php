@@ -2,32 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Theme extends Model
 {
-    use HasUuid;
+    use HasUuids;
 
-    protected $primaryKey = 'theme_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'preview_image',
-        'is_active'
-    ];
+    protected $fillable = ['name', 'palette', 'font', 'icon_style'];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'palette' => 'array',
     ];
-
-
-    public function tenants()
-    {
-        return $this->hasMany(Tenant::class, 'theme_id', 'theme_id');
-    }
 }

@@ -1,17 +1,39 @@
 <?php
 
 namespace App\Models;
-use App\Models\Traits\HasUuid;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\PaymentStatus;
 
 class Payment extends Model
 {
-    use HasUuid;
-    protected $primaryKey = 'payment_id';
-    protected $fillable = ['amount', 'currency', 'status', 'tenant_id', 'order_id', 'payment_method'];
+    use HasUuids;
+    protected $fillable = [
+        'tenant_id',
+        'paymentable_id',
+        'paymentable_type',
+        'payment_method',
+        'amount',
+        'currency',
+        'status',
+        'transaction_reference',
+        'gateway_response',
+        'metadata'
+    ];
 
-    public function order() {
-        return $this->belongsTo(Order::class, 'order_id', 'order_id');
-    }
+    protected $hidden = [
+        'gateway_response'
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'gateway_response' => 'array',
+        'status' => PaymentStatus::class,
+        'metadata' => 'array',
+    ];
+
+    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public function method() { return $this->belongsTo(PaymentMethod::class, 'payment_method', 'payment_method'); }
+    public function paymentable() { return $this->morphTo(); }
 }

@@ -2,38 +2,23 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Enums\SubscriptionStatus;
 
 class TenantSubscription extends Model
 {
-    use HasUuid;
+    use HasUuids;
 
-    protected $primaryKey = 'tenant_subscription_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'tenant_id',
-        'subscription_id',
-        'start_date',
-        'end_date',
-        'status' 
-    ];
+    protected $fillable = ['tenant_id', 'subscription_id', 'starts_at', 'ends_at', 'status'];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'status' => SubscriptionStatus::class,
     ];
 
 
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class, 'tenant_id', 'tenant_id');
-    }
-
-    public function plan()
-    {
-        return $this->belongsTo(Subscription::class, 'subscription_id', 'subscription_id');
-    }
+    public function subscription() { return $this->belongsTo(Subscription::class); }
+    public function tenant() { return $this->belongsTo(Tenant::class); }
 }
