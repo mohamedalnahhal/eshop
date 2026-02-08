@@ -1,16 +1,17 @@
-FROM php:8.4-apache
+# Switch to more stable tag (bookworm)
+FROM php:8.4-apache-bookworm
 
-RUN echo "Types: deb\n\
-URIs: http://ftp.us.debian.org/debian\n\
-Suites: trixie\n\
-Components: main\n\
-Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg" > /etc/apt/sources.list.d/debian.sources
+# 2. Use German mirror (faster)
+RUN sed -i 's/deb.debian.org/ftp.de.debian.org/g' /etc/apt/sources.list.d/debian.sources
 
-# Install mysql driver
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
-    && docker-php-ext-install pdo_mysql
+    libicu-dev \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache rewrite module (required for Laravel)
 RUN a2enmod rewrite
