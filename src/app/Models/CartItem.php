@@ -15,6 +15,12 @@ class CartItem extends Model
         'quantity' => 'integer',
     ];
 
-    public function cart() { return $this->belongsTo(Cart::class); }
-    public function product() { return $this->belongsTo(Product::class); }
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class)->onDelete('cascade');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

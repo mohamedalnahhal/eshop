@@ -13,8 +13,8 @@ class TenantSubscription extends Model
     protected $fillable = ['tenant_id', 'subscription_id', 'starts_at', 'ends_at', 'status'];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
         'status' => SubscriptionStatus::class,
     ];
 

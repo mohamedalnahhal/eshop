@@ -17,4 +17,5 @@ class Product extends Model
     public function tenant() { return $this->belongsTo(Tenant::class); }
     public function categories() { return $this->belongsToMany(Category::class, 'category_product'); }
     public function media() { return $this->morphMany(Media::class, 'mediable'); }
+
 }
