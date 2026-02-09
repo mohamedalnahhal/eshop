@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
+use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
 
-class Tenant extends Model
+class Tenant extends BaseTenant
 {
-    use HasUuids;
+    use HasUuids, HasDomains;
 
     protected $fillable = ['name', 'subdomain', 'status'];
 

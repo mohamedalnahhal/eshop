@@ -13,11 +13,11 @@ class Address extends Model
     protected $fillable = [
         'addressable_id',
         'addressable_type',
-        'type', 
+        'type',
         'address_line_1',
         'city',
         'state',
-        'postal_code', 
+        'postal_code',
         'country',
         'lng',
         'lat'

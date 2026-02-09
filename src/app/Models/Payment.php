@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\PaymentStatus;
 
 class Payment extends Model
 {
     use HasUuids;
+    use BelongsToTenant;
+
     protected $fillable = [
         'tenant_id',
         'paymentable_id',
