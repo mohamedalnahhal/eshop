@@ -34,12 +34,12 @@ class TenantAdminPanelProvider extends PanelProvider
             ->registration()
             ->passwordReset()
             ->profile()
-            ->discoverResources(in: app_path('Filament/Tenant Admin/Resources'), for: 'App\\Filament\\Tenant Admin\\Resources')
-            ->discoverPages(in: app_path('Filament/Tenant Admin/Pages'), for: 'App\\Filament\\Tenant Admin\\Pages')
+            ->discoverResources(in: app_path('Filament/TenantAdmin/Resources'), for: 'App\\Filament\\TenantAdmin\\Resources')
+            ->discoverPages(in: app_path('Filament/TenantAdmin/Pages'), for: 'App\\Filament\\TenantAdmin\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Tenant Admin/Widgets'), for: 'App\\Filament\\Tenant Admin\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/TenantAdmin/Widgets'), for: 'App\\Filament\\TenantAdmin\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
@@ -51,7 +51,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
-                
+
                 // --- Scope to tenant ---
                 InitializeTenancyByDomain::class,
                 PreventAccessFromCentralDomains::class,

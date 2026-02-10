@@ -27,17 +27,18 @@ class SuperAdminPanelProvider extends PanelProvider
             ->default()
             ->id('super_admin')
             ->path('admin')
+            ->domain(env('APP_URL'))
             ->login()
             ->registration()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Super Admin/Resources'), for: 'App\Filament\Super Admin\Resources')
-            ->discoverPages(in: app_path('Filament/Super Admin/Pages'), for: 'App\Filament\Super Admin\Pages')
+            ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
+            ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Super Admin/Widgets'), for: 'App\Filament\Super Admin\Widgets')
+            ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
