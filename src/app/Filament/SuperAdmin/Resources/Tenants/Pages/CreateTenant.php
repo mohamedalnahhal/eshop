@@ -32,14 +32,15 @@ class CreateTenant extends CreateRecord
             }
 
             $tenantData = collect($data)
-                ->except(['owner_name', 'owner_email', 'owner_password', 'username', 'phone', 'gender', 'user_exists'])
+                ->except(['owner_name', 'owner_email', 'owner_password', 'username', 'phone', 'gender', 'user_exists', 'subdomain'])
                 ->toArray();
 
             $tenant = static::getModel()::create($tenantData);
+            $tenant->domain()->create(['domain' => $data['subdomain'] . '.' . config('tenancy.central_domains')[0]]);
 
             $tenant->users()->attach($user->id, [
                 'id' => Str::uuid(),
-                'role' => 0,
+                'role' => UserRole::TENANT_OWNER,
             ]);
 
             return $tenant;

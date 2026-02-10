@@ -12,6 +12,8 @@ use App\Models\User;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Stancl\Tenancy\Database\Models\Domain;
+use Illuminate\Database\Eloquent\Model;
 
 class TenantForm
 {
@@ -23,8 +25,28 @@ class TenantForm
                     ->schema([
                         TextInput::make('name')->required(),
                         TextInput::make('subdomain')
+                            ->prefix('https://')
+                            ->suffix('.' . config('tenancy.central_domains')[0])
                             ->required()
-                            ->unique('tenants', 'subdomain'),
+                            ->regex('/^[a-z0-9-]+$/')
+                            ->rules([
+                                function (Get $get, ?Model $record) {
+                                    return function (string $attribute, $value, \Closure $fail) use ($record)  {
+                                        $centralDomain = config('tenancy.central_domains')[0];
+                                        $fullDomain = $value . '.' . $centralDomain;
+
+                                        $query = Domain::where('domain', $fullDomain);
+
+                                        if ($record) {
+                                            $query->where('tenant_id', '!=', $record->id);
+                                        }
+
+                                        if ($query->exists()) {
+                                            $fail("The subdomain '{$value}' is already taken.");
+                                        }
+                                    };
+                                },
+                            ]),
                         Select::make('status')
                             ->options(TenantStatus::class)
                             ->default('active'),
