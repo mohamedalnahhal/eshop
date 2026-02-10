@@ -32,12 +32,12 @@ class TenantAdminPanelProvider extends PanelProvider
             ->registration()
             ->passwordReset()
             ->profile()
-            ->discoverResources(in: app_path('Filament/Tenant/Resources'), for: 'App\\Filament\\Tenant\\Resources')
-            ->discoverPages(in: app_path('Filament/Tenant/Pages'), for: 'App\\Filament\\Tenant\\Pages')
+            ->discoverResources(in: app_path('Filament/Tenant Admin/Resources'), for: 'App\\Filament\\Tenant Admin\\Resources')
+            ->discoverPages(in: app_path('Filament/Tenant Admin/Pages'), for: 'App\\Filament\\Tenant Admin\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Tenant/Widgets'), for: 'App\\Filament\\Tenant\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Tenant Admin/Widgets'), for: 'App\\Filament\\Tenant Admin\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
