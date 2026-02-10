@@ -8,30 +8,26 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 use App\Enums\UserRole;
 use App\Enums\Gender;
 
 use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends Authenticatable implements FilamentUser
 {
     use HasUuids, Notifiable;
 
     protected $fillable = ['name', 'username', 'email', 'password', 'phone', 'gender', 'role'];
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = ['password'];
 
     protected $casts = [
         'password' => 'hashed',
         'role' => UserRole::class,
         'gender' => Gender::class,
     ];
-
 
     public function tenants(): BelongsToMany
     {
@@ -55,25 +51,14 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->morphMany(Address::class, 'addressable');
     }
 
-    public function getTenants(Panel $panel): Collection
-    {
-        return $this->tenants()->get();
-    }
-
-
-    public function canAccessTenant(Model $tenant): bool
-    {
-        return $this->tenants->contains($tenant);
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'admin') {
+        if ($panel->getId() === 'super_admin') {
             return $this->role === UserRole::ADMIN;
         }
 
-        if ($panel->getId() === 'tenant') {
-            return true; // TODO: Implement tenant-specific access control logic here, e.g., check if the user exits in user_tenants table.
+        if ($panel->getId() === 'tenant_admin') {
+            return $this->role === UserRole::TENANT_OWNER; // TODO: Check if the user own the scoped tenant
         }
 
         return false;
