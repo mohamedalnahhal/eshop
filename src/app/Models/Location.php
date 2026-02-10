@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Location extends Model
 {
     use HasUuids;
+    use BelongsToTenant;
 
     protected $fillable = ['tenant_id', 'name', 'is_pickup_point'];
 

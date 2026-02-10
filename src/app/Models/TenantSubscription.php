@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\SubscriptionStatus;
 
 class TenantSubscription extends Model
 {
     use HasUuids;
+    use BelongsToTenant;
 
     protected $fillable = ['tenant_id', 'subscription_id', 'starts_at', 'ends_at', 'status'];
 

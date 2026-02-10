@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToPrimaryModel;
 
 class CartItem extends Model
 {
     use HasUuids;
+    use BelongsToPrimaryModel;
 
     protected $fillable = ['cart_id', 'product_id', 'quantity'];
 
@@ -15,12 +17,11 @@ class CartItem extends Model
         'quantity' => 'integer',
     ];
 
-    public function cart()
+    public function getRelationshipToPrimaryModel(): string
     {
-        return $this->belongsTo(Cart::class)->onDelete('cascade');
+        return 'cart';
     }
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
+
+    public function cart() { return $this->belongsTo(Cart::class)->onDelete('cascade'); }
+    public function product() { return $this->belongsTo(Product::class); }
 }
