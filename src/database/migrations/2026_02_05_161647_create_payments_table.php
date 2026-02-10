@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->uuidMorph('paymentable');
+            $table->uuidMorphs('paymentable');
             $table->decimal('amount', 10, 2);
             $table->string('currency', 3)->default('USD');
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded']);

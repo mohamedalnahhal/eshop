@@ -6,16 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-class Category extends Model
+class Domain extends Model
 {
     use HasUuids;
     use BelongsToTenant;
-
-    protected $fillable = ['name', 'type', 'tenant_id'];
+    
+    protected $fillable = ['tenant_id', 'subdomain'];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'category_product');
-    }
 }
