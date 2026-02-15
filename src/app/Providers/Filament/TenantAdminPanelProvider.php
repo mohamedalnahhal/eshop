@@ -53,7 +53,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 VerifyCsrfToken::class,
 
                 // --- Scope to tenant ---
-                InitializeTenancyByDomain::class,
+                
                 PreventAccessFromCentralDomains::class,
                 //------------------------
 

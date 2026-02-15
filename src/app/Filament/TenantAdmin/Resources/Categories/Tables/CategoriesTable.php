@@ -2,11 +2,9 @@
 
 namespace App\Filament\TenantAdmin\Resources\Categories\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 
 class CategoriesTable
 {
@@ -14,34 +12,31 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
-                TextColumn::make('tenant_id')
-                    ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Category Name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('parent.name')
+                    ->label('Parent')
+                    ->badge()
+                    ->color('gray')
+                    ->placeholder('Primary'),
+
                 TextColumn::make('type')
-                    ->badge(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'main' => 'info',
+                        'sub' => 'warning',
+                    }),
             ])
             ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                SelectFilter::make('type')
+                    ->options([
+                        'main' => 'Main Only',
+                        'sub' => 'Sub Only',
+                    ]),
             ]);
     }
 }

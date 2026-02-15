@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    user: "1000:1000"
     volumes:
       - ./src:/var/www/html:cached
       - ./src/storage/logs:/var/www/html/storage/logs:delegated 
