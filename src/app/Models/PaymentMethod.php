@@ -20,7 +20,7 @@ class PaymentMethod extends Model
     protected $hidden = ['config'];
 
     protected $casts = [
-        'config' => 'array',
+        'config' => 'string',
         'is_active' => 'boolean',
     ];
 }
