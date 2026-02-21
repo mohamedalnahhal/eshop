@@ -4,6 +4,7 @@ namespace App\Filament\SuperAdmin\Resources\Tenants\Pages;
 
 use App\Filament\SuperAdmin\Resources\Tenants\TenantResource;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTenant extends EditRecord
@@ -13,7 +14,7 @@ class EditTenant extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
+            EditAction::make(),
         ];
     }
 }
