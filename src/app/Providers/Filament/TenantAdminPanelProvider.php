@@ -19,7 +19,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
-use Illuminate\Support\HtmlString;
 
 class TenantAdminPanelProvider extends PanelProvider
 {
@@ -59,7 +58,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 VerifyCsrfToken::class,
 
                 // --- Scope to tenant ---
-                
+                InitializeTenancyByDomain::class,
                 PreventAccessFromCentralDomains::class,
                 ApplyTenantTheme::class,
                 //------------------------
