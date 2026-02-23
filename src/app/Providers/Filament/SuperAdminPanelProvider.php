@@ -29,6 +29,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->path('admin')
             ->domain(env('APP_URL'))
             ->login(AdminLogin::class)
+            ->spa()
             ->favicon(asset('images/logo.svg'))
             ->brandLogo(fn () => view('filament.clusters.brand.admin-logo'))
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')

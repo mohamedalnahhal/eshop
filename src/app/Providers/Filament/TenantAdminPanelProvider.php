@@ -33,6 +33,7 @@ class TenantAdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->passwordReset()
+            ->spa()
             ->profile()
             ->discoverResources(in: app_path('Filament/TenantAdmin/Resources'), for: 'App\\Filament\\TenantAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/TenantAdmin/Pages'), for: 'App\\Filament\\TenantAdmin\\Pages')
