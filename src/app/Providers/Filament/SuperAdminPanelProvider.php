@@ -32,6 +32,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->spa()
             ->favicon(asset('images/logo.svg'))
             ->brandLogo(fn () => view('filament.clusters.brand.admin-logo'))
+            ->darkMode(false)
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->pages([
