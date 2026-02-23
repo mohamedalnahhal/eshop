@@ -11,7 +11,7 @@ class AdminLogin extends BaseLogin
 {
     public function getHeading(): string | Htmlable
     {
-        return new HtmlString('<div class="mt-4">' . parent::getHeading() . '</div>');
+        return new HtmlString('<div>' . parent::getHeading() . '<br><span class="font-normal text-gray-700 text-base">as</span> <span class="font-semibold text-base text-primary-700">System Admin</span></div>');
     }
 
     protected function getAuthenticateFormAction(): Action
