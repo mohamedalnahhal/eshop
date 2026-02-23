@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('phone', 32);
             $table->enum('gender', ['male', 'female']);
             $table->integer('role')->default(0);
+            $table->rememberToken();
             $table->timestamps();
         });
     }
