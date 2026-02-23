@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Auth\Pages\AdminLogin;
 
 class SuperAdminPanelProvider extends PanelProvider
 {
@@ -27,6 +28,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super_admin')
             ->path('admin')
             ->domain(env('APP_URL'))
+            ->login(AdminLogin::class)
             ->favicon(asset('images/logo.svg'))
             ->brandLogo(fn () => view('filament.clusters.brand.admin-logo'))
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
