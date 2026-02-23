@@ -2,13 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\ApplyTenantTheme;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Illuminate\Support\HtmlString;
 
 class TenantAdminPanelProvider extends PanelProvider
 {
@@ -27,13 +28,18 @@ class TenantAdminPanelProvider extends PanelProvider
         return $panel
             ->id('tenant_admin')
             ->path('admin')
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->login()
+            ->profile()
             ->registration()
             ->passwordReset()
-            ->profile()
+            ->spa()
+            ->favicon(fn () => tenant('logo_url') 
+                ? asset('storage/' . tenant('logo_url')) 
+                : asset('images/logo.svg')
+            )
+            ->brandLogo(fn () => view('filament.clusters.brand.tenant-logo'))
+            ->brandName(fn () => tenant('name') ?? 'eShop Store')
+            ->darkMode(false)
             ->discoverResources(in: app_path('Filament/TenantAdmin/Resources'), for: 'App\\Filament\\TenantAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/TenantAdmin/Pages'), for: 'App\\Filament\\TenantAdmin\\Pages')
             ->pages([
@@ -55,6 +61,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 // --- Scope to tenant ---
                 
                 PreventAccessFromCentralDomains::class,
+                ApplyTenantTheme::class,
                 //------------------------
 
                 SubstituteBindings::class,

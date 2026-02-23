@@ -9,7 +9,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -18,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Auth\Pages\AdminLogin;
 
 class SuperAdminPanelProvider extends PanelProvider
 {
@@ -28,11 +28,14 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super_admin')
             ->path('admin')
             ->domain(env('APP_URL'))
-            ->login()
-            ->registration()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
+            ->login(AdminLogin::class)
+            ->profile()
+            ->passwordReset()
+            ->spa()
+            ->favicon(asset('images/logo.svg'))
+            ->brandLogo(fn () => view('filament.clusters.brand.admin-logo'))
+            ->brandName('eShop')
+            ->darkMode(false)
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->pages([
