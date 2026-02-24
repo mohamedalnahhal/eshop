@@ -8,7 +8,6 @@ use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use \Illuminate\Support\Str;
 
 class CreateTenant extends CreateRecord
@@ -19,20 +18,8 @@ class CreateTenant extends CreateRecord
         return DB::transaction(function () use ($data) {
             $user = User::where('email', $data['owner_email'])->first();
 
-            if (! $user) {
-                $user = User::create([
-                    'name'     => $data['owner_name'],
-                    'email'    => $data['owner_email'],
-                    'password' => Hash::make($data['owner_password']),
-                    'username' => $data['username'],
-                    'phone'    => $data['phone'],
-                    'gender'   => $data['gender'],
-                    'role'     => UserRole::TENANT_OWNER,
-                ]);
-            }
-
             $tenantData = collect($data)
-                ->except(['owner_name', 'owner_email', 'owner_password', 'username', 'phone', 'gender', 'user_exists', 'subdomain'])
+                ->except(['subdomain'])
                 ->toArray();
 
             $tenant = static::getModel()::create($tenantData);
