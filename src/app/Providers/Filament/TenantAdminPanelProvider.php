@@ -29,7 +29,6 @@ class TenantAdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
-            ->registration()
             ->passwordReset()
             ->spa()
             ->favicon(fn () => tenant('logo_url') 
