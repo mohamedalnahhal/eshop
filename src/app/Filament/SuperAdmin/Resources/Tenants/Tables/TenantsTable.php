@@ -19,8 +19,17 @@ class TenantsTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('subdomain')
-                    ->searchable(),
+                TextColumn::make('domain.domain')
+                    ->label('Domain')
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        return $record->domain->domain;
+                    }),
+                TextColumn::make('owner_email')
+                    ->label('Owner Email')
+                    ->getStateUsing(function ($record) {
+                        return $record->owner->first()?->email;
+                    }),
                 TextColumn::make('status')
                     ->badge(),
                 TextColumn::make('created_at')

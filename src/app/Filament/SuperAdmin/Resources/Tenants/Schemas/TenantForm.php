@@ -41,9 +41,6 @@ class TenantForm
                             };
                         },
                     ]),
-                Select::make('status')
-                    ->options(TenantStatus::class)
-                    ->default('active'),
                 TextInput::make('owner_email')
                     ->label('Owner Email')
                     ->email()
@@ -59,6 +56,9 @@ class TenantForm
                             };
                         },
                     ]),
+                Select::make('status')
+                    ->options(TenantStatus::class)
+                    ->default('active'),
         ]);
     }
 }

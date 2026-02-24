@@ -7,6 +7,7 @@ use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
+use App\Enums\UserRole;
 
 class Tenant extends BaseTenant
 {
@@ -19,6 +20,11 @@ class Tenant extends BaseTenant
         return $this->belongsToMany(User::class, 'tenant_users')
         ->withPivot('role')
         ->withTimestamps();
+    }
+
+    public function owner()
+    {
+        return $this->users()->wherePivot('role', UserRole::TENANT_OWNER);
     }
 
     protected $casts = [
