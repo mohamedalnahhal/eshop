@@ -26,4 +26,8 @@ class Product extends Model
          // افترضنا هنا أن العمود في جدول المنتجات هو category_id
            return $this->belongsTo(Category::class);
        }
+       public function reviews()
+    {
+        return $this->hasMany(Review::class)->latest();
+    }
 }
