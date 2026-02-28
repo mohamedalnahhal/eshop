@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Controllers\Customer\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,11 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+    
+    Route::get('/shop', [ProductsController::class, 'index'])->name('shop.index');
+    
+    Route::get('/shop/product/{id}', [ProductsController::class, 'show'])->name('shop.product.show');
+
     Route::get('/', function () {
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     });
