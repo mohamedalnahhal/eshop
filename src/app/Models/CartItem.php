@@ -22,6 +22,6 @@ class CartItem extends Model
         return 'cart';
     }
 
-    public function cart() { return $this->belongsTo(Cart::class)->onDelete('cascade'); }
+    public function cart() { return $this->belongsTo(Cart::class); }
     public function product() { return $this->belongsTo(Product::class); }
 }

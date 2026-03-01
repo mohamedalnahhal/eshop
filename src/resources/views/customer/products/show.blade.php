@@ -12,11 +12,16 @@
 
     <div class="container mx-auto py-10 px-4 max-w-6xl">
         
-        {{-- رسالة النجاح عند إضافة تقييم --}}
+        {{-- رسائل التنبيه والنجاح (تعمل للسلة وللتقييمات) --}}
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 text-center shadow-sm" role="alert">
                 <strong class="font-bold">نجاح!</strong>
                 <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 text-center shadow-sm">
+                <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
 
@@ -46,7 +51,6 @@
                 {{-- قسم تفاصيل المنتج --}}
                 <div class="p-8 md:p-12 flex flex-col justify-center">
                     
-                    {{-- عرض اسم القسم إذا كان موجوداً --}}
                     @if($product->category)
                         <span class="text-sm font-bold text-blue-500 tracking-wider mb-2">
                             {{ $product->category->name }}
@@ -66,11 +70,14 @@
                         </p>
                     </div>
 
-                    {{-- أزرار التفاعل --}}
-                    <div class="flex gap-4 mt-auto">
-                        <button class="flex-1 bg-blue-600 text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
-                            إضافة للسلة 🛒
-                        </button>
+                    {{-- زر الإضافة للسلة المحدث (مربوط بمسار السلة وقاعدة البيانات) --}}
+                    <div class="mt-auto">
+                        <form action="{{ route('shop.cart.add', ['id' => $product->id]) }}" method="POST" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full bg-blue-600 text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
+                                إضافة للسلة 🛒
+                            </button>
+                        </form>
                     </div>
 
                 </div>
@@ -90,7 +97,6 @@
                             <div class="flex justify-between items-center mb-4">
                                 <h4 class="font-bold text-lg">{{ $review->customer_name }}</h4>
                                 <div class="text-yellow-400 text-lg">
-                                    {{-- عرض النجوم بناءً على التقييم --}}
                                     @for($i = 1; $i <= 5; $i++)
                                         <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
                                     @endfor
@@ -118,7 +124,6 @@
                     <div class="mb-4">
                         <label class="block text-sm font-bold text-gray-700 mb-2">الاسم <span class="text-red-500">*</span></label>
                         <input type="text" name="customer_name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسمك">
-                        @error('customer_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="mb-4">
@@ -130,13 +135,11 @@
                             <option value="2">نجمتان - مقبول ⭐️⭐️</option>
                             <option value="1">نجمة واحدة - سيء ⭐️</option>
                         </select>
-                        @error('rating') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-700 mb-2">رأيك (اختياري)</label>
                         <textarea name="comment" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="اكتب رأيك في المنتج هنا..."></textarea>
-                        @error('comment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
                     <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition shadow-md">
