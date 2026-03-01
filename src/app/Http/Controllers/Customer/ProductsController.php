@@ -5,21 +5,40 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Category;    
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
-    public function index() 
+    public function index(Request $request) 
     {
-        $products = Product::with('category')
-              ->latest()
-              ->paginate(20);
+      $query = Product::with('category');
 
-        $tenant = tenant(); 
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->latest()->paginate(20)->appends($request->query());
+
+        $tenant = tenant();
+        $categories = Category::all(); 
 
         return view('customer.products.index', [
-            'products' => $products,
-            'tenant'   => $tenant
+            'products'   => $products,
+            'tenant'     => $tenant,
+            'categories' => $categories 
         ]);
     }
 
