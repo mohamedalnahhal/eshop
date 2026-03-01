@@ -7,6 +7,9 @@ use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
+use App\Http\Middleware\InitializeTenancyForLivewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post('/livewire/update', $handle)
+                ->middleware([
+                    'web',
+                    InitializeTenancyForLivewire::class,
+                ]);
+        });
+
         FilamentView::registerRenderHook(
             'panels::head.end',
             fn (): string => Blade::render('@vite(\'resources/css/app.css\')'),
