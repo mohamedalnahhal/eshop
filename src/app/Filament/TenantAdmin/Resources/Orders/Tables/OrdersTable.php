@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrdersTable
 {
@@ -15,25 +16,39 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ID')
+                    ->label('Order ID')
                     ->searchable(),
+                TextColumn::make('user.username')
+                    ->searchable(),
+                TextColumn::make('items_summary')
+                    ->label('Order Items')
+                    ->getStateUsing(fn ($record) => $record->items->map(fn ($item) => "{$item->quantity}x " . ($item->product->name ?? 'Unknown')))
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->expandableLimitedList()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('items.product', function (Builder $q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                    }),
                 TextColumn::make('total_price')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('discount')
                     ->numeric()
+                    ->prefix('%')
                     ->sortable(),
                 TextColumn::make('final_price')
                     ->money()
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge(),
-                TextColumn::make('user_id')
-                    ->searchable(),
-                TextColumn::make('tenant_id')
-                    ->searchable(),
-                TextColumn::make('shipping_address_id')
-                    ->searchable(),
+                TextColumn::make('address')
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        return $record->shippingAddress->name;
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
