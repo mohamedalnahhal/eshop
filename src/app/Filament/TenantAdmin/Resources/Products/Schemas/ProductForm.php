@@ -12,8 +12,6 @@ class ProductForm
     {
         return $schema
             ->components([
-                TextInput::make('tenant_id')
-                    ->required(),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('price')
