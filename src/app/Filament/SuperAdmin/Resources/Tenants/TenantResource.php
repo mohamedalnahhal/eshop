@@ -14,6 +14,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use \Illuminate\Database\Eloquent\Builder;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
 
 class TenantResource extends Resource
 {
@@ -44,8 +47,6 @@ class TenantResource extends Resource
     {
         return [
             'index' => ListTenants::route('/'),
-            'create' => CreateTenant::route('/create'),
-            'edit' => EditTenant::route('/{record}/edit'),
         ];
     }
 
