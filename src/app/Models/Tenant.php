@@ -8,10 +8,11 @@ use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
 use App\Enums\UserRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tenant extends BaseTenant
 {
-    use HasUuids, HasDomains;
+    use HasUuids, HasDomains, HasFactory;
 
     protected $fillable = ['name', 'status'];
 

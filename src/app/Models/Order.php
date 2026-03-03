@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\OrderStatus;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Order extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use HasFactory;
+
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'tenant_id',

@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\UserRole;
 use App\Enums\Gender;
 
@@ -18,6 +18,7 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
     use HasUuids, Notifiable;
+    use HasFactory;
 
     protected $fillable = ['name', 'username', 'email', 'password', 'phone', 'gender', 'role'];
 

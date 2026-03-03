@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Payment extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use HasFactory;
 
+    const UPDATED_AT = null;
     protected $fillable = [
         'tenant_id',
         'paymentable_id',

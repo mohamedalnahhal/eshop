@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Category extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use HasFactory;
     
     public $incrementing = false;
     protected $keyType = 'string';
