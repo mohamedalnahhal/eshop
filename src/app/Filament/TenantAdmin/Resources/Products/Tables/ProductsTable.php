@@ -2,11 +2,13 @@
 
 namespace App\Filament\TenantAdmin\Resources\Products\Tables;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Table;
+use Filament\Actions\EditAction; 
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 
 class ProductsTable
 {
@@ -14,6 +16,12 @@ class ProductsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('media.file_path')
+                    ->label('المنتج')
+                    ->disk('public')
+                    ->circular() 
+                    ->stacked()
+                    ->limit(1),
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable(),

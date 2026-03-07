@@ -44,7 +44,7 @@ class ProductsController extends Controller
 
     public function show($id)
     {
-        $product = Product::with('category', 'reviews')->findOrFail($id);
+        $product = Product::with('category', 'reviews' , 'media')->findOrFail($id);
         $tenant = tenant();
         
         return view('customer.products.show', compact('product','tenant'));
