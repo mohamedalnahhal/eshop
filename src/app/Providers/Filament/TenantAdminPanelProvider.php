@@ -45,7 +45,7 @@ class TenantAdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/TenantAdmin/Widgets'), for: 'App\\Filament\\TenantAdmin\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+            Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
