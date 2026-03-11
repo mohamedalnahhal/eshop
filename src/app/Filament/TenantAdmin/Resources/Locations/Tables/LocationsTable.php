@@ -18,12 +18,12 @@ class LocationsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('اسم الموقع')
+                    ->label('Location name')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('type')
-                    ->label('النوع')
+                    ->label('Type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'branch' => 'success',
@@ -32,41 +32,41 @@ class LocationsTable
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'branch' => 'فرع',
-                        'warehouse' => 'مستودع',
-                        'pickup_point' => 'نقطة استلام',
+                        'branch' => 'Branch',
+                        'warehouse' => 'Warehouse',
+                        'pickup_point' => 'Pickup Point',
                         default => $state,
                     }),
 
                 TextColumn::make('city')
-                    ->label('المدينة')
+                    ->label('City')
                     ->sortable(),
 
                 TextColumn::make('phone')
-                    ->label('رقم الهاتف')
+                    ->label('phone number')
                     ->copyable(),
 
                 IconColumn::make('is_visible_to_customers')
-                    ->label('مرئي للزبائن')
+                    ->label('Visible to customers')
                     ->boolean()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإضافة')
+                    ->label('Date Added')
                     ->dateTime('Y-m-d')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('type')
-                    ->label('تصفية حسب النوع')
+                    ->label('Filter by type')
                     ->options([
-                        'branch' => 'فرع',
-                        'warehouse' => 'مستودع',
-                        'pickup_point' => 'نقطة استلام',
+                        'branch' => 'Branch',
+                        'warehouse' => 'Warehouse',
+                        'pickup_point' => 'Pickup Point',
                     ]),
             ])
             ->actions([
-                EditAction::make(), // تم التأكد من الاستيراد أعلاه
+                EditAction::make(), 
                 DeleteAction::make(),
             ])
             ->bulkActions([
