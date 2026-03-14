@@ -7,6 +7,11 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use App\Enums\UserRole;
+use App\Models\User;
 
 class TenantsTable
 {
@@ -45,12 +50,35 @@ class TenantsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                ->mutateRecordDataUsing(function (Model $record, array $data): array {
+                $domain = $record->domain?->domain ?? '';
+                $centralDomain = '.' . config('tenancy.central_domains')[0];
+                
+                $data['subdomain'] = str_replace($centralDomain, '', $domain);
+                $data['owner_email'] = $record->owner->first()?->email;
+
+                return $data;
+                })
+                ->using(function (Model $record, array $data): Model {
+                return DB::transaction(function () use ($record, $data) {
+                    $tenantData = collect($data)->except(['subdomain', 'owner_email'])->toArray();
+                    $record->update($tenantData);
+
+                    $record->domain()->updateOrCreate(
+                        ['tenant_id' => $record->id],
+                        ['domain' => $data['subdomain'] . '.' . config('tenancy.central_domains')[0]]
+                    );
+
+                    return $record;
+                });
+                }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                ])
+                ->label("Actions"),
             ]);
     }
 }
