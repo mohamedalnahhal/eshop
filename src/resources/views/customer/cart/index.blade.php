@@ -15,7 +15,7 @@
         {{-- رسائل التنبيه والنجاح --}}
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 shadow-sm">
-                <strong class="font-bold">رائع!</strong>
+                <strong class="font-bold">ِAmazing!</strong>
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
@@ -27,9 +27,9 @@
 
         {{-- رأس الصفحة وزر العودة --}}
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-            <h1 class="text-3xl font-extrabold text-gray-900">سلة المشتريات 🛒</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900"> Shopping cart 🛒</h1>
             <a href="{{ route('shop.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg transition">
-                <span>&rarr;</span> متابعة التسوق
+                <span>&rarr;</span> Continue shopping
             </a>
         </div>
 
@@ -63,7 +63,7 @@
                             {{-- تفاصيل المنتج --}}
                             <div class="flex-grow text-center sm:text-right w-full sm:w-auto">
                                 <h3 class="text-lg font-bold text-gray-900 mb-1">{{ $item->product->name }}</h3>
-                                <p class="text-gray-500 text-sm font-semibold">سعر الوحدة: ${{ number_format($item->product->price, 2) }}</p>
+                                <p class="text-gray-500 text-sm font-semibold"> Price per one : ${{ number_format($item->product->price, 2) }}</p>
                             </div>
 
                             {{-- الكمية والمجموع وزر الحذف --}}
@@ -81,7 +81,7 @@
                                 <form action="#" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="حذف المنتج من السلة">
+                                    <button type="submit" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title=" Delete the product from the cart ">
                                         🗑️
                                     </button>
                                 </form>
@@ -92,28 +92,28 @@
 
                 {{-- ملخص الطلب والإجمالي --}}
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 h-fit sticky top-10">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">ملخص الطلب</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4"> Order summary </h2>
                     
                     <div class="space-y-4 mb-6 text-gray-600 text-sm">
                         <div class="flex justify-between">
-                            <span>المجموع الفرعي:</span>
+                            <span> Subtotal :</span>
                             <span class="font-bold text-gray-900">${{ number_format($totalPrice, 2) }}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>رسوم الشحن:</span>
-                            <span class="font-bold text-green-500">مجاني</span>
+                            <span>Shipping fees :</span>
+                            <span class="font-bold text-green-500">Free</span>
                         </div>
                     </div>
                     
                     <div class="border-t pt-4 mb-8 border-gray-100">
                         <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold text-gray-900">الإجمالي الكلي:</span>
+                            <span class="text-lg font-bold text-gray-900"> Total Price:</span>
                             <span class="text-3xl font-black text-green-600">${{ number_format($totalPrice, 2) }}</span>
                         </div>
                     </div>
 
                     <button class="w-full bg-blue-600 text-white text-lg font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
-                        <span>إتمام الطلب للدفع</span> 💳
+                        <span> Complete the payment</span> 💳
                     </button>
                 </div>
 

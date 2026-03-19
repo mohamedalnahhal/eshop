@@ -31,7 +31,7 @@
         <div class="mb-8 flex items-center justify-between">
             <a href="{{ route('shop.index') }}" class="group flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-all">
                 <span class="bg-white p-2 rounded-full shadow-sm group-hover:bg-blue-50 transition-colors">&rarr;</span>
-                <span class="font-medium text-lg">العودة للمتجر</span>
+                <span class="font-medium text-lg">Return to the store</span>
             </a>
         </div>
 
@@ -52,7 +52,7 @@
                          class="max-w-full max-h-[500px] object-contain transition duration-700 ease-in-out transform group-hover:scale-110">
                     
                     <div class="absolute top-4 right-4">
-                        <span class="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-sm border border-gray-100">تكبير 🔍</span>
+                        <span class="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-sm border border-gray-100">Enlarge 🔍</span>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@
                             ${{ number_format($product->price, 2) }}
                         </div>
                         <div class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-bold">
-                            متوفر 🟢
+                            Available 🟢
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                         @csrf
                         <button type="submit" 
                                 class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-black py-5 rounded-2xl transition-all shadow-xl shadow-blue-200 flex justify-center items-center gap-4 group active:scale-95">
-                            <span>إضافة إلى العربة</span>
+                            <span>Add to cart</span>
                             <span class="text-2xl group-hover:rotate-12 transition-transform">🛒</span>
                         </button>
                     </form>
@@ -112,8 +112,8 @@
                     <div class="flex items-center gap-4">
                         <div class="text-3xl">🚚</div>
                         <div>
-                            <p class="font-bold">شحن سريع ومجاني</p>
-                            <p class="text-blue-200 text-xs">للطلبات فوق 50 دولار</p>
+                            <p class="font-bold">Fast and free shipping</p>
+                            <p class="text-blue-200 text-xs">For orders over $50</p>
                         </div>
                     </div>
                     <div class="text-2xl opacity-20">★</div>
@@ -124,14 +124,14 @@
         {{-- القسم السفلي: تبويبات (وصف كامل - تقييمات) --}}
         <div class="mt-16 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden" x-data="{ tab: 'reviews' }">
             <div class="flex border-b border-gray-100 bg-gray-50/50">
-                <button @click="tab = 'details'" :class="tab === 'details' ? 'border-blue-600 text-blue-600 bg-white' : 'border-transparent text-gray-400'" class="px-8 py-5 font-bold border-b-4 transition-all">تفاصيل المنتج</button>
-                <button @click="tab = 'reviews'" :class="tab === 'reviews' ? 'border-blue-600 text-blue-600 bg-white' : 'border-transparent text-gray-400'" class="px-8 py-5 font-bold border-b-4 transition-all">المراجعات ({{ $product->reviews->count() }})</button>
+                <button @click="tab = 'details'" :class="tab === 'details' ? 'border-blue-600 text-blue-600 bg-white' : 'border-transparent text-gray-400'" class="px-8 py-5 font-bold border-b-4 transition-all">Product Details</button>
+                <button @click="tab = 'reviews'" :class="tab === 'reviews' ? 'border-blue-600 text-blue-600 bg-white' : 'border-transparent text-gray-400'" class="px-8 py-5 font-bold border-b-4 transition-all"> Reviews ({{ $product->reviews->count() }})</button>
             </div>
 
             <div class="p-8">
                 {{-- التبويب 1: الوصف الكامل --}}
                 <div x-show="tab === 'details'" x-cloak class="prose max-w-none text-gray-600">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4 italic">عن هذا المنتج</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 italic">About This Product</h3>
                     <p class="text-lg leading-loose">{{ $product->description }}</p>
                 </div>
 
@@ -162,26 +162,26 @@
                                 </div>
                             @empty
                                 <div class="text-center py-10">
-                                    <p class="text-gray-400">لا توجد مراجعات حالياً. كن الملهم الأول!</p>
+                                    <p class="text-gray-400">There are no reviews yet. Be the first to be inspired!</p>
                                 </div>
                             @endforelse
                         </div>
 
                         {{-- فورم التقييم --}}
                         <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100">
-                            <h3 class="text-xl font-black mb-6">اترك انطباعك ✨</h3>
+                            <h3 class="text-xl font-black mb-6"> Make Your Review ✨</h3>
                             <form action="{{ route('shop.product.review.store', ['id' => $product->id]) }}" method="POST" class="space-y-4">
                                 @csrf
-                                <input type="text" name="customer_name" required placeholder="اسمك الكريم" class="w-full px-4 py-3 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" name="customer_name" required placeholder="Your name" class="w-full px-4 py-3 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-blue-500 outline-none">
                                 <select name="rating" required class="w-full px-4 py-3 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                                    <option value="5">⭐⭐⭐⭐⭐ ممتاز</option>
-                                    <option value="4">⭐⭐⭐⭐ جيد جداً</option>
-                                    <option value="3">⭐⭐⭐ متوسط</option>
-                                    <option value="2">⭐⭐ مقبول</option>
-                                    <option value="1">⭐ سيء</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                    <option value="4">⭐⭐⭐⭐ Very Good</option>
+                                    <option value="3">⭐⭐⭐ Medium</option>
+                                    <option value="2">⭐⭐ Acceptable</option>
+                                    <option value="1">⭐ Bad</option>
                                 </select>
-                                <textarea name="comment" rows="4" placeholder="كيف كانت تجربتك؟" class="w-full px-4 py-3 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-                                <button type="submit" class="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-all">إرسال الآن</button>
+                                <textarea name="comment" rows="4" placeholder="How was your experience?" class="w-full px-4 py-3 rounded-xl border-none ring-1 ring-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                                <button type="submit" class="w-full bg-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-all">Seend Now</button>
                             </form>
                         </div>
                     </div>

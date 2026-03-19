@@ -20,13 +20,12 @@
             <h1 class="text-5xl font-black text-gray-900 tracking-tight">
                 <span class="text-blue-600 italic">ALBAN</span> STORE
             </h1>
-            <p class="text-lg text-gray-500 mt-2 font-medium">منتجات طازجة يومياً من مزارعنا 🥛</p>
         </div>
         
         <a href="{{ route('shop.cart.index') }}" class="group flex items-center gap-4 bg-white border border-gray-100 p-2 pr-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
             <div class="flex flex-col text-left">
-                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">سلتك</span>
-                <span class="text-sm font-black text-gray-900">0.00 ر.س</span>
+                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Your Cart</span>
+                <span class="text-sm font-black text-gray-900">0.00 U.S</span>
             </div>
             <div class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 group-hover:scale-110 transition-transform">
                 <span class="text-xl">🛒</span>
@@ -38,19 +37,19 @@
     <div class="bg-white/50 backdrop-blur-md p-8 rounded-[2.5rem] shadow-sm mb-12 border border-white">
         <form action="{{ route('shop.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-end">
             <div>
-                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">ابحث عن منتج</label>
+                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">Search for a product</label>
                 <div class="relative">
                     <input type="text" name="search" value="{{ request('search') }}" 
                            class="w-full pl-4 pr-10 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm" 
-                           placeholder="ماذا تشتهي اليوم؟">
+                           placeholder="What do you crave today?">
                     <span class="absolute left-4 top-4 opacity-20">🔍</span>
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">الأقسام</label>
+                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">Sections</label>
                 <select name="category" class="w-full px-4 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none font-bold text-gray-600">
-                    <option value="">جميع المنتجات</option>
+                    <option value="">All products</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
                             {{ $cat->name }}
@@ -60,18 +59,18 @@
             </div>
 
             <div>
-                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">ميزانيتك (ر.س)</label>
+                <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">Your budget (SAR)</label>
                 <div class="flex items-center gap-2">
-                    <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="من" 
+                    <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="From" 
                            class="w-full px-3 py-4 bg-white border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50 shadow-sm text-center">
-                    <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="إلى" 
+                    <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="To" 
                            class="w-full px-3 py-4 bg-white border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-50 shadow-sm text-center">
                 </div>
             </div>
 
             <div class="flex gap-3">
                 <button type="submit" class="flex-grow bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95">
-                    تحديث النتائج
+                   Update results
                 </button>
                 <a href="{{ route('shop.index') }}" class="px-5 py-4 bg-white border border-gray-100 text-gray-400 rounded-2xl hover:bg-gray-50 transition shadow-sm flex items-center justify-center">
                     🔄
@@ -112,7 +111,7 @@
                         <h2 class="text-xl font-bold mb-1 text-gray-800 group-hover:text-blue-600 transition-colors">{{ $product->name }}</h2>
                         
                    <p class="text-gray-400 text-sm font-medium line-clamp-2 leading-relaxed min-h-[40px]">
-                        {{ $product->description ?? 'لا يوجد وصف متاح حالياً.' }}
+                        {{ $product->description ?? 'No description is currently available.' }}
         </p>
         </p>
     </a>
@@ -122,10 +121,10 @@
                         <div class="flex justify-between items-center">
                             {{-- السعر --}}
                             <div class="flex flex-col">
-                                <span class="text-[10px] text-gray-400 font-bold uppercase mb-1">السعر</span>
+                                <span class="text-[10px] text-gray-400 font-bold uppercase mb-1">Price</span>
                                 <span class="text-2xl font-black text-blue-600">
                                     {{ number_format($product->price, 2) }}
-                                    <span class="text-xs text-blue-300 font-bold mr-1">ر.س</span>
+                                    <span class="text-xs text-blue-300 font-bold mr-1">U.S</span>
                                 </span>
                             </div>
 
@@ -141,7 +140,7 @@
                         {{-- زر التفاصيل --}}
                         <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
                            class="w-full bg-gray-900 text-white text-center py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg active:scale-[0.98]">
-                            عرض تفاصيل المنتج
+                           View product details
                         </a>
                     </div>
                 </div>
@@ -149,8 +148,8 @@
         @empty
             <div class="col-span-full text-center py-32 bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
                 <div class="text-8xl mb-6">🔍</div>
-                <h3 class="text-3xl font-black text-gray-800">لم نجد أي منتجات!</h3>
-                <a href="{{ route('shop.index') }}" class="inline-block mt-8 bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold">عرض الكل</a>
+                <h3 class="text-3xl font-black text-gray-800">We didn't find any products!</h3>
+                <a href="{{ route('shop.index') }}" class="inline-block mt-8 bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold">List All</a>
             </div>
         @endforelse
     </div>
