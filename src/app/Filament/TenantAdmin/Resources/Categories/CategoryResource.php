@@ -13,6 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
 {
@@ -47,4 +49,12 @@ class CategoryResource extends Resource
             'edit' => EditCategory::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
+}
 }

@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\OrderStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = [
         'tenant_id',

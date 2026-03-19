@@ -14,10 +14,12 @@ use App\Enums\Gender;
 
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasUuids, Notifiable;
+    use HasUuids, Notifiable , SoftDeletes;
 
     protected $fillable = ['name', 'username', 'email', 'password', 'phone', 'gender', 'role'];
 

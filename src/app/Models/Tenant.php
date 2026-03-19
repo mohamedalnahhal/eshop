@@ -7,13 +7,16 @@ use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\UserRole;
 
 class Tenant extends BaseTenant
 {
-    use HasUuids, HasDomains;
+    use HasUuids, HasDomains , SoftDeletes;
 
     protected $fillable = ['name', 'status'];
+
+    protected $dates = ['deleted_at'];
 
     public function users()
     {

@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = ['name', 'price', 'description', 'stock', 'tenant_id'];
     protected $casts = [

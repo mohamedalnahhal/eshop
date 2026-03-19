@@ -48,11 +48,11 @@ class AddressesResource extends Resource
         ];
     }
 
-    public static function getRecordRouteBindingEloquentQuery(): Builder
-    {
-        return parent::getRecordRouteBindingEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
-    }
+  public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+{
+    return parent::getEloquentQuery()
+        ->withoutGlobalScopes([
+            \Illuminate\Database\Eloquent\SoftDeletingScope::class,
+        ]);
+}
 }
