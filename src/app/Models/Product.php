@@ -15,7 +15,6 @@ class Product extends Model
     use HasUuids;
     use BelongsToTenant;
 
-    // تأكد من إضافة 'image' إذا كنت تستخدم حقل صورة في الجدول
     protected $fillable = ['name', 'price', 'description', 'stock', 'tenant_id'];
 
     protected $casts = [
@@ -23,17 +22,14 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
-    /**
-     * العلاقة مع المستأجر
-     */
     public function tenant(): BelongsTo 
     { 
         return $this->belongsTo(Tenant::class); 
     }
 
     /**
-     * علاقة متعدد لمتعدد مع الأقسام (الجدول الوسيط)
-     * هذه هي العلاقة التي سنستخدمها في Filament
+     * ✅ هذه الدالة هي الحل
+     * يجب أن يكون اسمها categories بالجمع ليتوقف الخطأ
      */
     public function categories(): BelongsToMany 
     { 
@@ -41,16 +37,20 @@ class Product extends Model
     }
 
     /**
-     * المراجعات والتقييمات
+     * دالة للمفرد لضمان التوافق
      */
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'id')->whereIn('id', function($query) {
+            $query->select('category_id')->from('category_product')->where('product_id', $this->id);
+        });
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class)->latest();
     }
 
-    /**
-     * الوسائط (الصور وغيرها)
-     */
     public function media(): MorphMany 
     { 
         return $this->morphMany(Media::class, 'mediable'); 

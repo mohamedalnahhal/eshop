@@ -12,14 +12,16 @@ class ProductsController extends Controller
 {
     public function index(Request $request) 
     {
-      $query = Product::with('category');
+     $query = Product::with(['categories', 'media']);
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $query->whereHas('categories', function ($q) use ($request) {
+             $q->where('categories.id', $request->category);
+           });
         }
 
         if ($request->filled('min_price')) {

@@ -73,7 +73,7 @@
                    Update results
                 </button>
                 <a href="{{ route('shop.index') }}" class="px-5 py-4 bg-white border border-gray-100 text-gray-400 rounded-2xl hover:bg-gray-50 transition shadow-sm flex items-center justify-center">
-                    🔄
+                   🔄
                 </a>
             </div>
         </form>
@@ -84,10 +84,15 @@
         @forelse($products as $product)
             <div class="group bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] overflow-hidden border border-gray-50 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] hover:-translate-y-2">
                 
-                {{-- رابط الصورة --}}
+                {{-- منطق جلب الصورة --}}
                 <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block relative overflow-hidden aspect-[4/5] bg-[#f8fafc]">
-                    @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
+                    @php
+                        // جلب أول صورة من علاقة الميديا التي أعددناها في الموديل
+                        $firstImagePath = $product->media->first()?->file_path;
+                    @endphp
+
+                    @if($firstImagePath)
+                        <img src="{{ asset('storage/' . $firstImagePath) }}" alt="{{ $product->name }}" 
                              class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-gray-200">
@@ -95,10 +100,11 @@
                         </div>
                     @endif
                     
+                    {{-- عرض القسم (أول قسم مرتبط) --}}
                     <div class="absolute top-5 right-5 flex flex-col gap-2">
-                        @if($product->category)
+                        @if($product->categories->isNotEmpty())
                             <span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm border border-white/50 uppercase">
-                                {{ $product->category->name }}
+                                {{ $product->categories->first()->name }}
                             </span>
                         @endif
                     </div>
@@ -108,13 +114,14 @@
                 <div class="p-8">
                     {{-- اسم المنتج --}}
                     <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block mb-4">
-                        <h2 class="text-xl font-bold mb-1 text-gray-800 group-hover:text-blue-600 transition-colors">{{ $product->name }}</h2>
+                        <h2 class="text-xl font-bold mb-1 text-gray-800 group-hover:text-blue-600 transition-colors">
+                            {{ $product->name }}
+                        </h2>
                         
-                   <p class="text-gray-400 text-sm font-medium line-clamp-2 leading-relaxed min-h-[40px]">
-                        {{ $product->description ?? 'No description is currently available.' }}
-        </p>
-        </p>
-    </a>
+                        {{-- الوصف (سيعرض "سسس" أو أي نص آخر) --}}
+                        <p class="text-gray-400 text-sm font-medium line-clamp-2 leading-relaxed min-h-[40px]">
+                            {{ $product->description ?? 'No description is currently available.' }}
+                        </p>
                     </a>
 
                     <div class="flex flex-col gap-6 pt-6 border-t border-gray-50">
@@ -128,7 +135,7 @@
                                 </span>
                             </div>
 
-                            {{-- زر السلة القابل للضغط --}}
+                            {{-- زر السلة --}}
                             <form action="{{ route('shop.cart.add', ['id' => $product->id]) }}" method="POST" class="m-0">
                                 @csrf
                                 <button type="submit" class="bg-blue-50 text-blue-600 w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-sm active:scale-90">
@@ -140,7 +147,7 @@
                         {{-- زر التفاصيل --}}
                         <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
                            class="w-full bg-gray-900 text-white text-center py-4 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg active:scale-[0.98]">
-                           View product details
+                            View product details
                         </a>
                     </div>
                 </div>

@@ -23,11 +23,13 @@ class ProductForm
                         TextInput::make('name')
                             ->label('Product name')
                             ->required(),
-                         Select::make('category_id')
-                         ->relationship('category', 'name') 
-                         ->searchable()
-                         ->preload()
-                        ->required(),
+                         Select::make('categories')
+                        ->label('Sections')
+                        ->relationship('categories', 'name') 
+                        ->multiple() 
+                        ->preload()
+                        ->searchable()
+                       ->required(),
                         TextInput::make('price')
                             ->label('the price')
                             ->required()
