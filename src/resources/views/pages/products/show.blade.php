@@ -42,19 +42,18 @@ new class extends Component
                 <div class="flex-1 bg-gray-50 rounded-3xl overflow-hidden relative group aspect-square flex items-center justify-center border border-gray-50">
                     <img :src="activeImage" 
                          alt="{{ $product->name }}" 
-                         class="max-w-full max-h-[500px] object-contain transition duration-700 ease-in-out transform group-hover:scale-110">
-
+                         class="max-w-full max-h-[500px] object-contain transition duration-700 ease-in-out transform group-hover:scale-110"/>
                     <div class="absolute top-4 right-4">
                         <span class="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-sm border border-gray-100">تكبير 🔍</span>
                     </div>
-                </div
+                </div>
                 @if($product->media->count() > 1)
                     <div class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[500px] custom-scrollbar pb-2 pr-2">
                         @foreach($product->media as $media)
                             <button @click="activeImage = '{{ asset('storage/' . $media->file_path) }}'" 
                                     class="relative flex-shrink-0 w-20 h-20 rounded-2xl border-2 overflow-hidden transition-all duration-300"
                                     :class="activeImage === '{{ asset('storage/' . $media->file_path) }}' ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:border-blue-200'">
-                                <img src="{{ asset('storage/' . $media->file_path) }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $media->file_path) }}" class="w-full h-full object-cover"/>
                             </button>
                         @endforeach
                     </div>
@@ -68,9 +67,9 @@ new class extends Component
         </div>
         <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 h-full justify-between">
    
-            @if($product->category)
-                <span class="text-sm font-bold text-blue-500 tracking-wider">
-                    {{ $product->category->name }}
+            @if($product->categories->isNotEmpty())
+                <span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm border border-white/50 uppercase">
+                    {{ $product->categories->first()->name }}
                 </span>
             @endif
 
