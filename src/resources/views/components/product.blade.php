@@ -46,7 +46,7 @@ new class extends Component
     </a>
     <div class="p-5 flex flex-col flex-grow">
         <h2>
-            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-gray-800">{{ $product->name }}</a>
+            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-gray-800 hover:underline">{{ $product->name }}</a>
         </h2>
         <p class="text-gray-500 text-sm mb-4 overflow-hidden">
             {{ $product->description ? \Illuminate\Support\Str::limit($product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}

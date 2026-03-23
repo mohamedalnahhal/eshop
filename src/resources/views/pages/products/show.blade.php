@@ -39,7 +39,7 @@ new class extends Component
         }">
         <div class="lg:col-span-7 bg-white p-6 rounded-xl m-6 shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-6">
             @if($product->media->count() > 0)
-                <div class="flex-1 bg-gray-50 rounded-3xl overflow-hidden relative group aspect-square flex items-center justify-center border border-gray-50">
+                <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden relative group aspect-square flex items-center justify-center border border-gray-50">
                     <img :src="activeImage" 
                          alt="{{ $product->name }}" 
                          class="max-w-full max-h-[500px] object-contain transition duration-700 ease-in-out transform group-hover:scale-110"/>
@@ -51,7 +51,7 @@ new class extends Component
                     <div class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[500px] custom-scrollbar pb-2 pr-2">
                         @foreach($product->media as $media)
                             <button @click="activeImage = '{{ asset('storage/' . $media->file_path) }}'" 
-                                    class="relative flex-shrink-0 w-20 h-20 rounded-2xl border-2 overflow-hidden transition-all duration-300"
+                                    class="relative flex-shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-300"
                                     :class="activeImage === '{{ asset('storage/' . $media->file_path) }}' ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:border-blue-200'">
                                 <img src="{{ asset('storage/' . $media->file_path) }}" class="w-full h-full object-cover"/>
                             </button>
@@ -65,7 +65,7 @@ new class extends Component
                 </div>
             @endif
         </div>
-        <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 h-full justify-between">
+        <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 h-full justify-start">
    
             @if($product->categories->isNotEmpty())
                 <span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm border border-white/50 uppercase">
@@ -97,7 +97,7 @@ new class extends Component
                 </p>
             </div>
 
-            <div class="mt-auto">
+            <div class="mt-12">
                 <button wire:click="addToCart" class="w-full bg-blue-600 text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
                     إضافة للسلة 🛒
                 </button>

@@ -48,23 +48,32 @@ new class extends Component
                 
                 @foreach($this->cart->items as $item)
                     @php 
-                        $itemSubtotal = $item->product->price * $item->quantity;
+                        $itemSubtotal = $item->price * $item->quantity;
                         $totalPrice += $itemSubtotal;
                     @endphp
                     
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition">
-                        
-                        <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center">
-                            @if($item->product->image)
-                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
+                        <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block relative overflow-hidden bg-[#f8fafc] w-24 h-24 flex-shrink-0 bg-gray-100 rounded-xl flex items-center justify-center">
+                            @php
+                                $ImagePath = $item->product->media->first()?->file_path;
+                            @endphp
+                            @if($ImagePath)
+                                <img src="{{ asset('storage/' . $ImagePath) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                             @else
-                                <span class="text-2xl text-gray-400">📷</span>
+                                <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
+                                    No Image
+                                </div>
                             @endif
-                        </div>
+                        </a>
 
                         <div class="flex-grow text-center sm:text-right w-full sm:w-auto">
-                            <h3 class="text-lg font-bold text-gray-900 mb-1">{{ $item->product->name }}</h3>
-                            <p class="text-gray-500 text-sm font-semibold">سعر الوحدة: ${{ number_format($item->product->price, 2) }}</p>
+                            <h3>
+                                <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block text-xl font-bold text-gray-800 hover:underline">{{ $item->product->name }}</a>
+                            </h3>
+                            <p class="text-gray-500 text-sm mb-2 overflow-hidden">
+                                {{ $item->product->description ? \Illuminate\Support\Str::limit($item->product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
+                            </p>
+                            <p class="text-gray-500 text-sm font-semibold">سعر الوحدة: ${{ number_format($item->price, 2) }}</p>
                         </div>
 
                         <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto mt-4 sm:mt-0 border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100">
