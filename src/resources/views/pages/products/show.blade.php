@@ -41,7 +41,7 @@ new class extends Component
         }">
         <div class="lg:col-span-7 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-4">
             @if($product->media->count() > 0)
-                <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden relative border border-gray-100 aspect-square flex items-center justify-center cursor-crosshair"
+                <div class="flex-1 bg-gray-50 max-h-[500px] rounded-xl overflow-hidden relative border border-gray-100 aspect-square flex items-center justify-center cursor-crosshair"
                      x-data="zoomLens()"
                      @mousemove="onMove($event)"
                      @mouseleave="active = false"
