@@ -53,8 +53,8 @@ new class extends Component
             @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
             @if(request('min_price')) <input type="hidden" name="min_price" value="{{ request('min_price') }}"> @endif
             @if(request('max_price')) <input type="hidden" name="max_price" value="{{ request('max_price') }}"> @endif
-            <div class="relative max-lg:flex-grow">
-                <span class="absolute start-3 top-3">🔍</span>
+            <div class="relative max-lg:grow">
+                <span class="absolute inset-s-3 top-3">🔍</span>
                 <input type="text" name="search" value="{{ request('search') }}" 
                        class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-100 rounded-xl focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm" 
                        placeholder="عن ماذا تبحث ؟">
@@ -75,7 +75,7 @@ new class extends Component
         <!-- filters -->
         <div x-data="{ showFilters: false }" 
              @toggle-filters.window="showFilters = !showFilters"
-             class="lg:col-span-1 sticky top-[5rem] h-max z-10 transition-all duration-300 bg-white max-lg:pb-6 max-lg:shadow-md max-lg:-mx-4 max-lg:px-4"
+             class="lg:col-span-1 sticky top-20 h-max z-10 transition-all duration-300 bg-white max-lg:pb-6 max-lg:shadow-md max-lg:-mx-4 max-lg:px-4"
              :class="showFilters ? 'block' : 'hidden lg:block'">
             <form action="{{ route('shop.products') }}" method="GET" class="flex flex-col gap-8">
                 @if(request('search')) 
@@ -102,7 +102,7 @@ new class extends Component
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button type="submit" class="flex-grow bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95">
+                    <button type="submit" class="grow bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95">
                        تحديث
                     </button>
                 </div>

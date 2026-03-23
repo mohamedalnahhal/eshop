@@ -46,7 +46,7 @@ new class extends Component
             @endif
         </div>
     </a>
-    <div class="p-5 flex flex-col flex-grow">
+    <div class="p-5 flex flex-col grow">
         <h2>
             <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-gray-800 hover:underline">{{ $product->name }}</a>
         </h2>

@@ -41,7 +41,7 @@ new class extends Component
         }">
         <div class="lg:col-span-7 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-4">
             @if($product->media->count() > 0)
-                <div class="flex-1 bg-gray-50 max-h-[500px] rounded-xl overflow-hidden relative border border-gray-100 aspect-square flex items-center justify-center cursor-crosshair"
+                <div class="flex-1 bg-gray-50 max-h-125 rounded-xl overflow-hidden relative border border-gray-100 aspect-square flex items-center justify-center cursor-crosshair"
                      x-data="zoomLens()"
                      @mousemove="onMove($event)"
                      @mouseleave="active = false"
@@ -49,7 +49,7 @@ new class extends Component
 
                     <img :src="activeImage"
                          alt="{{ $product->name }}"
-                         class="max-w-full max-h-[500px] object-contain"
+                         class="max-w-full max-h-125 object-contain"
                          x-ref="img" />
 
                     <div x-show="active"
@@ -71,10 +71,10 @@ new class extends Component
                     </div>
                 </div>
                 @if($product->media->count() > 1)
-                    <div class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[500px] custom-scrollbar pb-2 pr-2">
+                    <div class="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-125 custom-scrollbar pb-2 pr-2">
                         @foreach($product->media as $media)
                             <button @click="activeImage = '{{ asset('storage/' . $media->file_path) }}'" 
-                                    class="relative flex-shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-300"
+                                    class="relative shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-300"
                                     :class="activeImage === '{{ asset('storage/' . $media->file_path) }}' ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:border-blue-200'">
                                 <img src="{{ asset('storage/' . $media->file_path) }}" class="w-full h-full object-cover"/>
                             </button>

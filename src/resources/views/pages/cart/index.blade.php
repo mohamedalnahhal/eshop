@@ -54,7 +54,7 @@ new class extends Component
                     
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition">
                         <div class="flex flex-row gap-4">
-                            <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block relative overflow-hidden bg-[#f8fafc] w-24 h-24 flex-shrink-0 bg-gray-100 rounded-xl flex items-center justify-center">
+                            <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block relative overflow-hidden w-24 h-24 bg-gray-100 rounded-xl items-center justify-center">
                                 @php
                                     $ImagePath = $item->product->media->first()?->file_path;
                                 @endphp
@@ -67,7 +67,7 @@ new class extends Component
                                 @endif
                             </a>
 
-                            <div class="flex-grow w-full w-auto">
+                            <div class="grow w-full">
                                 <h3>
                                     <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block text-xl font-bold text-gray-800 hover:underline">{{ $item->product->name }}</a>
                                 </h3>
