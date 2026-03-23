@@ -14,14 +14,16 @@
 </head>
 <body class="bg-gray-50">
 
-<header class="container mb-6 pt-6 sm:pt-10 flex flex-row items-center justify-between">
+<header class="container mb-10 pt-8 lg:pt-10 flex flex-row gap-8 max-lg:gap-6 items-center justify-between">
     <div class="flex flex-col items-center">
-        <div class="flex flex-row gap-4">
-            <img class="h-8" src="{{ tenant('logo_url')? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
-            <h1 class="text-4xl font-extrabold text-gray-900">{{ tenant('name') }}</h1>
-        </div>
+        <a class="flex flex-row gap-2" href="{{route('shop.index')}}">
+            <img class="h-10" src="{{ tenant('logo_url')? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
+            <h1 class="text-4xl text-nowrap font-extrabold text-gray-900">{{ tenant('name') }}</h1>
+        </a>
     </div>
     
+    {{ $header ?? '' }}
+
     <livewire:cart-icon />
 </header>
 @if(session('success'))

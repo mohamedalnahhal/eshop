@@ -21,6 +21,23 @@ new class extends Component
     }
 };
 ?>
+
+<x-slot name="header">
+    <div class="grow hidden lg:block">
+        <form action="{{ route('shop.products') }}" method="GET">
+            @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+            @if(request('min_price')) <input type="hidden" name="min_price" value="{{ request('min_price') }}"> @endif
+            @if(request('max_price')) <input type="hidden" name="max_price" value="{{ request('max_price') }}"> @endif
+            <div class="relative">
+                <span class="absolute inset-s-3 top-3 opacity-50">🔍</span>
+                <input type="text" name="search" value="{{ request('search') }}" 
+                       class="w-full px-3 pr-10 py-3 bg-white border border-gray-300 shadow-sm shadow-gray-400/5 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all" 
+                       placeholder="عن ماذا تبحث ؟">
+            </div>
+        </form>
+    </div>
+</x-slot>
+
 <x-slot name="top">
     <x-breadcrumbs :links="[
             'المنتجات' => null,
@@ -31,7 +48,7 @@ new class extends Component
     <div x-data="{ filtersOpen: false }" 
         @toggle-filters.window="filtersOpen = !filtersOpen"
         :class="filtersOpen ? 'bg-white' : 'bg-white/50 backdrop-blur-md'"
-        class="py-4 sticky top-0 z-50 w-full">
+        class="py-4 sticky top-0 z-50 w-full lg:hidden">
         <form action="{{ route('shop.products') }}" method="GET" class="container max-lg:flex max-lg:flex-row max-lg:gap-4">
             @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
             @if(request('min_price')) <input type="hidden" name="min_price" value="{{ request('min_price') }}"> @endif
