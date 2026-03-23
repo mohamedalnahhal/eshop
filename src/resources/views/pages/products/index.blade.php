@@ -22,6 +22,12 @@ new class extends Component
 };
 ?>
 <x-slot name="top">
+    <x-breadcrumbs :links="[
+            'المنتجات' => null,
+    ]" />
+
+    <h1 class="container text-2xl font-bold text-gray-600 mb-2">تصفح جميع منتجاتنا</h1>
+
     <div x-data="{ filtersOpen: false }" 
         @toggle-filters.window="filtersOpen = !filtersOpen"
         :class="filtersOpen ? 'bg-white' : 'bg-white/50 backdrop-blur-md'"

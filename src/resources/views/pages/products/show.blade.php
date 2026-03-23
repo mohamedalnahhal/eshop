@@ -24,12 +24,14 @@ new class extends Component
 };
 ?>
 
+<x-slot name="top">
+    <x-breadcrumbs :links="[
+        'المنتجات' => route('shop.products'),
+        'تفاصيل المنتج' => null,
+    ]" />
+</x-slot>
+
 <div>
-<div class="mb-8">
-    <a href="{{ route('shop.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg transition">
-        <span>&rarr;</span> متابعة التسوق
-    </a>
-</div>
 
 <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-12">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" 
