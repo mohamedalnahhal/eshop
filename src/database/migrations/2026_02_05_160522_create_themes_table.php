@@ -15,8 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 100); 
             $table->jsonb('palette'); 
-            $table->string('font', 100); 
-            $table->string('icon_style', 50);
+            $table->string('font', 100);
             $table->timestamps();
         });
     }

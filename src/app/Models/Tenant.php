@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
+use App\Enums\UserRole;
 
 class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains;
 
-    protected $fillable = ['name', 'subdomain', 'status'];
+    protected $fillable = ['name', 'status'];
 
     public function users()
     {
@@ -20,10 +22,25 @@ class Tenant extends BaseTenant
         ->withTimestamps();
     }
 
+    public function owner()
+    {
+        return $this->users()->wherePivot('role', UserRole::TENANT_OWNER);
+    }
+
     protected $casts = [
         'status' => TenantStatus::class,
     ];
 
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'name',
+            'status',
+        ];
+    }
+
+    public function domain() { return $this->hasOne(Domain::class); }
     public function products() { return $this->hasMany(Product::class); }
     public function orders() { return $this->hasMany(Order::class); }
     public function locations() { return $this->hasMany(Location::class); }

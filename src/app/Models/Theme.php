@@ -9,7 +9,7 @@ class Theme extends Model
 {
     use HasUuids;
 
-    protected $fillable = ['name', 'palette', 'font', 'icon_style'];
+    protected $fillable = ['name', 'palette', 'font'];
 
     protected $casts = [
         'palette' => 'array',
