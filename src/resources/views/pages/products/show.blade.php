@@ -41,10 +41,31 @@ new class extends Component
         }">
         <div class="lg:col-span-7 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-4">
             @if($product->media->count() > 0)
-                <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden relative group aspect-square flex items-center justify-center border border-gray-50">
-                    <img :src="activeImage" 
-                         alt="{{ $product->name }}" 
-                         class="max-w-full max-h-[500px] object-contain transition duration-700 ease-in-out transform group-hover:scale-110"/>
+                <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden relative border border-gray-100 aspect-square flex items-center justify-center cursor-crosshair"
+                     x-data="zoomLens()"
+                     @mousemove="onMove($event)"
+                     @mouseleave="active = false"
+                     x-ref="container">
+
+                    <img :src="activeImage"
+                         alt="{{ $product->name }}"
+                         class="max-w-full max-h-[500px] object-contain"
+                         x-ref="img" />
+
+                    <div x-show="active"
+                         class="absolute pointer-events-none rounded-full border-2 border-white shadow-lg overflow-hidden"
+                         :style="`
+                           width: ${lensW}px;
+                           height: ${lensH}px;
+                           left: ${lx}px;
+                           top: ${ly}px;
+                           background-image: url(${activeImage});
+                           background-repeat: no-repeat;
+                           background-size: ${bgW}px ${bgH}px;
+                           background-position: ${bgX}px ${bgY}px;
+                         `">
+                    </div>
+
                     <div class="absolute top-4 right-4">
                         <span class="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-sm border border-gray-100">تكبير 🔍</span>
                     </div>
@@ -163,3 +184,46 @@ new class extends Component
     </div>
 </div>
 </div>
+
+<script>
+    function zoomLens() {
+      return {
+        active: false,
+        lx: 0, ly: 0,
+        lensW: 150, lensH: 150,
+        bgX: 0, bgY: 0, bgW: 0, bgH: 0,
+        zoom: 3,
+
+        onMove(e) {
+          this.active = true;
+          const img = this.$refs.img;
+          const rect = this.$refs.container.getBoundingClientRect();
+
+          const cx = e.clientX - rect.left;
+          const cy = e.clientY - rect.top;
+
+          // clamp lens inside container
+          this.lx = Math.max(0, Math.min(cx - this.lensW / 2, rect.width  - this.lensW));
+          this.ly = Math.max(0, Math.min(cy - this.lensH / 2, rect.height - this.lensH));
+
+          // actual rendered size of image (object-contain adds letterboxing)
+          const scale = Math.min(rect.width / img.naturalWidth, rect.height / img.naturalHeight);
+          const rendW = img.naturalWidth  * scale;
+          const rendH = img.naturalHeight * scale;
+
+          // image offset inside container (centered)
+          const offX = (rect.width  - rendW) / 2;
+          const offY = (rect.height - rendH) / 2;
+
+          // scale up the rendered image by zoom factor
+          this.bgW = rendW * this.zoom;
+          this.bgH = rendH * this.zoom;
+
+          // position so the zoomed region is centered under the cursor
+          this.bgX = -((cx - offX) * this.zoom - this.lensW / 2);
+          this.bgY = -((cy - offY) * this.zoom - this.lensH / 2);
+        }
+      }
+    }
+</script>
+<script src="alpinejs"></script>
