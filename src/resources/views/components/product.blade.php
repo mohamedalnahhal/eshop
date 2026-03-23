@@ -25,16 +25,18 @@ new class extends Component
 
 <div class="group bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.03)] overflow-hidden border border-gray-50 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] hover:-translate-y-2">
     <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block relative overflow-hidden bg-[#f8fafc]">
-        @php
-            $ImagePath = $product->media->first()?->file_path;
-        @endphp
-        @if($ImagePath)
-            <img src="{{ asset('storage/' . $ImagePath) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
-        @else
-            <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
-                No Image
-            </div>
-        @endif
+        <div class="aspect-[1/1]">
+            @php
+                $ImagePath = $product->media->first()?->file_path;
+            @endphp
+            @if($ImagePath)
+                <img src="{{ asset('storage/' . $ImagePath) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+            @else
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
+                    No Image
+                </div>
+            @endif
+        </div>
         <!-- first category -->
         <div class="absolute top-5 right-5 flex flex-col gap-2">
             @if($product->categories->isNotEmpty())
