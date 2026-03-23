@@ -66,17 +66,17 @@ new class extends Component
                 </div>
             @endif
         </div>
-        <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 justify-center">
+        <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 h-full justify-between">
    
             @if($product->category)
-                <span class="text-sm font-bold text-blue-500 tracking-wider mb-2">
+                <span class="text-sm font-bold text-blue-500 tracking-wider">
                     {{ $product->category->name }}
                 </span>
             @endif
 
-            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">{{ $product->name }}</h1>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">{{ $product->name }}</h1>
             
-            <div class="flex items-center gap-4 mb-8">
+            <div class="flex items-center gap-4">
                 <div class="text-5xl font-black text-blue-600">
                     ${{ number_format($product->price, 2) }}
                 </div>
@@ -91,7 +91,7 @@ new class extends Component
                 @endif
             </div>
 
-            <div class="mb-8">
+            <div>
                 <h3 class="text-lg font-bold mb-2 text-gray-800">وصف المنتج:</h3>
                 <p class="text-gray-600 leading-relaxed">
                     {{ $product->description ?? 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
