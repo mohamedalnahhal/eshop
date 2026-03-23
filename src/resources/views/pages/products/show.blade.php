@@ -33,13 +33,13 @@ new class extends Component
 
 <div>
 
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-12">
+<div class="mb-12">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" 
         x-data="{ 
            activeImage: '{{ $product->media->first() ? asset('storage/' . $product->media->first()->file_path) : 'https://via.placeholder.com/600x600?text=No+Image' }}',
            activeTab: 'details'
         }">
-        <div class="lg:col-span-7 bg-white p-6 rounded-xl m-6 shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-6">
+        <div class="lg:col-span-7 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-4">
             @if($product->media->count() > 0)
                 <div class="flex-1 bg-gray-50 rounded-xl overflow-hidden relative group aspect-square flex items-center justify-center border border-gray-50">
                     <img :src="activeImage" 
@@ -67,7 +67,7 @@ new class extends Component
                 </div>
             @endif
         </div>
-        <div class="lg:col-span-5 p-8 md:p-12 flex flex-col gap-6 h-full justify-start">
+        <div class="lg:col-span-5 py-2 flex flex-col gap-6 h-full justify-start">
    
             @if($product->categories->isNotEmpty())
                 <span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm border border-white/50 uppercase">
@@ -100,7 +100,7 @@ new class extends Component
             </div>
 
             <div class="mt-12">
-                <button wire:click="addToCart" class="w-full bg-blue-600 text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
+                <button wire:click="addToCart" {{ $product->stock == 0 ? 'disabled' : '' }} class="w-full bg-blue-600 text-white disabled:bg-gray-300 disabled:text-gray-700 text-lg font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition not-disabled:shadow-lg not-disabled:hover:shadow-xl flex justify-center items-center gap-2 disabled:cursor-not-allowed">
                     إضافة للسلة 🛒
                 </button>
             </div>
@@ -117,7 +117,7 @@ new class extends Component
             @forelse($product->reviews ?? [] as $review)
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-lg">{{ $review->customer_name }}</h4>
+                        <h4 class="font-bold text-lg">{{ $review->user->name }}</h4>
                         <div class="text-yellow-400 text-lg">
                             @for($i = 1; $i <= 5; $i++)
                                 <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>

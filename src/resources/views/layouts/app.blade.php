@@ -14,13 +14,12 @@
 </head>
 <body class="bg-gray-50">
 
-<header class="container mb-6 pt-6 sm:pt-10 flex flex-row-reverse items-center justify-between">
+<header class="container mb-6 pt-6 sm:pt-10 flex flex-row items-center justify-between">
     <div class="flex flex-col items-center">
         <div class="flex flex-row gap-4">
-            <h1 class="text-4xl font-extrabold text-gray-900">{{ tenant('name') }}</h1>
             <img class="h-8" src="{{ tenant('logo_url')? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
+            <h1 class="text-4xl font-extrabold text-gray-900">{{ tenant('name') }}</h1>
         </div>
-        <p class="text-lg text-gray-600 mt-2">تصفح جميع منتجاتنا</p>
     </div>
     
     <livewire:cart-icon />
