@@ -55,22 +55,27 @@ new class extends Component
         </p>
         
         <div class="mt-auto flex flex-col gap-3">
-            <span class="text-2xl font-bold text-green-600 border-b border-gray-100 pb-2 mb-1 block text-center">
-                ${{ number_format($product->price, 2) }}
-            </span>
-            @if($product->stock > 0)
-                <div class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-bold">
-                    متاح : ({{ $product->stock }}) 🟢
-                </div>
-            @else
-                <div class="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm font-bold">
-                    نفذ من المتجر
-                </div>
-            @endif
+            <div class="flex flex-row items-center gap-4">
+                <span class="text-2xl font-bold text-green-600">
+                    ${{ number_format($product->price, 2) }}
+                </span>
+                @if($product->stock > 0)
+                    <div class="w-fit bg-green-100 text-green-700 px-2 py-0.5 rounded-md text-sm font-bold">
+                        متوفر ({{ $product->stock }})
+                    </div>
+                @else
+                    <div class="w-fit bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md text-sm font-bold">
+                        نفذ
+                    </div>
+                @endif
+            </div>
+            <div class="border-b border-gray-200 pb-4 mb-1">
+                <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
+            </div>
             
             <div class="flex gap-2">
                 <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
-                class="flex-1 text-center bg-gray-100 text-gray-800 px-2 py-2 rounded-lg hover:bg-gray-200 transition shadow-sm font-bold text-sm" wire:navigate>
+                class="flex-1 text-center bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-sm font-bold text-sm" wire:navigate>
                     عرض
                 </a>
 
