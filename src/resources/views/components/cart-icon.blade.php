@@ -2,22 +2,26 @@
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Computed;
 use App\Services\CartService;
 
 new class extends Component
 {
-    public int $count = 0;
+    protected CartService $service;
 
-    public function mount()
+    public function boot(CartService $service)
     {
-        $this->updateCartCount();
+        $this->service = $service;
+    }
+
+    #[Computed]
+    public function count()
+    {
+        return $this->service->getCount();
     }
 
     #[On('cart-updated')] 
-    public function updateCartCount()
-    {
-        $this->count = app(CartService::class)->getCount();
-    }
+    public function updateCartCount() {}
 };
 ?>
 
@@ -26,6 +30,14 @@ new class extends Component
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
     <span class="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-        {{ $count }} 
+        {{ $this->count }} 
     </span>
 </a>
+
+@script
+<script>
+    document.addEventListener('livewire:navigated', () => {
+        $wire.$refresh(); 
+    });
+</script>
+@endscript

@@ -44,7 +44,34 @@ class CartService
         }
     }
 
-    public function remove(string $cartItemId): void
+    public function incrementQuantity(string $cartItemId, int $amount = 1)
+    {
+        $cart = $this->getCart();
+
+        if ($cart) {
+            $cart->items()->where('id', $cartItemId)->increment('quantity', $amount);
+        }
+    }
+
+    public function decrementQuantity(string $cartItemId, int $amount = 1)
+    {
+        $cart = $this->getCart();
+
+        if (!$cart) return;
+
+        $cartItem = $cart->items()->find($cartItemId);
+
+        if ($cartItem) {
+            if ($cartItem->quantity > $amount) {
+                $cartItem->decrement('quantity', $amount);
+            }
+            else {
+                $this->deleteItem($cartItemId);
+            }
+        }
+    }
+
+    public function deleteItem(string $cartItemId): void
     {
         $cart = $this->getCart();
 
