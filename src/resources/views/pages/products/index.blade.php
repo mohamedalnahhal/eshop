@@ -145,13 +145,13 @@ new class extends Component
                         <input
                             wire:model.live.debounce.400ms="search"
                             type="text"
-                            class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm shadow-gray-400/5"
+                            class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm shadow-gray-400/10"
                             placeholder="عن ماذا تبحث ؟"
                         />
                     </div>
                     <button type="button"
                             @click="$dispatch('toggle-filters')"
-                            class="flex items-center justify-center px-4 bg-white/50 backdrop-blur-md border border-gray-100 rounded-xl text-gray-600 focus:ring-4 focus:ring-blue-50 transition-all shadow-sm">
+                            class="flex items-center justify-center px-4 bg-white/50 backdrop-blur-md border border-gray-300 rounded-xl text-gray-600 focus:ring-4 focus:ring-blue-50 transition-all shadow-sm shadow-gray-400/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
