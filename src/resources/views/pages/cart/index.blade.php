@@ -117,9 +117,9 @@ new class extends Component
                     </div>
                 </div>
 
-                <button class="w-full bg-blue-600 text-white text-lg font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
+                <x-primary-button>
                     <span>إتمام الطلب للدفع</span> 💳
-                </button>
+                </x-primary-button>
             </div>
 
         </div>

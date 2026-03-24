@@ -214,12 +214,11 @@ new class extends Component
                     </select>
                 </div>
                 <div class="flex gap-3">
-                    <button
+                    <x-primary-button
                         wire:click="clearFilters"
                         wire:loading.attr="disabled"
                         wire:target="clearFilters"
-                        class="grow bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2">
-
+                        class="grow">
                         <span wire:loading.remove wire:target="clearFilters">مسح الفلاتر</span>
 
                         <div wire:loading wire:target="clearFilters">
@@ -228,7 +227,7 @@ new class extends Component
                                 جاري المسح...
                             </span>
                         </div>
-                    </button>
+                    </x-primary-button>
                 </div>
             </div>
         </div>
