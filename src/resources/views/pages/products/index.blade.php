@@ -101,7 +101,12 @@ new class extends Component
 <div>
     <template x-teleport="#header-search-portal">
         <div class="relative">
-            <span class="absolute inset-s-3 top-3 opacity-50">🔍</span>
+            <span class="absolute inset-s-3 top-3 opacity-50" wire:loading.remove wire:target="search">🔍</span>
+    
+            <div wire:loading wire:target="search" class="absolute inset-s-3 top-3.5 z-10">
+                <x-spinner class="h-5 w-5 text-blue-600" stroke-width="3" />
+            </div>
+
             <input 
                 wire:model.live.debounce.400ms="search"
                 type="text"
@@ -116,7 +121,8 @@ new class extends Component
                 <h1 class="text-2xl font-bold text-gray-600">تصفح جميع منتجاتنا</h1>
                 <select
                     wire:model.live="sortBy"
-                    class="px-3 py-2 hidden sm:block bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600">
+                    wire:loading.attr="disabled"
+                    class="px-3 py-2 hidden sm:block bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
                     <option value="latest">الأحدث</option>
                     <option value="price_asc">السعر: من الأقل</option>
                     <option value="price_desc">السعر: من الأعلى</option>
@@ -130,11 +136,16 @@ new class extends Component
                 class="py-4 sticky top-0 z-50 w-full lg:hidden">
                 <div class="container flex flex-row gap-4">
                     <div class="relative grow">
-                        <span class="absolute inset-s-3 top-3">🔍</span>
+                        <span class="absolute inset-s-3 top-3" wire:loading.remove wire:target="search">🔍</span>
+                        
+                        <div wire:loading wire:target="search" class="absolute inset-s-3 top-3.5 z-10">
+                            <x-spinner class="h-5 w-5 text-blue-600" stroke-width="3" />
+                        </div>
+
                         <input
                             wire:model.live.debounce.400ms="search"
                             type="text"
-                            class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-100 rounded-xl focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm"
+                            class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm shadow-gray-400/5"
                             placeholder="عن ماذا تبحث ؟"
                         />
                     </div>
@@ -161,7 +172,8 @@ new class extends Component
                     <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">الاقسام</label>
                     <select
                         wire:model.live="categoryId"
-                        class="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600">
+                        wire:loading.attr="disabled"
+                        class="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
                         <option value="">كل المنتجات</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -173,7 +185,9 @@ new class extends Component
                         السعر (ريال)
                     </label>
 
-                    <div wire:key="slider-{{ $categoryId ?? 'all' }}-{{ $minPrice }}-{{ $maxPrice }}-{{ $boundMin }}-{{ $boundMax }}"
+                    <div
+                        wire:loading.class="opacity-50 pointer-events-none"
+                        wire:key="slider-{{ $categoryId ?? 'all' }}-{{ $minPrice }}-{{ $maxPrice }}-{{ $boundMin }}-{{ $boundMax }}"
                         @class(['opacity-40 pointer-events-none grayscale' => $isEmpty, 'transition-all duration-300 px-4' => true])>
                         <x-range-slider
                             :bound-min="$boundMin"
@@ -191,7 +205,8 @@ new class extends Component
                     <label class="block text-xs font-black text-blue-900/40 uppercase mr-1 mb-2">ترتيب حسب</label>
                     <select
                         wire:model.live="sortBy"
-                        class="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600">
+                        wire:loading.attr="disabled" 
+                        class="w-full px-3 py-2 bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
                         <option value="latest">الأحدث</option>
                         <option value="price_asc">السعر: من الأقل</option>
                         <option value="price_desc">السعر: من الأعلى</option>
@@ -201,25 +216,45 @@ new class extends Component
                 <div class="flex gap-3">
                     <button
                         wire:click="clearFilters"
-                        class="grow bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95">
-                        مسح الفلاتر
+                        wire:loading.attr="disabled"
+                        wire:target="clearFilters"
+                        class="grow bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-xl shadow-blue-100 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2">
+
+                        <span wire:loading.remove wire:target="clearFilters">مسح الفلاتر</span>
+
+                        <div wire:loading wire:target="clearFilters">
+                            <span class="flex flex-row flex-nowrap items-center gap-2">
+                                <x-spinner class="h-4 w-4" />
+                                جاري المسح...
+                            </span>
+                        </div>
                     </button>
                 </div>
             </div>
         </div>
         <div class="lg:col-span-3 flex flex-col">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @forelse($products as $product)
-                    <livewire:listing-product :product="$product" :key="'product-'.$product->id.'-'.request('page', 1)" />
-                @empty
-                    <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-                        <p class="text-2xl font-bold text-gray-400">لا توجد منتجات متوفرة حالياً.</p>
-                    </div>
-                @endforelse
+            <div wire:loading.delay class="w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @for ($i = 0; $i < 6; $i++)
+                        <x-listing-product-skeleton />
+                    @endfor
+                </div>
             </div>
-
-            <div class="mt-12 flex justify-center">
-                {{ $products->links() }}
+        
+            <div wire:loading.remove.delay>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @forelse($products as $product)
+                        <livewire:listing-product :product="$product" :key="'product-'.$product->id.'-'.request('page', 1)" />
+                    @empty
+                        <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+                            <p class="text-2xl font-bold text-gray-400">لا توجد منتجات متوفرة حالياً.</p>
+                        </div>
+                    @endforelse
+                </div>
+            
+                <div class="mt-12 flex justify-center">
+                    {{ $products->links() }}
+                </div>
             </div>
         </div>
     </div>
