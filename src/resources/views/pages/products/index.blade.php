@@ -208,7 +208,7 @@ new class extends Component
         <div class="lg:col-span-3 flex flex-col">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($products as $product)
-                    <livewire:product :product="$product" :key="'product-'.$product->id.'-'.request('page', 1)" />
+                    <livewire:listing-product :product="$product" :key="'product-'.$product->id.'-'.request('page', 1)" />
                 @empty
                     <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
                         <p class="text-2xl font-bold text-gray-400">لا توجد منتجات متوفرة حالياً.</p>
