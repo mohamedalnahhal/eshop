@@ -95,7 +95,8 @@ new class extends Component
             'المنتجات' => null,
     ]" />
 
-    <div id="top-search-portal"></div>
+    <div id="top-title-portal"></div>
+    <div id="top-search-portal" class="sticky top-0 z-50"></div>
 </x-slot>
 
 <div>
@@ -115,48 +116,47 @@ new class extends Component
         </div>
     </template>
 
+    <template x-teleport="#top-title-portal">
+        <div class="container flex flex-row justify-between mb-2">
+            <h1 class="text-2xl font-bold text-gray-600">تصفح جميع منتجاتنا</h1>
+            <select
+                wire:model.live="sortBy"
+                wire:loading.attr="disabled"
+                class="px-3 py-2 hidden sm:block bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                <option value="latest">الأحدث</option>
+                <option value="price_asc">السعر: من الأقل</option>
+                <option value="price_desc">السعر: من الأعلى</option>
+                <option value="top_rated">الأعلى تقييماً</option>
+            </select>
+        </div>
+    </template>
     <template x-teleport="#top-search-portal">
-        <div class="w-full">
-            <div class="container flex flex-row justify-between mb-2">
-                <h1 class="text-2xl font-bold text-gray-600">تصفح جميع منتجاتنا</h1>
-                <select
-                    wire:model.live="sortBy"
-                    wire:loading.attr="disabled"
-                    class="px-3 py-2 hidden sm:block bg-white border border-gray-100 rounded-lg focus:ring-4 focus:ring-blue-50 outline-none cursor-pointer shadow-sm appearance-none text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <option value="latest">الأحدث</option>
-                    <option value="price_asc">السعر: من الأقل</option>
-                    <option value="price_desc">السعر: من الأعلى</option>
-                    <option value="top_rated">الأعلى تقييماً</option>
-                </select>
-            </div>
-    
-            <div x-data="{ filtersOpen: false }" 
-                @toggle-filters.window="filtersOpen = !filtersOpen"
-                :class="filtersOpen ? 'bg-white' : 'bg-white/50 backdrop-blur-md'"
-                class="py-4 sticky top-0 z-50 w-full lg:hidden">
-                <div class="container flex flex-row gap-4">
-                    <div class="relative grow">
-                        <span class="absolute inset-s-3 top-3" wire:loading.remove wire:target="search">🔍</span>
+        <div x-data="{ filtersOpen: false }" 
+            @toggle-filters.window="filtersOpen = !filtersOpen"
+            :class="filtersOpen ? 'bg-white' : 'bg-white/50 backdrop-blur-md'"
+            class="py-4 w-full lg:hidden">
+            <div class="container flex flex-row gap-4">
+                <div class="relative grow">
+                    <span class="absolute inset-s-3 top-3" wire:loading.remove wire:target="search">🔍</span>
                         
                         <div wire:loading wire:target="search" class="absolute inset-s-3 top-3.5 z-10">
-                            <x-spinner class="h-5 w-5 text-blue-600" stroke-width="3" />
-                        </div>
-
-                        <input
-                            wire:model.live.debounce.400ms="search"
-                            type="text"
-                            class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm shadow-gray-400/10"
-                            placeholder="عن ماذا تبحث ؟"
-                        />
+                        <x-spinner class="h-5 w-5 text-blue-600" stroke-width="3" />
                     </div>
-                    <button type="button"
-                            @click="$dispatch('toggle-filters')"
-                            class="flex items-center justify-center px-4 bg-white/50 backdrop-blur-md border border-gray-300 rounded-xl text-gray-600 focus:ring-4 focus:ring-blue-50 transition-all shadow-sm shadow-gray-400/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                        </svg>
-                    </button>
+
+                    <input
+                        wire:model.live.debounce.400ms="search"
+                        type="text"
+                        class="w-full px-3 pr-10 py-3 bg-white/50 backdrop-blur-md border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-50 outline-none transition-all shadow-sm shadow-gray-400/10"
+                        placeholder="عن ماذا تبحث ؟"
+                    />
                 </div>
+                <button type="button"
+                        @click="$dispatch('toggle-filters')"
+                        class="flex items-center justify-center px-4 bg-white/50 backdrop-blur-md border border-gray-300 rounded-xl text-gray-600 focus:ring-4 focus:ring-blue-50 transition-all shadow-sm shadow-gray-400/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                </button>
             </div>
         </div>
     </template>
@@ -165,7 +165,7 @@ new class extends Component
         <!-- filters -->
         <div x-data="{ showFilters: false }" 
              @toggle-filters.window="showFilters = !showFilters"
-             class="lg:col-span-1 sticky top-4 h-max z-10 transition-all duration-300 bg-white max-lg:pb-6 max-lg:shadow-md max-lg:-mx-4 max-lg:px-4"
+             class="lg:col-span-1 sticky top-20 lg:top-4 h-max z-10 transition-all duration-300 bg-white max-lg:pb-6 max-lg:-mx-4 max-lg:px-4"
              :class="showFilters ? 'block' : 'hidden lg:block'">
              <div class="flex flex-col gap-8">
                 <div>
