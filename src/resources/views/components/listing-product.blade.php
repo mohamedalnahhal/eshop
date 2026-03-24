@@ -50,9 +50,9 @@ new class extends Component
         <h2>
             <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-gray-800 hover:underline">{{ $product->name }}</a>
         </h2>
-        <p class="text-gray-500 text-sm mb-4 overflow-hidden">
-            {{ $product->description ? \Illuminate\Support\Str::limit($product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
-        </p>
+        <div class="mb-4">
+            <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
+        </div>
         
         <div class="mt-auto flex flex-col gap-3">
             <div class="flex flex-row items-center gap-4">
@@ -69,9 +69,10 @@ new class extends Component
                     </div>
                 @endif
             </div>
-            <div class="border-b border-gray-200 pb-4 mb-1">
-                <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
-            </div>
+
+            <p class="text-gray-500 text-sm border-b border-gray-200 pb-4 mb-1 overflow-hidden">
+                {{ $product->description ? Str::limit($product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
+            </p>
             
             <div class="flex gap-2">
                 <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
