@@ -124,7 +124,7 @@ new class extends Component
 
         </div>
     @else
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-16 text-center max-w-2xl mx-auto mt-10">
+        <div class="p-16 text-center max-w-2xl mx-auto mt-10">
             <div class="text-7xl mb-6 opacity-80">🛒</div>
             <h2 class="text-2xl font-bold text-gray-800 mb-4">سلتك فارغة تماماً!</h2>
             <p class="text-gray-500 mb-8 text-lg">يبدو أنك لم تقم بإضافة أي منتجات رائعة إلى سلتك حتى الآن.</p>
