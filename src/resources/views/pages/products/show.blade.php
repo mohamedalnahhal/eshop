@@ -2,11 +2,48 @@
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Models\Review;
 use App\Services\CartService;
+use App\Services\ReviewService;
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component
 {
-    public $product;
+    use WithPagination;
+
+    public Product $product;
+
+    // Review form state
+    public int $rating = 0;
+    public string $comment = '';
+    public ?string $editingReviewId = null;
+    public string $reviewSort = 'latest';
+
+    protected function rules()
+    {
+        return [
+            'rating'  => 'required|integer|between:1,5',
+            'comment' => 'nullable|string|max:1000',
+        ];
+    }
+
+    public function mount(string $id)
+    {
+        $this->product = Product::with(['categories', 'media', 'reviews.user'])->findOrFail($id);
+
+        if (Auth::check()) {
+            $existing = Review::where('user_id', Auth::id())
+                ->where('product_id', $this->product->id)
+                ->first();
+
+            if ($existing) {
+                $this->editingReviewId = $existing->id;
+                $this->rating  = $existing->rating;
+                $this->comment = $existing->comment ?? '';
+            }
+        }
+    }
 
     public function addToCart(CartService $cartService)
     {
@@ -17,9 +54,69 @@ new class extends Component
         session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح! 🛒');
     }
 
-    public function mount($id)
+    public function submitReview(ReviewService $service)
     {
-        $this->product = Product::with('category', 'reviews')->findOrFail($id);
+        $this->validate();
+
+        if ($this->editingReviewId) {
+            $review = Review::findOrFail($this->editingReviewId);
+            $service->update($review, $this->rating, $this->comment ?: null);
+            session()->flash('review_message', 'تم تحديث تقييمك!');
+        } else {
+            $service->submit($this->product->id, $this->rating, $this->comment ?: null);
+            session()->flash('review_message', 'تم إرسال تقييمك!');
+        }
+
+        $this->product->refresh();
+    }
+
+    public function deleteReview(ReviewService $service)
+    {
+        $review = Review::findOrFail($this->editingReviewId);
+        $service->delete($review);
+
+        $this->editingReviewId = null;
+        $this->rating  = 0;
+        $this->comment = '';
+        $this->product->refresh();
+
+        session()->flash('review_message', 'تم حذف تقييمك.');
+    }
+
+    public function vote(int $reviewId, bool $isHelpful, ReviewService $service)
+    {
+        abort_if(!Auth::check(), 403);
+
+        $existing = ReviewVote::where('user_id', Auth::id())
+            ->where('review_id', $reviewId)->first();
+
+        if ($existing && $existing->is_helpful === $isHelpful) {
+            $service->removeVote($reviewId);
+        } else {
+            $service->vote($reviewId, $isHelpful);
+        }
+    }
+
+    public function updatedReviewSort(): void { $this->resetPage(); }
+
+    public function render(ReviewService $service)
+    {
+        $reviewQuery = Review::where('product_id', $this->product->id)->with(['user', 'votes']);
+
+        $reviews = (match($this->reviewSort) {
+            'highest' => $reviewQuery->orderByDesc('rating'),
+            'lowest'  => $reviewQuery->orderBy('rating'),
+            'helpful' => $reviewQuery->withCount(['votes as helpful_count' => fn($q) => $q->where('is_helpful', true)])->orderByDesc('helpful_count'),
+            default   => $reviewQuery->latest(),
+        })->paginate(5);
+
+        return view('pages.products.show', [
+            // 'canReview' => Auth::check() && $service->hasPurchased($this->product->id),
+            'canReview' => true,
+            'reviews' => $reviews,
+            'avgRating' => $this->product->avg_rating,
+            'totalReviews' => Review::where('product_id', $this->product->id)->count(),
+        ]);
     }
 };
 ?>
@@ -34,10 +131,10 @@ new class extends Component
 <div>
 
 <div class="mb-12">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" 
-        x-data="{ 
-           activeImage: '{{ $product->media->first() ? asset('storage/' . $product->media->first()->file_path) : 'https://via.placeholder.com/600x600?text=No+Image' }}',
-           activeTab: 'details'
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+        x-data="{
+            activeImage: '{{ $product->media->first() ? asset('storage/' . $product->media->first()->file_path) : 'https://via.placeholder.com/600x600?text=No+Image' }}',
+            activeTab: 'details'
         }">
         <div class="lg:col-span-7 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row-reverse gap-4">
             @if($product->media->count() > 0)
@@ -97,7 +194,26 @@ new class extends Component
             @endif
 
             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">{{ $product->name }}</h1>
-            
+
+            @if($totalReviews > 0)
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-0.5">
+                        @for($i = 1; $i <= 5; $i++)
+                            @php
+                                $fill = min(1, max(0, $avgRating - ($i - 1)));
+                                $percent = round($fill * 100);
+                            @endphp
+                            <span class="relative inline-block text-3xl leading-none">
+                                <span class="text-gray-300">★</span>
+                                <span class="absolute inset-0 overflow-hidden text-yellow-400"
+                                      style="width: {{ $percent }}%">★</span>
+                            </span>
+                        @endfor
+                    </div>
+                    <span class="text-gray-500">({{ $totalReviews }} تقييم)</span>
+                </div>
+            @endif
+
             <div class="flex items-center gap-4">
                 <div class="text-5xl font-black text-blue-600">
                     ${{ number_format($product->price, 2) }}
@@ -125,28 +241,60 @@ new class extends Component
                     إضافة للسلة 🛒
                 </button>
             </div>
-
         </div>
     </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
     <div class="lg:col-span-2">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-300 pb-4">آراء الزبائن ({{ $product->reviews ? $product->reviews->count() : 0 }})</h2>
-        
-        <div class="space-y-6">
-            @forelse($product->reviews ?? [] as $review)
+        <div class="flex items-center justify-between border-b border-gray-300 pb-4 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">
+                آراء الزبائن ({{ $totalReviews }})
+            </h2>
+            <select wire:model.live="reviewSort"
+                    class="text-sm border border-gray-100 rounded-lg px-3 py-1.5 outline-none focus:ring-4 focus:ring-blue-50 shadow-sm bg-white text-gray-600">
+                <option value="latest">الأحدث</option>
+                <option value="highest">الأعلى تقييماً</option>
+                <option value="lowest">الأدنى تقييماً</option>
+                <option value="helpful">الأكثر إفادة</option>
+            </select>
+        </div>
+
+        <div class="space-y-4">
+            @forelse($reviews as $review)
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex justify-between items-center mb-3">
                         <h4 class="font-bold text-lg">{{ $review->user->name }}</h4>
-                        <div class="text-yellow-400 text-lg">
+                        <div class="flex text-lg">
                             @for($i = 1; $i <= 5; $i++)
                                 <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">★</span>
                             @endfor
                         </div>
                     </div>
-                    <p class="text-gray-600 italic">"{{ $review->comment ?? 'لم يترك تعليقاً.' }}"</p>
-                    <span class="text-xs text-gray-400 mt-4 block">{{ $review->created_at->diffForHumans() }}</span>
+
+                    @if($review->comment)
+                        <p class="text-gray-600">{{ $review->comment }}</p>
+                    @endif
+
+                    <div class="flex items-center justify-between mt-4">
+                        <span class="text-xs text-gray-400">{{ $review->created_at->locale('ar')->diffForHumans() }}</span>
+
+                        @auth
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <span>مفيد؟</span>
+                                <button wire:click="vote({{ $review->id }}, true)"
+                                        class="flex items-center gap-1 px-2 py-1 rounded-lg transition hover:bg-green-50
+                                               {{ $review->userVote() === true ? 'text-green-600 font-bold' : '' }}">
+                                    👍 {{ $review->helpfulCount() }}
+                                </button>
+                                <button wire:click="vote({{ $review->id }}, false)"
+                                        class="flex items-center gap-1 px-2 py-1 rounded-lg transition hover:bg-red-50
+                                               {{ $review->userVote() === false ? 'text-red-500 font-bold' : '' }}">
+                                    👎
+                                </button>
+                            </div>
+                        @endauth
+                    </div>
                 </div>
             @empty
                 <div class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200">
@@ -154,33 +302,78 @@ new class extends Component
                 </div>
             @endforelse
         </div>
+
+        <div class="mt-6">{{ $reviews->links() }}</div>
     </div>
 
     <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 h-fit">
-        <h3 class="text-xl font-bold text-gray-900 mb-6 text-center">أضف تقييمك</h3>
-        <form action="{{ route('shop.product.review.store', ['id' => $product->id]) }}" method="POST">
-            @csrf
+        <h3 class="text-xl font-bold text-gray-900 mb-6 text-center">
+            {{ $editingReviewId ? 'تعديل تقييمك' : 'أضف تقييمك' }}
+        </h3>
 
-            <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 mb-2">التقييم <span class="text-red-500">*</span></label>
-                <select name="rating" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                    <option value="5">5 نجوم - ممتاز ⭐️⭐️⭐️⭐️⭐️</option>
-                    <option value="4">4 نجوم - جيد جداً ⭐️⭐️⭐️⭐️</option>
-                    <option value="3">3 نجوم - متوسط ⭐️⭐️⭐️</option>
-                    <option value="2">نجمتان - مقبول ⭐️⭐️</option>
-                    <option value="1">نجمة واحدة - سيء ⭐️</option>
-                </select>
+        @if(session('review_message'))
+            <div class="bg-green-100 text-green-700 px-4 py-2 rounded-lg mb-4 text-sm font-medium">
+                {{ session('review_message') }}
             </div>
+        @endif
 
-            <div class="mb-6">
-                <label class="block text-sm font-bold text-gray-700 mb-2">رأيك (اختياري)</label>
-                <textarea name="comment" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="اكتب رأيك في المنتج هنا..."></textarea>
-            </div>
+        @auth
+            @if($canReview)
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">
+                        التقييم <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex gap-1" x-data="{ hovered: 0 }">
+                        @for($i = 1; $i <= 5; $i++)
+                            <button
+                                wire:click="{{ $i }} === $wire.rating ? $set('rating', 0) : $set('rating', {{ $i }})"
+                                @mouseenter="hovered = {{ $i }}"
+                                @mouseleave="hovered = 0"
+                                :class="{{ $i }} <= $wire.rating? 'text-yellow-300' :
+                                    (hovered >= {{ $i }} ? 'text-gray-400'
+                                    : 'text-gray-300')"
+                                class="text-3xl transition hover:scale-110 cursor-pointer">
+                                ★
+                            </button>
+                        @endfor
+                    </div>
+                    @error('rating')
+                        <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition shadow-md">
-                إرسال التقييم
-            </button>
-        </form>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">رأيك (اختياري)</label>
+                    <textarea wire:model="comment" rows="4"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="اكتب رأيك في المنتج هنا..."></textarea>
+                </div>
+
+                    <div class="flex gap-2">
+                        <button wire:click="submitReview"
+                                class="grow bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition shadow-md">
+                            {{ $editingReviewId ? 'تحديث التقييم' : 'إرسال التقييم' }}
+                        </button>
+
+                    @if($editingReviewId)
+                        <button wire:click="deleteReview"
+                                wire:confirm="هل تريد حذف تقييمك؟"
+                                class="bg-red-500 text-white font-bold px-4 py-3 rounded-lg hover:bg-red-600 transition">
+                            🗑
+                        </button>
+                    @endif
+                </div>
+            @else
+                <p class="text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
+                    يمكن فقط للمشترين الذين أتموا الشراء كتابة تقييم.
+                </p>
+            @endif
+        @else
+            <p class="text-center text-sm text-gray-500">
+                <a href="" class="text-blue-600 underline font-medium">سجّل دخولك</a>
+                لترك تقييم.
+            </p>
+        @endauth
     </div>
 </div>
 </div>
@@ -226,4 +419,3 @@ new class extends Component
       }
     }
 </script>
-<script src="alpinejs"></script>

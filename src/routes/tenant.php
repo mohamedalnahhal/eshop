@@ -22,7 +22,6 @@ Route::middleware([
 
     Route::livewire('/products', 'pages::products.index')->name('shop.products');
     Route::livewire('/product/{id}', 'pages::products.show')->name('shop.product.show');
-    Route::post('/product/{id}/review', [ProductsController::class, 'storeReview'])->name('shop.product.review.store');
 
     Route::livewire('/cart', 'pages::cart.index')->name('shop.cart');
 });

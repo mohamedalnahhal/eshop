@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->decimal('avg_rating', 3, 2)->default(0)->after('price');
+            $table->unsignedInteger('reviews_count')->default(0);
+            $table->unsignedBigInteger('rating_sum')->default(0);
         });
     }
 
@@ -23,6 +25,8 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('avg_rating');
+            $table->dropColumn('reviews_count');
+            $table->dropColumn('rating_sum');
         });
     }
 };

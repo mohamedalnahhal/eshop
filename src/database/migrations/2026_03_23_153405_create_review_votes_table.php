@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('review_votes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid("user_id")->constrained()->cascadeOnDelete();
-            $table->unsignedTinyInteger('rating');
-            $table->text('comment')->nullable();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('review_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_helpful');
             $table->timestamps();
-
-            $table->unique(['user_id', 'product_id']);
+        
+            $table->unique(['user_id', 'review_id']);
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('review_votes');
     }
 };
