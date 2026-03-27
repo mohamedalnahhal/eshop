@@ -216,7 +216,7 @@ new class extends Component
                 <div class="flex gap-3">
                     <x-primary-button
                         wire:click="clearFilters"
-                        wire:loading.attr="disabled"
+                        wire:loading.class="opacity-75 pointer-events-none"
                         wire:target="clearFilters"
                         class="grow">
                         <span wire:loading.remove wire:target="clearFilters">مسح الفلاتر</span>
