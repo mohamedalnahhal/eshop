@@ -80,9 +80,20 @@ new class extends Component
                     عرض
                 </a>
 
-                <button wire:click="addToCart" class="w-full bg-blue-600 text-white text-sm font-bold px-2 py-2 cursor-pointer rounded-lg hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex justify-center items-center gap-2">
-                    السلة 🛒
-                </button>
+                <x-primary-button
+                    wire:click="addToCart"
+                    wire:loading.class="opacity-75 pointer-events-none"
+                    wire:target="addToCart"
+                    class="text-sm cursor-pointer px-2 py-2">
+                    <span wire:loading.remove wire:target="addToCart">السلة 🛒</span>
+
+                    <div wire:loading wire:target="addToCart">
+                        <span class="flex flex-row flex-nowrap items-center gap-2">
+                            <x-spinner class="h-4 w-4" />
+                            جاري الإضافة...
+                        </span>
+                    </div>
+                </x-primary-button>
             </div>
         </div>
     </div>

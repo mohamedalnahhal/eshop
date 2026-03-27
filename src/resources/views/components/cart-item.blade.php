@@ -36,17 +36,37 @@
     </div>
 
     <div class="sm:pe-2 shrink-0 flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-4 sm:pt-0 border-t border-gray-200 sm:border-none">
-        <button wire:click="deleteItem('{{ $item->id }}')" type="button" class="border border-gray-200 hover:border-red-200 hover:text-red-700 hover:bg-red-100 p-2 rounded-lg transition cursor-pointer" title="حذف المنتج من السلة">
-            🗑️
-            <span class="sm:hidden">حذف</span>
+        <button wire:click="deleteItem('{{ $item->id }}')"
+            wire:loading.attr="disabled"
+            wire:target="deleteItem('{{ $item->id }}')"
+            type="button"
+            class="border border-gray-200 hover:border-red-200 hover:text-red-700 hover:bg-red-100 p-2 rounded-lg transition cursor-pointer" title="حذف المنتج من السلة">
+            <span wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">🗑️</span>
+            
+            <x-spinner wire:loading wire:target="deleteItem('{{ $item->id }}')" class="h-5 w-5" />
+
+            <span class="sm:hidden" wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">حذف</span>
+            <span class="sm:hidden text-red-600 font-bold" wire:loading wire:target="deleteItem('{{ $item->id }}')">جاري...</span>
         </button>
         <div class="flex flex-row sm:flex-col gap-1">
-            <button wire:click="incrementItem('{{ $item->id }}')" class="rounded-full max-sm:w-10 sm:h-6 font-bold border border-gray-200 hover:bg-gray-200 hover:border-gray-300 transition active:scale-95 cursor-pointer">+</button>
+            <button wire:click="incrementItem('{{ $item->id }}')" 
+                    wire:loading.attr="disabled"
+                    wire:target="incrementItem('{{ $item->id }}')"
+                    class="flex items-center justify-center rounded-full max-sm:w-10 sm:h-6 font-bold border border-gray-200 hover:bg-gray-200 hover:border-gray-300 transition active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <span wire:loading.remove wire:target="incrementItem('{{ $item->id }}')">+</span>
+                <x-spinner wire:loading wire:target="incrementItem('{{ $item->id }}')" class="h-3 w-3" />
+            </button>
             <div class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 sm:py-1 text-sm font-bold text-gray-700">
                 <span class="sm:hidden">الكمية : </span>
                 {{ $item->quantity }}
             </div>
-            <button wire:click="decrementItem('{{ $item->id }}')" class="rounded-full max-sm:w-10 sm:h-6 font-bold border border-gray-200 hover:bg-gray-200 hover:border-gray-300 transition active:scale-95 cursor-pointer">-</button>
+            <button wire:click="decrementItem('{{ $item->id }}')" 
+                    wire:loading.attr="disabled"
+                    wire:target="decrementItem('{{ $item->id }}')"
+                    class="flex items-center justify-center rounded-full max-sm:w-10 sm:h-6 font-bold border border-gray-200 hover:bg-gray-200 hover:border-gray-300 transition active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <span wire:loading.remove wire:target="decrementItem('{{ $item->id }}')">-</span>
+                <x-spinner wire:loading wire:target="decrementItem('{{ $item->id }}')" class="h-3 w-3" />
+            </button>
         </div>
     </div>
 </div>
