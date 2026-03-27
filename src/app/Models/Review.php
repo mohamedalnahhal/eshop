@@ -12,6 +12,11 @@ class Review extends Model
 
     protected $fillable = ['product_id', 'user_id', 'rating', 'comment'];
 
+    public function wasEdited()
+    {
+        return $this->updated_at->notEqualTo($this->created_at);
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
