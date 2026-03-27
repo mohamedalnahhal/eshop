@@ -15,11 +15,14 @@ class Product extends Model
     use HasUuids;
     use BelongsToTenant;
 
-    protected $fillable = ['name', 'price', 'description', 'stock', 'tenant_id'];
+    protected $fillable = ['name', 'price', 'avg_rating', 'description', 'stock', 'tenant_id', 'reviews_count', 'rating_sum'];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'avg_rating' => 'decimal:1',
         'stock' => 'integer',
+        'reviews_count' => 'integer',
+        'rating_sum' => 'integer',
     ];
 
     public function tenant(): BelongsTo 
@@ -27,18 +30,11 @@ class Product extends Model
         return $this->belongsTo(Tenant::class); 
     }
 
-    /**
-     * ✅ هذه الدالة هي الحل
-     * يجب أن يكون اسمها categories بالجمع ليتوقف الخطأ
-     */
     public function categories(): BelongsToMany 
     { 
         return $this->belongsToMany(Category::class, 'category_product'); 
     }
 
-    /**
-     * دالة للمفرد لضمان التوافق
-     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'id')->whereIn('id', function($query) {
