@@ -150,7 +150,7 @@ new class extends Component
     </div>
 </div>
 
-<livewire:product-reviews :product="$product"/>
+{{-- <livewire:product-reviews :product="$product"/> --}}
 
 @script
 <script>

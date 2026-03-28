@@ -13,7 +13,7 @@ class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains;
 
-    protected $fillable = ['name', 'status'];
+    protected $fillable = ['name', 'logo_url', 'status'];
 
     public function users()
     {
@@ -37,6 +37,7 @@ class Tenant extends BaseTenant
             'id',
             'name',
             'status',
+            'logo_url',
         ];
     }
 
@@ -49,4 +50,31 @@ class Tenant extends BaseTenant
     public function settings() { return $this->hasOne(TenantSetting::class); }
     public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
     public function payments() { return $this->hasMany(Payment::class); }
+
+    
+    public function resolvedTheme()
+    {
+        if ($this->settings?->theme) {
+            return $this->settings->theme;
+        }
+ 
+        $default = Theme::where('is_default', true)->first();
+        if ($default) {
+            return $default;
+        }
+ 
+        $new = new Theme();
+        $new->forceFill([
+            'name'      => 'System Default',
+            'icon_pack' => Theme::defaultIconPack(),
+            'currency'  => Theme::defaultCurrency(),
+            'palette'   => Theme::defaultPalette(),
+            'font'      => Theme::defaultFont(),
+            'buttons'   => Theme::defaultButtons(),
+            'glows'     => Theme::defaultGlows(),
+            'corners'   => Theme::defaultCorners(),
+        ]);
+ 
+        return $new;
+    }
 }

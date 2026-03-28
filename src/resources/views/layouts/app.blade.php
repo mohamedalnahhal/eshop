@@ -1,100 +1,145 @@
-<?php
-
-use Livewire\Component;
-
-new class extends Component
-{
-    // --- Store Info & Branding ---
-    public string $storeName;
-    public ?string $storeLogo;
-    public ?string $storeFavicon; 
-    public string $storeSlogan; 
-    public string $contactEmail;
-    public ?string $contactPhone;
-
-    // --- Colors ---
-    public string $primaryColor;
-    public string $secondaryColor;
-    public string $accentColor; 
-    public string $backgroundColor;
-    public string $textColor;
-    public string $navbarColor; 
-    public string $footerColor; 
-    public string $borderColor; 
-
-    // --- Typography ---
-    public string $primaryFontFamily;
-    public string $secondaryFontFamily;
-    public string $baseFontSize;
-    public string $h1FontSize; 
-    public string $primaryFontWeight; 
-    public string $headingFontWeight; 
-    public string $lineHeight;
-    public string $letterSpacing; 
-
-    // --- UI Elements ---
-    public string $buttonShapeClass;
-    public string $cardShapeClass;
-    public string $inputShapeClass;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="{{ tenant('logo_url')? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Tajawal', sans-serif; }</style>
-    <title>{{ $title ?? tenant('name') }}</title>
+
+    @php
+        $storeName = tenant('name') ?? '';
+        $storeLogo = tenant('logo_url');
+        $storeSlogan = tenant()->setting?->slogan;
+        $storeFavicon = tenant()->setting?->favicon_url;
+        $contactEmail = tenant()->setting?->contact_email;
+        $contactPhone = tenant()->setting?->contact_phone;
+        $theme = tenant()->resolvedTheme();
+
+        $font = $theme->resolvedFont();
+        $iconPack = $theme->resolvedIconPack();
+
+        $primaryFamily = explode(',', $font['primary_family'])[0];
+        $secondaryFamily = explode(',', $font['secondary_family'])[0];
+        $googleFamilies = array_unique([$primaryFamily, $secondaryFamily]);
+        $googleQuery = implode('&family=', array_map(
+            fn($f) => str_replace(' ', '+', trim($f)) . ':wght@400;600;700',
+            $googleFamilies
+        ));
+    @endphp
+
+    <title>{{ $title ?? ($storeName ?? 'Store') }}</title>
+    <link rel="icon" type="image/x-icon" 
+        href="{{ $storeFavicon ? 
+            asset('storage/' . $storeFavicon) : 
+            ($storeLogo ? asset('storage/' . $storeLogo) : asset('images/logo.svg')) }}"
+    >
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family={{ str_replace(' ', '+', explode(',', $primaryFontFamily)[0]) }}&family={{ str_replace(' ', '+', explode(',', $secondaryFontFamily)[0]) }}&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family={{ $googleQuery }}&display=swap" rel="stylesheet">
+    
+    @once
+    <style>
+        {{ $theme->toCssVars() }}
+    </style>
+    @endonce
 
     <style>
-        :root {
-            --color-primary: {{ $primaryColor }};
-            --color-secondary: {{ $secondaryColor }};
-            --color-accent: {{ $accentColor }};
-            --color-bg: {{ $backgroundColor }};
-            --color-text: {{ $textColor }};
-            --color-navbar: {{ $navbarColor }};
-            --color-footer: {{ $footerColor }};
-            --color-border: {{ $borderColor }};
-
-            --font-primary: {{ $primaryFontFamily }};
-            --font-secondary: {{ $secondaryFontFamily }};
-            --font-size-base: {{ $baseFontSize }};
-            --font-size-h1: {{ $h1FontSize }};
-            --font-weight-primary: {{ $primaryFontWeight }};
-            --font-weight-heading: {{ $headingFontWeight }};
-            --font-line-height: {{ $lineHeight }};
-            --font-letter-spacing: {{ $letterSpacing }};
-        }
-
-        .tenant-body {
+        *, *::before, *::after { box-sizing: border-box; }
+ 
+        body {
             font-family: var(--font-primary);
             font-size: var(--font-size-base);
-            font-weight: var(--font-weight-primary);
+            font-weight: var(--font-weight-base);
             color: var(--color-text);
             background-color: var(--color-bg);
-            line-height: var(--font-line-height);
-            letter-spacing: var(--font-letter-spacing);
+            line-height: var(--line-height);
+            letter-spacing: var(--letter-spacing);
         }
 
-        h1, h2, h3, h4, h5, h6, .font-heading {
+        h1, h2, h3, h4, h5, h6 {
             font-family: var(--font-secondary);
             font-weight: var(--font-weight-heading);
         }
 
-        .bg-navbar { background-color: var(--color-navbar); }
-        .bg-footer { background-color: var(--color-footer); }
-        .border-custom { border-color: var(--color-border); }
-        .text-primary-custom { color: var(--color-primary); }
-        .bg-primary-custom { background-color: var(--color-primary); }
-        .bg-accent-custom { background-color: var(--color-accent); }
+        .bg-navbar    { background-color: var(--color-navbar); box-shadow: var(--shadow-navbar); }
+        .bg-footer    { background-color: var(--color-footer); }
+        .bg-surface   { background-color: var(--color-surface); }
+        .border-theme { border-color: var(--color-border); }
+
+        .text-primary  { color: var(--color-primary) !important; }
+        .text-muted    { color: var(--color-text-muted) !important; }
+        .bg-primary    { background-color: var(--color-primary) !important; }
+        .bg-secondary  { background-color: var(--color-secondary) !important; }
+        .bg-accent     { background-color: var(--color-accent) !important; }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            padding: var(--btn-py) var(--btn-px);
+            font-weight: var(--btn-font-weight);
+            border-radius: var(--btn-radius);
+            box-shadow: var(--btn-shadow);
+            text-transform: var(--btn-uppercase);
+            cursor: pointer;
+            transition: opacity 0.15s, box-shadow 0.15s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: #fff;
+        }
+        .btn-accent {
+            background-color: var(--color-accent);
+            color: #fff;
+        }
+
+        .input {
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-input);
+            padding: 0.5rem 0.75rem;
+            font-family: var(--font-primary);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            background-color: var(--color-surface);
+            width: 100%;
+        }
+        .input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .modal-box {
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-modal);
+        }
+
+        .rounded-sm   { border-radius: var(--radius-sm); }
+        .rounded-md   { border-radius: var(--radius-md); }
+        .rounded-lg   { border-radius: var(--radius-lg); }
+        .rounded-xl   { border-radius: var(--radius-xl); }
+        .rounded-full { border-radius: var(--radius-full); }
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
