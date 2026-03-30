@@ -30,51 +30,51 @@ new class extends Component
 };
 ?>
 
-<div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
+<div class="card p-5">
     <div class="flex justify-between items-start mb-2 gap-2">
         <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
                 <img
                     src="{{ $review->user->avatar_url }}"
                     alt="{{ $review->user->username }}"
-                    class="w-6 h-6 rounded-full object-cover ring-2 ring-gray-100"
+                    class="w-6 h-6 rounded-full object-cover"
                 />
-                <h4 class="text-gray-900 leading-none">{{ $review->user->username }}</h4>
+                <h4 class="text-theme font-normal! leading-none">{{ $review->user->username }}</h4>
             </div>
             <x-simple-rating-stars :rating="$review->rating"/>
         </div>
-        <p class="text-sm text-gray-600">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
+        <p class="text-sm text-muted">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
     </div>
 
     @if($review->comment)
-        <p class="text-sm text-gray-600">{{ $review->comment }}</p>
+        <p class="text-sm text-muted">{{ $review->comment }}</p>
     @endif
 
     <div class="flex items-end justify-between mt-3">
         <div class="flex items-center gap-2">
-            <span class="text-xs text-gray-400">
+            <span class="text-xs text-muted">
                 {{ $review->created_at->locale(app()->getLocale())->diffForHumans() }}
             </span>
             @if($review->wasEdited())
-                <span class="text-xs text-gray-400">·</span>
-                <span class="text-xs text-gray-400 italic">
-                    تم التعديل {{ $review->edited_at->locale(app()->getLocale())->diffForHumans() }}
+                <span class="text-xs text-muted">·</span>
+                <span class="text-xs text-muted italic">
+                    تم التعديل {{ $review->updated_at->locale(app()->getLocale())->diffForHumans() }}
                 </span>
             @endif
         </div>
 
         @auth
         @if($canVote)
-            <div class="flex items-center gap-3 text-sm text-gray-500">
+            <div class="flex items-center gap-3 text-sm text-muted">
                 <span>مفيد؟</span>
                 <button wire:click="vote(true)"
-                        class="flex items-center gap-1 px-2 py-1 rounded-lg transition hover:bg-green-50
-                            {{ $review->userVote() === true ? 'text-green-600 font-bold' : '' }}">
+                        class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-success/10
+                            {{ $review->userVote() === true ? 'text-success font-bold' : '' }}">
                     👍
                 </button>
                 <button wire:click="vote(false)"
-                        class="flex items-center gap-1 px-2 py-1 rounded-lg transition hover:bg-red-50
-                            {{ $review->userVote() === false ? 'text-red-500 font-bold' : '' }}">
+                        class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-danger/10
+                            {{ $review->userVote() === false ? 'text-danger font-bold' : '' }}">
                     👎
                 </button>
             </div>

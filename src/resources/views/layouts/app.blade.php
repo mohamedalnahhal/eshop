@@ -139,28 +139,30 @@
  
     @livewireStyles
 </head>
-<body class="bg-gray-50">
+<body>
 
-<header class="container mb-10 pt-8 lg:pt-10 flex flex-row gap-8 max-lg:gap-6 items-center justify-between">
-    <div class="flex flex-col items-center">
-        <a class="flex flex-row gap-2" href="{{route('shop.index')}}">
-            <img class="h-10" src="{{ tenant('logo_url')? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
-            <h1 class="text-4xl text-nowrap font-extrabold text-gray-900">{{ tenant('name') }}</h1>
-        </a>
-    </div>
+<header class="w-full bg-navbar mb-6 pt-8 pb-6 lg:pt-10 lg:pb-8">
+    <div class="container flex flex-row gap-8 max-lg:gap-6 items-center justify-between">
+        <div class="flex flex-col items-center">
+            <a class="flex flex-row gap-2 items-center" href="{{ route('shop.index') }}">
+                <img class="h-10" src="{{ tenant('logo_url') ? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
+                <h1 class="text-4xl text-nowrap font-extrabold text-theme">{{ tenant('name') }}</h1>
+            </a>
+        </div>
     
-    {{ $header ?? '' }}
-
-    <livewire:cart-icon />
+        {{ $header ?? '' }}
+    
+        <livewire:cart-icon />
+    </div>
 </header>
 @if(session('success'))
-    <div class="container max-w-4xl bg-green-100 border border-green-400 text-green-700 py-3 rounded relative mb-6 text-center shadow-sm">
+    <div class="container max-w-4xl bg-green-100 border border-green-400 text-green-700 py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <strong class="font-bold">رائع!</strong>
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
 @endif
 @if(session('error'))
-    <div class="container max-w-4xl bg-red-100 border border-red-400 text-red-700 py-3 rounded relative mb-6 text-center shadow-sm">
+    <div class="container max-w-4xl bg-red-100 border border-red-400 text-red-700 py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <span class="block sm:inline">{{ session('error') }}</span>
     </div>
 @endif

@@ -86,32 +86,32 @@
     class="space-y-4 select-none"
     dir="ltr"
 >
-    <div class="flex items-center justify-between text-sm font-semibold text-gray-600" dir="rtl">
+    <div class="flex items-center justify-between text-sm font-semibold text-muted" dir="rtl">
         <span x-text="max + ' {{ $unit }}'"></span>
         <span x-text="min + ' {{ $unit }}'"></span>
     </div>
 
     <div class="relative flex items-center h-5" x-ref="track">
 
-        <div class="absolute inset-x-0 h-2 rounded-full bg-gray-200"></div>
+        <div class="absolute inset-x-0 h-2 rounded-full bg-surface-200"></div>
 
         <div
-            class="absolute h-2 rounded-full bg-blue-500 pointer-events-none"
+            class="absolute h-2 rounded-full bg-primary pointer-events-none"
             :style="`left: ${minPercent}%; right: ${100 - maxPercent}%`"
         ></div>
 
         <div
-            class="absolute w-5 h-5 bg-white border-2 border-blue-500 rounded-full shadow-md cursor-grab active:cursor-grabbing transition-transform hover:scale-110 active:scale-125"
+            class="absolute w-5 h-5 bg-bg border-2 border-primary rounded-full shadow-input cursor-grab active:cursor-grabbing transition-transform hover:scale-110 active:scale-125"
             :style="`left: calc(${minPercent}% - 10px)`"
-            :class="dragging === 'min' ? 'scale-125 border-blue-700' : ''"
+            :class="dragging === 'min' ? 'scale-125 border-primary/70' : ''"
             @mousedown="startDrag('min', $event)"
             @touchstart.prevent="startDrag('min', $event)"
         ></div>
 
         <div
-            class="absolute w-5 h-5 bg-white border-2 border-blue-500 rounded-full shadow-md cursor-grab active:cursor-grabbing transition-transform hover:scale-110 active:scale-125"
+            class="absolute w-5 h-5 bg-bg border-2 border-primary rounded-full shadow-input cursor-grab active:cursor-grabbing transition-transform hover:scale-110 active:scale-125"
             :style="`left: calc(${maxPercent}% - 10px)`"
-            :class="dragging === 'max' ? 'scale-125 border-blue-700' : ''"
+            :class="dragging === 'max' ? 'scale-125 border-primary/70' : ''"
             @mousedown="startDrag('max', $event)"
             @touchstart.prevent="startDrag('max', $event)"
         ></div>

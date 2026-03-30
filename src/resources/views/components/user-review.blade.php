@@ -65,27 +65,27 @@ new class extends Component
     'class' => ''
 ]) }}>
 @if($userReview && !$editing)
-<div class="bg-white rounded-xl border border-blue-100 shadow-sm p-5 ring-1 ring-blue-200">
+<div class="card p-5 outline-3 outline-primary/20 border-primary/30">
     <div class="flex justify-between items-start mb-2 gap-2">
         <div class="flex flex-col gap-2">
-            <div class="flex items-start gap-3">
+            <div class="flex items-center max-sm:items-start gap-2">
                 <img
                     src="{{ $userReview->user->avatar_url }}"
                     alt="{{ $userReview->user->username }}"
-                    class="w-6 h-6 rounded-full object-cover ring-2 ring-blue-100"
+                    class="w-6 h-6 rounded-theme-full object-cover"
                 />
-                <div class="flex flex-col gap-1">
-                    <h4 class="text-gray-900 leading-none">{{ $userReview->user->username }}</h4>
-                    <span class="w-fit text-xs bg-blue-50 text-blue-600 font-medium px-2 py-0.5 rounded-full">تقييمك</span>
+                <div class="flex flex-row gap-2 max-sm:flex-col max-sm:gap-1">
+                    <h4 class="text-theme font-normal! leading-none">{{ $userReview->user->username }}</h4>
+                    <span class="w-fit badge bg-primary/10 text-primary text-xs! font-medium!">تقييمك</span>
                 </div>
             </div>
             <x-simple-rating-stars :rating="$userReview->rating"/>
         </div>
 
         <div class="flex flex-row gap-3">
-            <p class="text-sm text-gray-600">{{ $userReview->helpfulCount() }} وجدوهُ مفيدًا</p>
+            <p class="text-sm text-muted">{{ $userReview->helpfulCount() }} وجدوهُ مفيدًا</p>
             <button wire:click="startEdit"
-                    class="p-1 -me-2 -mt-2 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition cursor-pointer"
+                    class="p-1 -me-2 -mt-2 rounded-icon hover:bg-primary/10 text-muted hover:text-primary! transition cursor-pointer"
                     title="تعديل تقييمك">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
                      viewBox="2 1 22 20" stroke="currentColor" stroke-width="2">
@@ -97,16 +97,16 @@ new class extends Component
     </div>
 
     @if($userReview->comment)
-        <p class="text-gray-600 text-sm">{{ $userReview->comment }}</p>
+        <p class="text-muted text-sm">{{ $userReview->comment }}</p>
     @endif
 
     <div class="flex items-center gap-2 mt-3">
-        <span class="text-xs text-gray-400">
+        <span class="text-xs text-muted">
             {{ $userReview->created_at->locale(app()->getLocale())->diffForHumans() }}
         </span>
         @if($userReview->wasEdited())
-            <span class="text-xs text-gray-400">·</span>
-            <span class="text-xs text-gray-400 italic">
+            <span class="text-xs text-muted">·</span>
+            <span class="text-xs text-muted italic">
                 تم التعديل {{ $userReview->updated_at->locale(app()->getLocale())->diffForHumans() }}
             </span>
         @endif
@@ -114,8 +114,8 @@ new class extends Component
 </div>
 
 @elseif($editing)
-<div class="bg-white rounded-2xl border border-blue-100 shadow-sm p-6 ring-1 ring-blue-200">
-    <h3 class="text-base font-bold text-gray-900 mb-4">تعديل تقييمك</h3>
+<div class="card p-5 outline-3 outline-primary/20 border-primary/30">
+    <h3 class="text-base font-bold text-theme mb-2">تعديل تقييمك</h3>
 
     <div class="mb-4">
         <div class="flex gap-1" x-data="{ hovered: 0 }">
@@ -124,15 +124,15 @@ new class extends Component
                     wire:click="{{ $i }} === $wire.rating ? $set('rating', 0) : $set('rating', {{ $i }})"
                     @mouseenter="hovered = {{ $i }}"
                     @mouseleave="hovered = 0"
-                    :class="{{ $i }} <= $wire.rating ? 'text-yellow-400' : (hovered >= {{ $i }} ? 'text-yellow-200' : 'text-gray-300')"
+                    :class="{{ $i }} <= $wire.rating ? 'text-gold' : (hovered >= {{ $i }} ? 'text-gold/50' : 'text-surface-300')"
                     class="text-3xl transition-transform hover:scale-110 cursor-pointer leading-none">★</button>
             @endfor
         </div>
-        @error('rating') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('rating') <span class="text-danger text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <textarea wire:model="comment" rows="3"
-              class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none text-sm mb-4"
+              class="input w-full resize-none text-sm mb-2"
               placeholder="اكتب رأيك في المنتج هنا..."></textarea>
 
     <div class="flex gap-2">
@@ -150,14 +150,14 @@ new class extends Component
             </div>
         </x-primary-button>
         <button wire:click="cancelEdit"
-                class="px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 bg-gray-100 hover:bg-gray-200 text-sm shadow-sm transition">
+                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-sm">
             إلغاء
         </button>
         <button wire:click="deleteReview(); $parent.loadStats?.(); $parent.$parent?.refreshReviews();"
                 wire:confirm="هل تريد حذف تقييمك؟"
                 wire:loading.class="opacity-75 pointer-events-none"
                 wire:target="deleteReview"
-                class="bg-red-500 text-white font-bold px-4 py-2.5 rounded-lg hover:bg-red-600 transition text-sm">
+                class="btn flex-1 text-center bg-danger hover:opacity-75! text-bg text-sm">
             <span wire:loading.remove wire:target="deleteReview">🗑</span>
             <x-spinner wire:loading wire:target="deleteReview" class="h-4 w-4" />
         </button>
@@ -165,11 +165,11 @@ new class extends Component
 </div>
 
 @else
-<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-    <h3 class="text-base font-bold text-gray-900 mb-4">أضف تقييمك</h3>
+<div class="card p-5">
+    <h3 class="text-base font-bold text-theme mb-2">أضف تقييمك</h3>
 
     @if(session('review_message'))
-        <div class="bg-green-100 text-green-700 px-4 py-2 rounded-lg mb-4 text-sm font-medium">
+        <div class="bg-success/10 text-success px-4 py-2 rounded-lg mb-4 text-sm font-medium">
             {{ session('review_message') }}
         </div>
     @endif
@@ -181,15 +181,15 @@ new class extends Component
                     wire:click="{{ $i }} === $wire.rating ? $set('rating', 0) : $set('rating', {{ $i }})"
                     @mouseenter="hovered = {{ $i }}"
                     @mouseleave="hovered = 0"
-                    :class="{{ $i }} <= $wire.rating ? 'text-yellow-400' : (hovered >= {{ $i }} ? 'text-yellow-200' : 'text-gray-300')"
+                    :class="{{ $i }} <= $wire.rating ? 'text-gold' : (hovered >= {{ $i }} ? 'text-gold/50' : 'text-surface-300')"
                     class="text-3xl transition-transform hover:scale-110 cursor-pointer leading-none">★</button>
             @endfor
         </div>
-        @error('rating') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('rating') <span class="text-danger text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <textarea wire:model="comment" rows="3"
-              class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none text-sm mb-4"
+              class="input w-full resize-none text-sm mb-2"
               placeholder="اكتب رأيك في المنتج هنا..."></textarea>
 
     <x-primary-button 

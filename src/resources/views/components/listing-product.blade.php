@@ -23,8 +23,8 @@ new class extends Component
 };
 ?>
 
-<div class="group bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.03)] overflow-hidden border border-gray-50 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(59,130,246,0.12)] hover:-translate-y-2">
-    <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block relative overflow-hidden bg-[#f8fafc]">
+<div class="group card overflow-hidden transition-all duration-500 hover:-translate-y-2">
+    <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block relative overflow-hidden">
         <div class="aspect-square">
             @php
                 $ImagePath = $product->media->first()?->file_path;
@@ -32,7 +32,7 @@ new class extends Component
             @if($ImagePath)
                 <img src="{{ asset('storage/' . $ImagePath) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
             @else
-                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
+                <div class="w-full h-full bg-surface-200 flex items-center justify-center text-muted font-bold">
                     No Image
                 </div>
             @endif
@@ -40,7 +40,7 @@ new class extends Component
         <!-- first category -->
         <div class="absolute top-5 right-5 flex flex-col gap-2">
             @if($product->categories->isNotEmpty())
-                <span class="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-2xl text-[10px] font-black text-blue-600 shadow-sm border border-white/50 uppercase">
+                <span class="badge bg-card-bg/90 backdrop-blur-md text-primary shadow-card border border-border-muted">
                     {{ $product->categories->first()->name }}
                 </span>
             @endif
@@ -48,35 +48,35 @@ new class extends Component
     </a>
     <div class="p-5 flex flex-col grow">
         <h2>
-            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-gray-800 hover:underline">{{ $product->name }}</a>
+            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-theme hover:underline">{{ $product->name }}</a>
         </h2>
         <div class="mb-4">
             <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
         </div>
         
         <div class="mt-auto flex flex-col gap-3">
-            <div class="flex flex-row items-center gap-4">
-                <span class="text-2xl font-bold text-green-600">
+            <div class="flex flex-row items-center gap-3">
+                <span class="text-2xl font-bold text-accent">
                     ${{ number_format($product->price, 2) }}
                 </span>
                 @if($product->stock > 0)
-                    <div class="w-fit bg-green-100 text-green-700 px-2 py-0.5 rounded-md text-sm font-bold">
+                    <div class="badge bg-success/10 text-success">
                         متوفر ({{ $product->stock }})
                     </div>
                 @else
-                    <div class="w-fit bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md text-sm font-bold">
+                    <div class="badge bg-warning/10 text-warning">
                         نفذ
                     </div>
                 @endif
             </div>
 
-            <p class="text-gray-500 text-sm border-b border-gray-200 pb-4 mb-1 overflow-hidden">
+            <p class="text-muted text-sm border-b border-border pb-4 mb-1 overflow-hidden">
                 {{ $product->description ? Str::limit($product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
             </p>
             
             <div class="flex gap-2">
                 <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
-                class="flex-1 text-center bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 transition shadow-sm font-bold text-sm" wire:navigate>
+                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-sm" wire:navigate>
                     عرض
                 </a>
 
@@ -84,6 +84,7 @@ new class extends Component
                     wire:click="addToCart"
                     wire:loading.class="opacity-75 pointer-events-none"
                     wire:target="addToCart"
+                    :disabled="$product->stock == 0"
                     class="text-sm cursor-pointer px-2 py-2">
                     <span wire:loading.remove wire:target="addToCart">السلة 🛒</span>
 

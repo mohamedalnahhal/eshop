@@ -73,13 +73,13 @@ new class extends Component
     </div>
 
     <div class="lg:col-span-2">
-        <div class="flex items-center justify-between border-b border-gray-300 pb-4 mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">آراء الزبائن</h2>
+        <div class="flex items-center justify-between border-b border-border pb-4 mb-6">
+            <h2 class="text-2xl font-bold text-theme">آراء الزبائن</h2>
             <div class="relative">
                 <select wire:model.live="reviewSort"
                         wire:loading.attr="disabled"
                         wire:target="reviewSort"
-                        class="text-sm border border-gray-100 rounded-lg px-3 py-1.5 outline-none focus:ring-4 focus:ring-blue-50 shadow-sm bg-white text-gray-600 disabled:opacity-50 disabled:cursor-wait transition-opacity">
+                        class="input hidden sm:block w-auto text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
                     <option value="latest">الأحدث</option>
                     <option value="highest">الأعلى تقييماً</option>
                     <option value="lowest">الأدنى تقييماً</option>
@@ -103,10 +103,10 @@ new class extends Component
                 <livewire:review-item :review="$review" :key="'review-'.$review->id"/>
             @empty
                 @if($userReview)
-                <p class="text-center py-10 text-gray-500">تقييمك هو الوحيد، شكراً</p>
+                <p class="text-center py-5 text-muted">تقييمك هو الوحيد، شكراً</p>
                 @else
-                <div class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                    <p class="text-gray-500">لا توجد تقييمات حتى الآن.</p>
+                <div class="text-center py-10 rounded-card border-2 border-dashed border-border">
+                    <p class="text-muted">لا توجد تقييمات حتى الآن.</p>
                 </div>
                 @endif
             @endforelse
