@@ -23,8 +23,70 @@
     --color-primary-800: var(--primary-800);
     --color-primary-900: var(--primary-900);
     --color-primary-950: var(--primary-950);
-}
 
+    --color-primary: var(--color-primary);
+    --color-secondary: var(--color-secondary);
+    --color-accent: var(--color-accent);
+    --color-on-primary: var(--color-on-primary);
+    --color-on-secondary: var(--color-on-secondary);
+    --color-on-accent: var(--color-on-accent);
+    --color-bg: var(--color-bg);
+    --color-card-bg: var(--color-card-bg);
+    --color-surface-100: var(--color-surface-100);
+    --color-surface-200: var(--color-surface-200);
+    --color-surface-300: var(--color-surface-300);
+    --color-text: var(--color-text);
+    --color-text-muted: var(--color-text-muted);
+    --color-navbar: var(--color-navbar);
+    --color-footer: var(--color-footer);
+    --color-border: var(--color-border);
+    --color-border-muted: var(--color-border-muted);
+    --color-border-input: var(--color-border-input);
+    --color-gold: var(--color-gold);
+    --color-on-gold:var(--color-on-gold);
+    --color-gold-surface:var(--color-gold-surface);
+    --color-success: var(--color-success);
+    --color-warning: var(--color-warning);
+    --color-danger: var(--color-danger);
+    --color-info: var(--color-info);
+  
+    --font-primary: var(--font-primary);
+    --font-secondary: var(--font-secondary);
+  
+    --text-base: var(--font-size-base);
+    --font-weight-base: var(--font-weight-base);
+    --font-weight-heading: var(--font-weight-heading);
+    --leading-base: var(--line-height);
+    --tracking-base: var(--letter-spacing);
+  
+    --spacing-btn-x: var(--btn-px);
+    --spacing-btn-y: var(--btn-py);
+  
+    --shadow-btn: var(--shadow-btn);
+    --shadow-glow: var(--shadow-glow);
+    --shadow-card: var(--shadow-card);
+    --shadow-input: var(--shadow-input);
+    --shadow-navbar: var(--shadow-navbar);
+    --shadow-modal: var(--shadow-modal);
+  
+    --radius-badge: var(--radius-badge);
+    --radius-model: var(--radius-model);
+    --radius-btn: var(--radius-btn);
+    --radius-cta: var(--radius-cta);
+    --radius-input: var(--radius-input);
+    --radius-input-full: var(--radius-input-full);
+    --radius-card: var(--radius-card);
+    --radius-icon: var(--radius-icon);
+
+    --radius-theme-sm: var(--radius-sm);
+    --radius-theme-md: var(--radius-md);
+    --radius-theme-lg: var(--radius-lg);
+    --radius-theme-xl: var(--radius-xl);
+    --radius-theme-2xl: var(--radius-2xl);
+    --radius-theme-3xl: var(--radius-3xl);
+    --radius-theme-4xl: var(--radius-4xl);
+    --radius-theme-full: var(--radius-full);
+  }
 
 .container {
     padding-left: calc(var(--spacing) * 6);

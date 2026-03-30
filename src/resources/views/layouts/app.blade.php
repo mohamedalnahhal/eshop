@@ -61,21 +61,15 @@
         }
 
         .bg-navbar    { background-color: var(--color-navbar); box-shadow: var(--shadow-navbar); }
-        .bg-footer    { background-color: var(--color-footer); }
-        .bg-surface   { background-color: var(--color-surface); }
         .border-theme { border-color: var(--color-border); }
-
-        .text-primary  { color: var(--color-primary) !important; }
-        .text-muted    { color: var(--color-text-muted) !important; }
-        .bg-primary    { background-color: var(--color-primary) !important; }
-        .bg-secondary  { background-color: var(--color-secondary) !important; }
-        .bg-accent     { background-color: var(--color-accent) !important; }
+        .text-theme  { color: var(--color-text); }
+        .text-muted    { color: var(--color-text-muted); }
 
         .card {
-            background-color: var(--color-surface);
-            border-radius: var(--radius-md);
+            background-color: var(--color-card-bg);
+            border-radius: var(--radius-card);
             box-shadow: var(--shadow-card);
-            border: 1px solid var(--color-border);
+            border: 1px solid var(--color-border-muted);
         }
 
         .btn {
@@ -85,61 +79,60 @@
             gap: 0.375rem;
             padding: var(--btn-py) var(--btn-px);
             font-weight: var(--btn-font-weight);
-            border-radius: var(--btn-radius);
-            box-shadow: var(--btn-shadow);
+            border-radius: var(--radius-btn);
+            box-shadow: var(--shadow-btn);
             text-transform: var(--btn-uppercase);
             cursor: pointer;
-            transition: opacity 0.15s, box-shadow 0.15s;
+            transition-property: all;
+            transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+            transition-duration: var(--tw-duration, var(--default-transition-duration));
         }
         .btn:hover { opacity: 0.9; }
+        .btn:active { scale: 0.95; }
         .btn-primary {
             background-color: var(--color-primary);
-            color: #fff;
+            color: var(--color-on-primary);
         }
         .btn-secondary {
             background-color: var(--color-secondary);
-            color: #fff;
+            color: var(--color-on-secondary);
         }
         .btn-accent {
             background-color: var(--color-accent);
-            color: #fff;
+            color: var(--color-on-accent);
         }
 
         .input {
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--color-border);
+            border-radius: var(--radius-input);
+            border: 1px solid var(--color-border-input);
             box-shadow: var(--shadow-input);
-            padding: 0.5rem 0.75rem;
-            font-family: var(--font-primary);
-            font-size: var(--font-size-base);
-            color: var(--color-text);
-            background-color: var(--color-surface);
-            width: 100%;
+            padding: var(--input-py) var(--input-px);
+            transition-property: all;
+            transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+            transition-duration: var(--tw-duration, var(--default-transition-duration));
         }
         .input:focus {
-            outline: none;
-            border-color: var(--color-primary);
+            border-color: var(--color-primary) !important;
+            outline-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
+            outline-width: 4px;
+            outline-style: solid;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.25rem 0.625rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.125rem 0.75rem;
+            border-radius: var(--radius-badge);
+            font-size: 0.875rem;
+            font-weight: 700;
         }
 
         .modal-box {
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-model);
             box-shadow: var(--shadow-modal);
         }
-
-        .rounded-sm   { border-radius: var(--radius-sm); }
-        .rounded-md   { border-radius: var(--radius-md); }
-        .rounded-lg   { border-radius: var(--radius-lg); }
-        .rounded-xl   { border-radius: var(--radius-xl); }
-        .rounded-full { border-radius: var(--radius-full); }
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

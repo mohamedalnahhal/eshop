@@ -16,6 +16,7 @@ class Theme extends Model
         'palette',
         'font',
         'buttons',
+        'inputs',
         'glows',
         'corners',
         'icon_pack',
@@ -27,6 +28,7 @@ class Theme extends Model
         'palette'    => 'array',
         'font'       => 'array',
         'buttons'    => 'array',
+        'inputs'    => 'array',
         'glows'      => 'array',
         'corners'    => 'array',
     ];
@@ -38,8 +40,6 @@ class Theme extends Model
     public static function defaultCurrency()
     {
         return [
-            'code'     => 'USD',
-            'symbol'   => '$',
             'position' => 'before',   // 'before' | 'after'
             'decimals' => 2,
         ];
@@ -48,19 +48,30 @@ class Theme extends Model
     public static function defaultPalette()
     {
         return [
-            'primary'     => '#4f46e5',
-            'secondary'   => '#7c3aed',
-            'accent'      => '#f59e0b',
+            'primary'     => '#155dfc',
+            'secondary'   => '#f3f4f6',
+            'accent'      => '#00a63e',
+            'on_primary'  => '#ffffff',
+            'on_secondary'=> '#1e2939',
+            'on_accent'   => '#ffffff',
             'background'  => '#ffffff',
-            'surface'     => '#f9fafb',
-            'text'        => '#111827',
-            'text_muted'  => '#6b7280',
+            'card_bg'     => '#ffffff',
+            'surface_100' => '#f3f4f6',
+            'surface_200' => '#e5e7eb',
+            'surface_300' => '#d1d5dc',
+            'text'        => '#1e2939',
+            'text_muted'  => '#6a7282',
             'navbar'      => '#ffffff',
             'footer'      => '#1f2937',
-            'border'      => '#e5e7eb',
-            'success'     => '#10b981',
-            'warning'     => '#f59e0b',
-            'danger'      => '#ef4444',
+            'border'      => '#d1d5dc',
+            'border_muted'=> '#f6f3f4',
+            'border_input'=> '#dadbdd',
+            'gold'        => '#fdc700',
+            'gold_surface'=> '#fff2c1',
+            'on_gold'     => '#c55100',
+            'success'     => '#00b420',
+            'warning'     => '#ee510d',
+            'danger'      => '#e7000b',
             'info'        => '#3b82f6',
         ];
     }
@@ -71,7 +82,6 @@ class Theme extends Model
             'primary_family'   => 'Tajawal, sans-serif',
             'secondary_family' => 'Tajawal, sans-serif',
             'base_size'        => '16px',
-            'h1_size'          => '2.25rem',
             'base_weight'      => '400',
             'heading_weight'   => '700',
             'line_height'      => '1.6',
@@ -82,21 +92,29 @@ class Theme extends Model
     public static function defaultButtons()
     {
         return [
-            'radius'      => '0.5rem',
             'padding_x'   => '1.25rem',
             'padding_y'   => '0.625rem',
-            'font_weight' => '600',
+            'font_weight' => '700',
             'uppercase'   => false,
-            'shadow'      => 'sm',        // 'none'|'sm'|'md'|'lg'
+        ];
+    }
+
+    public static function defaultInputs()
+    {
+        return [
+            'padding_x'   => '0.75rem',
+            'padding_y'   => '0.5rem',
+            'font_weight' => '700',
         ];
     }
  
     public static function defaultGlows()
     {
         return [
-            'card_shadow'   => '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+            'glow_shadow'   => '0 20px 25px -5px color-mix(in srgb, var(--color-primary) 10%, transparent), 0 8px 10px -6px color-mix(in srgb, var(--color-primary) 10%, transparent)',
+            'card_shadow'   => 'var(--shadow-sm)',
             'button_shadow' => '0 1px 2px rgba(0,0,0,0.08)',
-            'input_shadow'  => 'none',
+            'input_shadow'  => 'var(--shadow-sm)',
             'navbar_shadow' => '0 1px 4px rgba(0,0,0,0.06)',
             'modal_shadow'  => '0 20px 60px rgba(0,0,0,0.15)',
         ];
@@ -105,11 +123,23 @@ class Theme extends Model
     public static function defaultCorners()
     {
         return [
-            'sm'   => '0.25rem',
-            'md'   => '0.375rem',
-            'lg'   => '0.5rem',
-            'xl'   => '0.75rem',
-            'full' => '9999px',
+            'badge'         => '9999px',
+            'model'         => '0.5rem',
+            'btn'           => '0.75rem',
+            'cta'           => '9999px',
+            'input'         => '0.75rem',
+            'input-full'    => '9999px',
+            'card'          => '0.75rem',
+            'icon'          => '0.5rem',
+
+            'sm'            => '0.25rem',
+            'md'            => '0.375rem',
+            'lg'            => '0.5rem',
+            'xl'            => '0.75rem',
+            '2xl'           => '1rem',
+            '3xl'           => '1.5rem',
+            '4xl'           => '2rem',
+            'full'          => '9999px',
         ];
     }
  
@@ -137,6 +167,11 @@ class Theme extends Model
     {
         return array_merge(static::defaultButtons(), $this->buttons ?? []);
     }
+
+    public function resolvedInputs()
+    {
+        return array_merge(static::defaultInputs(), $this->inputs ?? []);
+    }
  
     public function resolvedGlows()
     {
@@ -158,34 +193,40 @@ class Theme extends Model
         $p  = $this->resolvedPalette();
         $f  = $this->resolvedFont();
         $b  = $this->resolvedButtons();
+        $i  = $this->resolvedInputs();
         $g  = $this->resolvedGlows();
         $c  = $this->resolvedCorners();
- 
-        $btnShadowMap = [
-            'none' => 'none',
-            'sm'   => '0 1px 2px rgba(0,0,0,.08)',
-            'md'   => '0 4px 6px rgba(0,0,0,.1)',
-            'lg'   => '0 10px 15px rgba(0,0,0,.12)',
-        ];
+
  
         $vars = [
-            // Palette
+            // palette
             '--color-primary'    => $p['primary'],
             '--color-secondary'  => $p['secondary'],
             '--color-accent'     => $p['accent'],
-            '--color-bg'         => $p['background'],
-            '--color-surface'    => $p['surface'],
+            '--color-on-primary'  => $p['on_primary'],
+            '--color-on-secondary'=> $p['on_secondary'],
+            '--color-on-accent'   => $p['on_accent'],
+            '--color-bg'          => $p['background'],
+            '--color-card-bg'     => $p['card_bg'],
+            '--color-surface-100'  => $p['surface_100'],
+            '--color-surface-200'  => $p['surface_200'],
+            '--color-surface-300'  => $p['surface_300'],
             '--color-text'       => $p['text'],
             '--color-text-muted' => $p['text_muted'],
             '--color-navbar'     => $p['navbar'],
             '--color-footer'     => $p['footer'],
             '--color-border'     => $p['border'],
+            '--color-border-muted'  => $p['border_muted'],
+            '--color-border-input'  => $p['border_input'],
+            '--color-gold'          => $p['gold'],
+            '--color-gold-surface'  => $p['gold_surface'],
+            '--color-on-gold'       => $p['on_gold'],
             '--color-success'    => $p['success'],
             '--color-warning'    => $p['warning'],
             '--color-danger'     => $p['danger'],
             '--color-info'       => $p['info'],
  
-            // Font
+            // font
             '--font-primary'        => $f['primary_family'],
             '--font-secondary'      => $f['secondary_family'],
             '--font-size-base'      => $f['base_size'],
@@ -194,27 +235,44 @@ class Theme extends Model
             '--line-height'         => $f['line_height'],
             '--letter-spacing'      => $f['letter_spacing'],
  
-            // Buttons
-            '--btn-radius'      => $b['radius'],
+            // buttons
             '--btn-px'          => $b['padding_x'],
             '--btn-py'          => $b['padding_y'],
             '--btn-font-weight' => $b['font_weight'],
-            '--btn-shadow'      => $btnShadowMap[$b['shadow']] ?? 'none',
             '--btn-uppercase'   => $b['uppercase'] ? 'uppercase' : 'none',
+
+            // inputs
+            '--input-px'          => $i['padding_x'],
+            '--input-py'          => $i['padding_y'],
+            '--input-font-weight' => $i['font_weight'],
  
-            // Glows / shadows
+            // glows / shadows
+            '--shadow-glow'   => $g['glow_shadow'],
             '--shadow-card'   => $g['card_shadow'],
             '--shadow-btn'    => $g['button_shadow'],
             '--shadow-input'  => $g['input_shadow'],
             '--shadow-navbar' => $g['navbar_shadow'],
             '--shadow-modal'  => $g['modal_shadow'],
  
-            // Corners / radius
-            '--radius-sm'   => $c['sm'],
-            '--radius-md'   => $c['md'],
-            '--radius-lg'   => $c['lg'],
-            '--radius-xl'   => $c['xl'],
-            '--radius-full' => $c['full'],
+            // corners / radius
+            '--radius-badge'        => $c['badge'],
+            '--radius-model'        => $c['model'],
+            '--radius-btn'          => $c['btn'],
+            '--radius-cta'          => $c['cta'], // call to action buttons / links
+            '--radius-input'        => $c['input'],
+            '--radius-input-full'   => $c['input-full'],
+            '--radius-card'         => $c['card'],
+            '--radius-icon'         => $c['icon'],
+
+            // raidus, overwrite default tailwindcss classes
+            '--radius-sm'           => $c['sm'],
+            '--radius-md'           => $c['md'],
+            '--radius-lg'           => $c['lg'],
+            '--radius-xl'           => $c['xl'],
+            '--radius-2xl'          => $c['2xl'],
+            '--radius-3xl'          => $c['3xl'],
+            '--radius-4xl'          => $c['4xl'],
+            '--radius-full'         => $c['full'],
         ];
  
         $lines = [':root {'];
