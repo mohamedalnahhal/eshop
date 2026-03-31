@@ -18,7 +18,7 @@ new class extends Component
 
         $this->dispatch('cart-updated');
 
-        session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح! 🛒');
+        session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح!');
     }
 };
 ?>
@@ -57,7 +57,7 @@ new class extends Component
         <div class="mt-auto flex flex-col gap-3">
             <div class="flex flex-row items-center gap-3">
                 <span class="text-2xl font-bold text-accent">
-                    ${{ number_format($product->price, 2) }}
+                    {{ tenant()->resolvedTheme()->formatPrice($product->price) }}
                 </span>
                 @if($product->stock > 0)
                     <div class="badge bg-success/10 text-success">

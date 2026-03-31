@@ -27,7 +27,7 @@ new class extends Component
 
         $this->dispatch('cart-updated');
 
-        session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح! 🛒');
+        session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح!');
     }
 };
 ?>
@@ -112,8 +112,8 @@ new class extends Component
             <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" size="large" />
 
             <div class="flex items-center gap-4">
-                <div class="text-5xl font-black text-primary">
-                    ${{ number_format($product->price, 2) }}
+                <div class="text-5xl font-black text-accent">
+                    {{ tenant()->resolvedTheme()->formatPrice($product->price) }}
                 </div>
                 @if($product->stock > 0)
                     <div class="badge bg-success/10 text-success">

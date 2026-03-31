@@ -33,6 +33,12 @@ class Theme extends Model
         'corners'    => 'array',
     ];
  
+    public static function getSymbol(string $currencyCode)
+    {
+        $formatter = new \NumberFormatter("en_US@currency={$currencyCode}", \NumberFormatter::CURRENCY);
+        return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
+    }
+
     // -------------------------------------------------------------------------
     // Defaults
     // -------------------------------------------------------------------------
@@ -285,20 +291,23 @@ class Theme extends Model
     }
  
     /**
-     * Format a money amount using this theme's currency config.
+     * Format a price amount using this theme's currency config.
      */
-    public function formatMoney(float $amount)
+    public function formatPrice(float $amount)
     {
         $c = $this->resolvedCurrency();
-        $formatted = number_format($amount, $c['decimals']);
- 
+        $code = $this->tenantSettings?->currency ?? 'USD';
+        $symbol = static::getSymbol($code);
+        $decimals = $c['decimals'] ?? 2;
+        $formatted = number_format($amount, $decimals);
+
         return $c['position'] === 'before'
-            ? $c['symbol'] . $formatted
-            : $formatted . ' ' . $c['symbol'];
+            ? $symbol . $formatted
+            : $formatted . ' ' . $symbol;
     }
  
     public function tenantSettings()
     {
-        return $this->hasMany(TenantSetting::class);
+        return $this->belongsTo(TenantSetting::class);
     }
 }

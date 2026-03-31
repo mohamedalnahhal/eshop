@@ -199,7 +199,7 @@ new class extends Component
                             :step="1"
                             from-model="minPrice"
                             to-model="maxPrice"
-                            unit="ريال"
+                            :unit="tenant()->setting?->currency ?? 'USD'"
                         />
                     </div>
                 </div>

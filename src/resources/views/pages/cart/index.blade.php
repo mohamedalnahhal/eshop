@@ -86,7 +86,9 @@ new class extends Component
                     @foreach($subtotals as $subtotal)
                         <div class="flex justify-between">
                             <span>المجموع الفرعي:</span>
-                            <span class="font-bold text-theme">${{ number_format($subtotal, 2) }}+</span>
+                            <span class="font-bold text-theme">
+                                {{ tenant()->resolvedTheme()->formatPrice($subtotal) }}+
+                            </span>
                         </div>
                     @endforeach
                     <div class="flex justify-between">
@@ -98,7 +100,9 @@ new class extends Component
                 <div class="border-t pt-4 mb-8 border-border">
                     <div class="flex justify-between items-center">
                         <span class="text-lg font-bold text-theme">الإجمالي الكلي:</span>
-                        <span class="text-2xl font-black text-accent">${{ number_format($totalPrice, 2) }}</span>
+                        <span class="text-2xl font-black text-accent">
+                            {{ tenant()->resolvedTheme()->formatPrice($totalPrice) }}
+                        </span>
                     </div>
                 </div>
 

@@ -27,9 +27,11 @@
             </p>
             <p>
                 <span class="text-xl font-black text-accent">
-                    ${{ number_format($subtotal, 2) }}
+                    {{ tenant()->resolvedTheme()->formatPrice($subtotal) }}
                 </span>
-                <span class="text-muted text-sm font-semibold whitespace-nowrap">سعر الوحدة: ${{ number_format($item->price, 2) }}</span>
+                <span class="text-muted text-sm font-semibold whitespace-nowrap">
+                    سعر الوحدة: {{ tenant()->resolvedTheme()->formatPrice($item->price) }}
+                </span>
             </p>
             
         </div>
