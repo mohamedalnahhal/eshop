@@ -139,8 +139,8 @@ new class extends Component
             class="py-4 w-full lg:hidden">
             <div class="container flex flex-row gap-4">
                 <div class="relative grow">
-                    <span class="absolute inset-s-5 top-3.5" wire:loading.remove wire:target="search">
-                        @icon('search', 'w-5 h-5 text-muted')
+                    <span class="absolute inset-s-5 top-3.5 z-50" wire:loading.remove wire:target="search">
+                        @icon('search', 'w-5 h-5')
                     </span>
                         
                         <div wire:loading wire:target="search" class="absolute inset-s-5 top-3.5 z-10">
@@ -150,7 +150,7 @@ new class extends Component
                     <input
                         wire:model.live.debounce.400ms="search"
                         type="text"
-                        class="input w-full py-3! pr-14! rounded-input-full!"
+                        class="input bg-surface-100/50 backdrop-blur-md w-full py-3! pr-14! rounded-input-full!"
                         placeholder="عن ماذا تبحث ؟"
                     />
                 </div>
