@@ -208,7 +208,7 @@ return [
 	      'pen' => 'pencil-solid',
     ],
 
-    'coolicons' => [
+    'coolicon' => [
         'cart' => 'shopping-cart-02',
         'search' => 'search-magnifying-glass',
         'tag' => 'tag-fill',

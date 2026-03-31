@@ -13,15 +13,15 @@ class IconService
         $mappedName = config("icons.{$pack}.{$name}", $name);
         
         $prefixMap = [
-            'heroicon_solid' => 'heroicon',
-            'bi_solid'       => 'bi',
-            'clarity_solid'  => 'clarity',
-            'eos_solid'      => 'eos',
-            'eva_solid'      => 'eva',
-            'fwb_solid'      => 'flowbite',
-            'gmdi_solid'     => 'gmdi',
-            'tabler_solid'   => 'tabler',
-            'tni_solid'      => 'tni',
+            'heroicon-solid' => 'heroicon',
+            'bi-solid'       => 'bi',
+            'clarity-solid'  => 'clarity',
+            'eos-solid'      => 'eos',
+            'eva-solid'      => 'eva',
+            'fwb-solid'      => 'flowbite',
+            'gmdi-solid'     => 'gmdi',
+            'tabler-solid'   => 'tabler',
+            'tni-solid'      => 'tni',
         ];
         $prefix = $prefixMap[$pack] ?? $pack;
 
