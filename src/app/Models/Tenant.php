@@ -51,7 +51,11 @@ class Tenant extends BaseTenant
     public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
     public function payments() { return $this->hasMany(Payment::class); }
 
-    
+    public function getLanguage(string $default = 'ar'): string
+    {
+        return $this->settings?->language ?? $default;
+    }
+
     public function resolvedTheme()
     {
         if ($this->settings?->theme) {

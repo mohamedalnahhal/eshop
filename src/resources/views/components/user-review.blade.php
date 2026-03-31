@@ -102,12 +102,12 @@ new class extends Component
 
     <div class="flex items-center gap-2 mt-3">
         <span class="text-xs text-muted">
-            {{ $userReview->created_at->locale(app()->getLocale())->diffForHumans() }}
+            {{ $userReview->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
         </span>
         @if($userReview->wasEdited())
             <span class="text-xs text-muted">·</span>
             <span class="text-xs text-muted italic">
-                تم التعديل {{ $userReview->updated_at->locale(app()->getLocale())->diffForHumans() }}
+                تم التعديل {{ $userReview->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
             </span>
         @endif
     </div>

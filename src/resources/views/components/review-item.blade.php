@@ -53,12 +53,12 @@ new class extends Component
     <div class="flex items-end justify-between mt-3">
         <div class="flex items-center gap-2">
             <span class="text-xs text-muted">
-                {{ $review->created_at->locale(app()->getLocale())->diffForHumans() }}
+                {{ $review->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
             </span>
             @if($review->wasEdited())
                 <span class="text-xs text-muted">·</span>
                 <span class="text-xs text-muted italic">
-                    تم التعديل {{ $review->updated_at->locale(app()->getLocale())->diffForHumans() }}
+                    تم التعديل {{ $review->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
                 </span>
             @endif
         </div>
