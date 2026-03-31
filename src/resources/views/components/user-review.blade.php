@@ -85,13 +85,9 @@ new class extends Component
         <div class="flex flex-row gap-3">
             <p class="text-sm text-muted">{{ $userReview->helpfulCount() }} وجدوهُ مفيدًا</p>
             <button wire:click="startEdit"
-                    class="p-1 -me-2 -mt-2 rounded-icon hover:bg-primary/10 text-muted hover:text-primary! transition cursor-pointer"
+                    class="p-2 -me-2 -mt-2 rounded-icon bg-surface-100 hover:bg-primary/10 text-muted hover:text-primary! transition cursor-pointer"
                     title="تعديل تقييمك">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                     viewBox="2 1 22 20" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z"/>
-                </svg>
+                @icon('pen', 'w-4 h-4')
             </button>
         </div>
     </div>
@@ -158,7 +154,9 @@ new class extends Component
                 wire:loading.class="opacity-75 pointer-events-none"
                 wire:target="deleteReview"
                 class="btn flex-1 text-center bg-danger hover:opacity-75! text-bg text-sm">
-            <span wire:loading.remove wire:target="deleteReview">🗑</span>
+            <div wire:loading.remove wire:target="deleteReview">
+                @icon('trash', 'w-5 h-5')
+            </div>
             <x-spinner wire:loading wire:target="deleteReview" class="h-4 w-4" />
         </button>
     </div>

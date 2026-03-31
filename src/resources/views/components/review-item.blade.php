@@ -65,18 +65,20 @@ new class extends Component
 
         @auth
         @if($canVote)
-            <div class="flex items-center gap-3 text-sm text-muted">
+            <div class="flex items-center gap-2 text-sm text-muted">
                 <span>مفيد؟</span>
-                <button wire:click="vote(true)"
-                        class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-success/10
-                            {{ $review->userVote() === true ? 'text-success font-bold' : '' }}">
-                    👍
-                </button>
-                <button wire:click="vote(false)"
-                        class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-danger/10
-                            {{ $review->userVote() === false ? 'text-danger font-bold' : '' }}">
-                    👎
-                </button>
+                <div class="flex items-center">
+                    <button wire:click="vote(true)"
+                            class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-success/10
+                                {{ $review->userVote() === true ? 'text-success font-bold' : '' }}">
+                        @icon('thumbs-up', 'w-4 h-4')
+                    </button>
+                    <button wire:click="vote(false)"
+                            class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-danger/10
+                                {{ $review->userVote() === false ? 'text-danger font-bold' : '' }}">
+                        @icon('thumbs-up', 'w-4 h-4 rotate-180')
+                    </button>
+                </div>
             </div>
         @endif
         @endauth

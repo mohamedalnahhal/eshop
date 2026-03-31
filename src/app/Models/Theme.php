@@ -145,7 +145,7 @@ class Theme extends Model
  
     public static function defaultIconPack()
     {
-        return 'heroicons';
+        return 'heroicon';
     }
  
     public function resolvedCurrency()

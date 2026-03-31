@@ -4,7 +4,8 @@
     <ol class="inline-flex items-center space-x-2 space-x-reverse">
         
         <li class="inline-flex items-center">
-            <a href="{{ route('shop.index') }}" class="inline-flex items-center hover:text-primary transition">
+            <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-1 hover:text-primary transition">
+                @icon('home', 'w-4 h-4')
                 الرئيسية
             </a>
         </li>

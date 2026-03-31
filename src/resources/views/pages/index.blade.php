@@ -65,11 +65,13 @@ new class extends Component
     <template x-teleport="#header-search-portal">
         <form action="{{ route('shop.products') }}" method="GET">
             <div class="relative">
-                <span class="absolute inset-s-3 top-3 opacity-50">🔍</span>
+                <span class="absolute inset-s-5 top-3.5">
+                    @icon('search', 'w-5 h-5 text-muted')
+                </span>
                 <input 
                     type="text"
                     name="search"
-                    class="input w-full py-3! pr-10! rounded-input-full!" 
+                    class="input w-full py-3! pr-14! rounded-input-full!" 
                     placeholder="عن ماذا تبحث ؟">
             </div>
         </form>
@@ -94,9 +96,7 @@ new class extends Component
                        wire:navigate
                        class="btn btn-primary hover:opacity-75 font-bold rounded-cta! transition-all! shadow-glow! hover:-translate-y-0.5">
                         تصفح المنتجات
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
+                        @icon('arrow-r', 'w-4 h-4 rotate-180')
                     </a>
                     <a href="#categories"
                        class="btn bg-surface-200 hover:bg-surface-300 text-theme font-bold rounded-cta! transition-all! hover:-translate-y-0.5">
@@ -113,9 +113,7 @@ new class extends Component
             <a href="{{ route('shop.products') }}" wire:navigate
                class="text-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
                 عرض الكل
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
+                @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
 
@@ -124,8 +122,8 @@ new class extends Component
                 <div class="card h-fit overflow-hidden">
                     <a href="{{ route('shop.products', ['category' => $category->id]) }}"
                        class="flex items-center gap-3 px-5 py-4 hover:bg-surface-100 transition-colors group">
-                        <div class="w-10 h-10 rounded-icon bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center text-xl shrink-0 transition-colors">
-                            {{ $category->icon ?? '📦' }}
+                        <div class="w-10 h-10 rounded-icon bg-primary/10 text-primary group-hover:bg-primary/15 flex items-center justify-center text-xl shrink-0 transition-colors">
+                            @icon('tag', 'w-5 h-5')
                         </div>
                         <div class="flex-1 min-w-0">
                             <span class="font-bold text-theme group-hover:text-primary! transition-colors">
@@ -133,9 +131,7 @@ new class extends Component
                             </span>
                             <span class="block text-xs text-muted">{{ $category->products_count }} منتج</span>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
+                        @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors')
                     </a>
 
                     @if($category->children->isNotEmpty())
@@ -165,9 +161,7 @@ new class extends Component
             <a href="{{ route('shop.products', ['sort' => 'latest']) }}" wire:navigate
                class="text-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
                 عرض الكل
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
+                @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
 
@@ -186,14 +180,12 @@ new class extends Component
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <h2 class="text-2xl font-bold text-theme">الأعلى تقييماً</h2>
-                <span class="badge bg-gold-surface text-on-gold border border-gold">⭐ مميز</span>
+                <span class="badge bg-gold-surface text-on-gold border border-gold">★ مميز</span>
             </div>
             <a href="{{ route('shop.products', ['sort' => 'top_rated']) }}" wire:navigate
                class="text-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
                 عرض الكل
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
+                @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
 

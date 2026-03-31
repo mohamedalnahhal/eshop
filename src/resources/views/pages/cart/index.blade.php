@@ -47,10 +47,11 @@ new class extends Component
 ?>
 
 <div>
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div class="flex flex-row justify-between items-center mb-8 gap-4">
         <h1 class="text-2xl font-bold text-theme">سلة المشتريات</h1>
         <a href="{{ route('shop.index') }}" wire:navigate class="btn bg-primary/10 text-primary">
-            <span>&rarr;</span> المتجر
+            @icon('arrow-r', 'w-4 h-4')
+            المتجر
         </a>
     </div>
 
@@ -102,14 +103,17 @@ new class extends Component
                 </div>
 
                 <x-primary-button>
-                    <span>إتمام الطلب للدفع</span> 💳
+                    <span>إتمام الطلب للدفع</span> 
+                    @icon('card', 'w-5 h-5')
                 </x-primary-button>
             </div>
 
         </div>
     @else
         <div class="p-16 text-center max-w-2xl mx-auto mt-10">
-            <div class="text-7xl mb-6 opacity-80">🛒</div>
+            <div class="text-7xl w-fit mx-auto mb-6 opacity-80">
+                @icon('cart', 'w-14 h-14')
+            </div>
             <h2 class="text-2xl font-bold text-theme mb-4">سلتك فارغة تماماً!</h2>
             <p class="text-muted mb-8 text-lg">يبدو أنك لم تقم بإضافة أي منتجات رائعة إلى سلتك حتى الآن.</p>
             <a href="{{ route('shop.products') }}" class="btn btn-primary">

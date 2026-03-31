@@ -102,16 +102,18 @@ new class extends Component
 <div>
     <template x-teleport="#header-search-portal">
         <div class="relative">
-            <span class="absolute inset-s-3 top-3 opacity-50" wire:loading.remove wire:target="search">🔍</span>
+            <span class="absolute inset-s-5 top-3.5" wire:loading.remove wire:target="search">
+                @icon('search', 'w-5 h-5 text-muted')
+            </span>
     
-            <div wire:loading wire:target="search" class="absolute inset-s-3 top-3.5 z-10">
-                <x-spinner class="h-5 w-5 text-primary" stroke-width="3" />
+            <div wire:loading wire:target="search" class="absolute inset-s-5 top-3.5 z-10">
+                <x-spinner class="h-5 w-5 text-primary" stroke-width="2" />
             </div>
 
             <input 
                 wire:model.live.debounce.400ms="search"
                 type="text"
-                class="input w-full py-3! pr-10! rounded-input-full!" 
+                class="input w-full py-3! pr-14! rounded-input-full!" 
                 placeholder="عن ماذا تبحث ؟">
         </div>
     </template>
@@ -137,25 +139,25 @@ new class extends Component
             class="py-4 w-full lg:hidden">
             <div class="container flex flex-row gap-4">
                 <div class="relative grow">
-                    <span class="absolute inset-s-3 top-3" wire:loading.remove wire:target="search">🔍</span>
+                    <span class="absolute inset-s-5 top-3.5" wire:loading.remove wire:target="search">
+                        @icon('search', 'w-5 h-5 text-muted')
+                    </span>
                         
-                        <div wire:loading wire:target="search" class="absolute inset-s-3 top-3.5 z-10">
-                        <x-spinner class="h-5 w-5 text-primary" stroke-width="3" />
+                        <div wire:loading wire:target="search" class="absolute inset-s-5 top-3.5 z-10">
+                        <x-spinner class="h-5 w-5 text-primary" stroke-width="2" />
                     </div>
 
                     <input
                         wire:model.live.debounce.400ms="search"
                         type="text"
-                        class="input w-full py-3! pr-10! rounded-input-full!"
+                        class="input w-full py-3! pr-14! rounded-input-full!"
                         placeholder="عن ماذا تبحث ؟"
                     />
                 </div>
                 <button type="button"
                         @click="$dispatch('toggle-filters')"
                         class="flex items-center justify-center px-4 bg-surface-100/50 backdrop-blur-md border border-border rounded-input text-theme focus:ring-4 focus:ring-primary/10 transition-all shadow-input">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
+                    @icon('filter', 'h-6 w-6')
                 </button>
             </div>
         </div>

@@ -75,7 +75,10 @@ new class extends Component
                     </div>
 
                     <div class="absolute top-4 right-4">
-                        <span class="bg-bg/90 backdrop-blur px-4 py-2 rounded-theme-full text-xs font-bold shadow-sm border border-border-muted">تكبير 🔍</span>
+                        <div class="flex flex-row items-center gap-2 bg-bg/90 backdrop-blur px-4 py-2 rounded-theme-full text-xs font-bold shadow-sm border border-border-muted">
+                            @icon('search', 'w-4 h-4')
+                            تكبير
+                        </div>
                     </div>
                 </div>
                 @if($product->media->count() > 1)
@@ -90,8 +93,8 @@ new class extends Component
                     </div>
                 @endif
             @else
-                <div class="w-full h-96 flex flex-col items-center justify-center text-muted">
-                    <span class="text-6xl mb-4">📷</span>
+                <div class="w-full max-h-125 flex flex-col items-center justify-center rounded-[calc(var(--radius-card)-0.25rem)] aspect-square shadow-card bg-surface-200 text-muted">
+                    @icon('image', 'h-12 w-12 mb-4')
                     <p>لا توجد صورة لهذا المنتج</p>
                 </div>
             @endif
@@ -136,8 +139,11 @@ new class extends Component
                 :disabled="$product->stock == 0"
                 class="mt-12 text-lg font-bold py-3 px-6 rounded-theme-xl">
                 <span wire:loading.remove wire:target="addToCart">
-                    إضافة للسلة 🛒
+                    إضافة للسلة
                 </span>
+                <div wire:loading.remove wire:target="addToCart">
+                    @icon('cart', 'w-5 h-5')
+                </div>
             
                 <div wire:loading wire:target="addToCart" >
                     <span class="flex flex-row flex-nowrap items-center gap-2">

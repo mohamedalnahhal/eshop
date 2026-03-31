@@ -33,7 +33,7 @@ new class extends Component
                 <img src="{{ asset('storage/' . $ImagePath) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
             @else
                 <div class="w-full h-full bg-surface-200 flex items-center justify-center text-muted font-bold">
-                    No Image
+                    @icon('image', 'w-10 h-10')
                 </div>
             @endif
         </div>
@@ -86,7 +86,10 @@ new class extends Component
                     wire:target="addToCart"
                     :disabled="$product->stock == 0"
                     class="text-sm cursor-pointer px-2 py-2">
-                    <span wire:loading.remove wire:target="addToCart">السلة 🛒</span>
+                    <span wire:loading.remove wire:target="addToCart">السلة</span>
+                    <div wire:loading.remove wire:target="addToCart">
+                        @icon('cart', 'w-4 h-4')
+                    </div>
 
                     <div wire:loading wire:target="addToCart">
                         <span class="flex flex-row flex-nowrap items-center gap-2">

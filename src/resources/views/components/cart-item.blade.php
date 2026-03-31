@@ -11,7 +11,7 @@
                 <img src="{{ asset('storage/' . $imagePath) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
             @else
                 <div class="w-full h-full bg-surface-200 flex items-center justify-center text-muted font-bold">
-                    No Image
+                    @icon('image', 'w-7 h-7')
                 </div>
             @endif
         </a>
@@ -40,8 +40,11 @@
             wire:loading.attr="disabled"
             wire:target="deleteItem('{{ $item->id }}')"
             type="button"
-            class="border border-border-input hover:border-danger/40 hover:text-danger hover:bg-danger/10 p-2 rounded-icon transition cursor-pointer" title="حذف المنتج من السلة">
-            <span wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">🗑️</span>
+            class="flex flex-row gap-1 items-center border border-border-input hover:border-danger/40 hover:text-danger hover:bg-danger/10 p-2 rounded-icon transition cursor-pointer" title="حذف المنتج من السلة">
+            {{-- <span >🗑️</span> --}}
+            <div wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">
+                @icon('trash', 'w-5 h-5')
+            </div>
             
             <x-spinner wire:loading wire:target="deleteItem('{{ $item->id }}')" class="h-5 w-5" />
 
