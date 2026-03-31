@@ -79,7 +79,7 @@ new class extends Component
                 <select wire:model.live="reviewSort"
                         wire:loading.attr="disabled"
                         wire:target="reviewSort"
-                        class="input hidden sm:block w-auto text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="input w-auto text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
                     <option value="latest">الأحدث</option>
                     <option value="highest">الأعلى تقييماً</option>
                     <option value="lowest">الأدنى تقييماً</option>

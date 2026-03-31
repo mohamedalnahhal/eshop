@@ -47,7 +47,7 @@ new class extends Component
             activeImage: '{{ $product->media->first() ? asset('storage/' . $product->media->first()->file_path) : 'https://via.placeholder.com/600x600?text=No+Image' }}',
             activeTab: 'details'
         }">
-        <div class="lg:col-span-7 card p-4 flex flex-col md:flex-row-reverse gap-6">
+        <div class="lg:col-span-7 card p-4 flex flex-col md:flex-row-reverse gap-6 select-none">
             @if($product->media->count() > 0)
                 <div class="flex-1 bg-bg max-h-125 overflow-hidden relative rounded-[calc(var(--radius-card)-0.25rem)] border border-border aspect-square flex items-center justify-center cursor-crosshair"
                      x-data="zoomLens()"
@@ -116,8 +116,8 @@ new class extends Component
                     ${{ number_format($product->price, 2) }}
                 </div>
                 @if($product->stock > 0)
-                    <div class="badge bg-green-100 text-green-700">
-                        متاح : ({{ $product->stock }}) 🟢
+                    <div class="badge bg-success/10 text-success">
+                        متاح : ({{ $product->stock }})
                     </div>
                 @else
                     <div class="badge bg-warning/10 text-warning">

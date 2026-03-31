@@ -115,7 +115,7 @@ new class extends Component
                 @icon('cart', 'w-14 h-14')
             </div>
             <h2 class="text-2xl font-bold text-theme mb-4">سلتك فارغة تماماً!</h2>
-            <p class="text-muted mb-8 text-lg">يبدو أنك لم تقم بإضافة أي منتجات رائعة إلى سلتك حتى الآن.</p>
+            <p class="text-muted mb-8 text-lg">يبدو أنك لم تقم بإضافة أي منتجات إلى سلتك حتى الآن.</p>
             <a href="{{ route('shop.products') }}" class="btn btn-primary">
                 تصفح المنتجات الآن
             </a>

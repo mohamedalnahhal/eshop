@@ -156,13 +156,13 @@
     </div>
 </header>
 @if(session('success'))
-    <div class="container max-w-4xl bg-green-100 border border-green-400 text-green-700 py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
+    <div class="container max-w-4xl bg-success/10 border border-success/60 text-success py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <strong class="font-bold">رائع!</strong>
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
 @endif
 @if(session('error'))
-    <div class="container max-w-4xl bg-red-100 border border-red-400 text-red-700 py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
+    <div class="container max-w-4xl bg-danger/10 border border-danger/60 text-danger py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <span class="block sm:inline">{{ session('error') }}</span>
     </div>
 @endif

@@ -175,7 +175,7 @@ new class extends Component
                     <select
                         wire:model.live="categoryId"
                         wire:loading.attr="disabled"
-                        class="input hidden sm:block w-full text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="input w-full text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
                         <option value="">كل المنتجات</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -208,7 +208,7 @@ new class extends Component
                     <select
                         wire:model.live="sortBy"
                         wire:loading.attr="disabled" 
-                        class="input hidden sm:block w-full text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="input w-full text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
                         <option value="latest">الأحدث</option>
                         <option value="price_asc">السعر: من الأقل</option>
                         <option value="price_desc">السعر: من الأعلى</option>
