@@ -8,29 +8,15 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Location extends Model
 {
-    use HasUuids, BelongsToTenant;
+    use HasUuids;
+    use BelongsToTenant;
 
-    protected $fillable = [
-        'tenant_id', 
-        'name', 
-        'type',
-        'city',
-        'address_line', 
-        'phone',
-        'lat',
-        'lng',
-        'is_pickup_point',
-        'is_visible_to_customers'
-    ];
+    protected $fillable = ['tenant_id', 'name', 'is_pickup_point'];
 
     protected $casts = [
         'is_pickup_point' => 'boolean',
-        'is_visible_to_customers' => 'boolean',
-        'lat' => 'float',
-        'lng' => 'float',
     ];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
-    
     public function address() { return $this->morphOne(Address::class, 'addressable'); }
 }
