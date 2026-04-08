@@ -17,7 +17,7 @@ class LocationsTable
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable(),
-                TextColumn::make('tenant.name') // استدعاء اسم العلاقة ثم اسم الحقل
+                TextColumn::make('tenant.name')
                     ->label('Store Name')
                     ->searchable()
                      ->sortable(),
@@ -33,9 +33,8 @@ class LocationsTable
                  EditAction::make(),
             ])
             ->toolbarActions([
-             BulkActionGroup::make([
-                DeleteBulkAction::make(),
-
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

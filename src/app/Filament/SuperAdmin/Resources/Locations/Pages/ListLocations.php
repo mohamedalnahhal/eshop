@@ -2,7 +2,7 @@
 
 namespace App\Filament\SuperAdmin\Resources\Locations\Pages;
 
-use App\Filament\SuperAdmin\Resources\Locations\LocationResource; // تأكد من هذا السطر!
+use App\Filament\SuperAdmin\Resources\Locations\LocationResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
