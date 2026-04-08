@@ -54,9 +54,9 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                 Tables\Columns\SelectColumn::make('status')
                     ->label(__('Status'))
                     ->options([
-                        'issued'  => '📋 Issued',
-                        'waiting' => '⏳ Waiting',
-                        'done'    => '✅ Done',
+                        'issued'  => 'Issued',
+                        'waiting' => 'Waiting',
+                        'done'    => 'Done',
                     ])
                     ->afterStateUpdated(function ($record, $state) {
                         if ($state === 'done') {
@@ -80,9 +80,9 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                         Select::make('type')
                             ->label(__('Type'))
                             ->options([
-                                'purchase'   => '🛒 Purchase',
-                                'production' => '🏭 Production',
-                                'damaged'    => '💔 Damaged',
+                                'purchase'   => 'Purchase',
+                                'production' => 'Production',
+                                'damaged'    => 'Damaged',
                             ])
                             ->required()
                             ->live(),
@@ -100,9 +100,9 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                         Select::make('status')
                             ->label(__('Status'))
                             ->options([
-                                'issued'  => '📋 Issued',
-                                'waiting' => '⏳ Waiting',
-                                'done'    => '✅ Done',
+                                'issued'  => 'Issued',
+                                'waiting' => 'Waiting',
+                                'done'    => 'Done',
                             ])
                             ->default('issued')
                             ->required(),
