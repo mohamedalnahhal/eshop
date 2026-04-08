@@ -45,6 +45,21 @@ class ProductResource extends Resource
             'index' => ListProducts::route('/'),
             'create' => CreateProduct::route('/create'),
             'edit' => EditProduct::route('/{record}/edit'),
+            'inventory' => Pages\ManageInventory::route('/inventory'),
+        ];
+    }
+
+   public static function getNavigationItems(): array
+    {
+        return [
+            ...parent::getNavigationItems(),
+            \Filament\Navigation\NavigationItem::make(__('Stock Levels'))
+                ->group(__('Shop')) 
+                ->icon('heroicon-o-chart-bar')
+                // تم إزالة activeAppearance لأنه غير موجود في v5
+                ->url(static::getUrl('inventory'))
+                ->isActiveWhen(fn () => request()->routeIs('filament.tenant-admin.resources.products.pages.inventory'))
+                ->sort(2), 
         ];
     }
 }
