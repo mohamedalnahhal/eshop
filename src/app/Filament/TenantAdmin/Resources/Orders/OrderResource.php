@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use \Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
@@ -50,7 +51,10 @@ class OrderResource extends Resource
     }
 
     public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with(['shippingAddress'])->withCount('items');
-    }
+{
+    return parent::getEloquentQuery()
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
+}
 }
