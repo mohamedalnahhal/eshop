@@ -20,11 +20,11 @@ class SettingsForm
                             ->required(),
                             
                         TextInput::make('contact_email')
-                            ->label('Owner Email')
+                            ->label('Contact Email')
                             ->email(),
                             
                         TextInput::make('contact_phone')
-                            ->label('Phone Number'),
+                            ->label('Contact Phone Number'),
                     ])->columns(2),
             ]);
     }

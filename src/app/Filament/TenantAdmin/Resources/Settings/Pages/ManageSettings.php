@@ -7,7 +7,6 @@ use App\Filament\TenantAdmin\Resources\Settings\Schemas\SettingsForm;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
 use App\Models\TenantSetting;
-use Filament\Notifications\Notification;
 
 class ManageSettings extends EditRecord
 {
@@ -15,7 +14,7 @@ class ManageSettings extends EditRecord
 
     public ?array $data = [];
 
-    public function mount(int | string $record = null): void
+    public function mount(null | int | string $record = null): void
     {
         $this->record = TenantSetting::firstOrCreate(
             ['tenant_id' => tenant('id')],
@@ -26,25 +25,25 @@ class ManageSettings extends EditRecord
     }
 
   
-   public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
-{
-    $formData = $this->form->getState();
+    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
+    {
+        $formData = $this->form->getState();
 
-    $this->record->update($formData);
+        $this->record->update($formData);
 
-    if (isset($formData['store_name'])) {
-        tenant()->update([
-            'name' => $formData['store_name']
-        ]);
+        if (isset($formData['store_name'])) {
+            tenant()->update([
+                'name' => $formData['store_name']
+            ]);
+        }
+
+        if ($shouldSendSavedNotification) {
+            \Filament\Notifications\Notification::make()
+                ->success()
+                ->title('Settings and tenant have been updated successfully')
+                ->send();
+        }
     }
-
-    if ($shouldSendSavedNotification) {
-        \Filament\Notifications\Notification::make()
-            ->success()
-            ->title('Settings and tenant have been updated successfully')
-            ->send();
-    }
-}
 
     protected function resolveRecord(int | string $key): TenantSetting
     {
