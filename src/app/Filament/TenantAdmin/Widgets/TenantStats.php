@@ -5,7 +5,6 @@ namespace App\Filament\TenantAdmin\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Order;
-use App\Models\User;
 
 class TenantStats extends BaseWidget
 {

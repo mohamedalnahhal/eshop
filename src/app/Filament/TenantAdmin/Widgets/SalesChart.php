@@ -3,7 +3,6 @@
 namespace App\Filament\TenantAdmin\Widgets;
 
 use Filament\Widgets\ChartWidget;
-use App\Models\Order;
 
 class SalesChart extends ChartWidget
 {
