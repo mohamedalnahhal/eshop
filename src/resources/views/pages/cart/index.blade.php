@@ -48,7 +48,7 @@ new class extends Component
 
 <div>
     <div class="flex flex-row justify-between items-center mb-8 gap-4">
-        <h1 class="text-2xl font-bold text-theme">سلة المشتريات</h1>
+        <h1 class="text-theme-2xl font-bold text-theme">سلة المشتريات</h1>
         <a href="{{ route('shop.index') }}" wire:navigate class="btn bg-primary/10 text-primary">
             @icon('arrow-r', 'w-4 h-4')
             المتجر
@@ -80,9 +80,9 @@ new class extends Component
             </div>
 
             <div class="card p-5 h-fit sticky top-10">
-                <h2 class="text-xl font-bold text-theme mb-6 border-b border-border pb-4">ملخص الطلب</h2>
+                <h2 class="text-theme-xl font-bold text-theme mb-6 border-b border-border pb-4">ملخص الطلب</h2>
                 
-                <div class="space-y-2 mb-6 text-muted text-sm">
+                <div class="space-y-2 mb-6 text-muted text-theme-sm">
                     @foreach($subtotals as $subtotal)
                         <div class="flex justify-between">
                             <span>المجموع الفرعي:</span>
@@ -99,8 +99,8 @@ new class extends Component
                 
                 <div class="border-t pt-4 mb-8 border-border">
                     <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-theme">الإجمالي الكلي:</span>
-                        <span class="text-2xl font-black text-accent">
+                        <span class="text-theme-lg font-bold text-theme">الإجمالي الكلي:</span>
+                        <span class="text-theme-2xl font-black text-accent">
                             {{ tenant()->resolvedTheme()->formatPrice($totalPrice) }}
                         </span>
                     </div>
@@ -115,11 +115,11 @@ new class extends Component
         </div>
     @else
         <div class="p-16 text-center max-w-2xl mx-auto mt-10">
-            <div class="text-7xl w-fit mx-auto mb-6 opacity-80">
+            <div class="text-theme-7xl w-fit mx-auto mb-6 opacity-80">
                 @icon('cart', 'w-14 h-14')
             </div>
-            <h2 class="text-2xl font-bold text-theme mb-4">سلتك فارغة تماماً!</h2>
-            <p class="text-muted mb-8 text-lg">يبدو أنك لم تقم بإضافة أي منتجات إلى سلتك حتى الآن.</p>
+            <h2 class="text-theme-2xl font-bold text-theme mb-4">سلتك فارغة تماماً!</h2>
+            <p class="text-muted mb-8 text-theme-lg">يبدو أنك لم تقم بإضافة أي منتجات إلى سلتك حتى الآن.</p>
             <a href="{{ route('shop.products') }}" class="btn btn-primary">
                 تصفح المنتجات الآن
             </a>

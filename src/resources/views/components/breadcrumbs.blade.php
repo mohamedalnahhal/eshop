@@ -1,6 +1,6 @@
 @props(['links'])
 
-<nav class="container flex text-muted text-sm font-medium mb-6" aria-label="Breadcrumb">
+<nav class="theme-container flex text-muted text-theme-sm font-medium mb-6" aria-label="Breadcrumb">
     <ol class="inline-flex items-center space-x-2 space-x-reverse">
         
         <li class="inline-flex items-center">

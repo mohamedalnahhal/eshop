@@ -47,8 +47,8 @@ new class extends Component
         </div>
     </a>
     <div class="p-5 flex flex-col grow">
-        <h2>
-            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-xl font-bold mb-2 text-theme hover:underline">{{ $product->name }}</a>
+        <h2 class="line-clamp-1">
+            <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" class="block text-theme-xl font-bold mb-2 text-theme hover:underline">{{ $product->name }}</a>
         </h2>
         <div class="mb-4">
             <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
@@ -56,7 +56,7 @@ new class extends Component
         
         <div class="mt-auto flex flex-col gap-3">
             <div class="flex flex-row items-center gap-3">
-                <span class="text-2xl font-bold text-accent">
+                <span class="text-theme-2xl font-bold text-accent">
                     {{ tenant()->resolvedTheme()->formatPrice($product->price) }}
                 </span>
                 @if($product->stock > 0)
@@ -70,13 +70,13 @@ new class extends Component
                 @endif
             </div>
 
-            <p class="text-muted text-sm border-b border-border pb-4 mb-1 overflow-hidden">
+            <p class="text-muted text-theme-sm border-b border-border pb-4 mb-1 overflow-hidden">
                 {{ $product->description ? Str::limit($product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
             </p>
             
             <div class="flex gap-2">
                 <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
-                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-sm" wire:navigate>
+                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-theme-sm" wire:navigate>
                     عرض
                 </a>
 
@@ -85,17 +85,17 @@ new class extends Component
                     wire:loading.class="opacity-75 pointer-events-none"
                     wire:target="addToCart"
                     :disabled="$product->stock == 0"
-                    class="text-sm cursor-pointer px-2 py-2">
+                    class="grow-0 overflow-hidden text-theme-sm cursor-pointer px-2 py-2">
                     <span wire:loading.remove wire:target="addToCart">السلة</span>
                     <div wire:loading.remove wire:target="addToCart">
                         @icon('cart', 'w-4 h-4')
                     </div>
 
                     <div wire:loading wire:target="addToCart">
-                        <span class="flex flex-row flex-nowrap items-center gap-2">
+                        <p class="flex flex-row flex-nowrap items-center gap-1">
                             <x-spinner class="h-4 w-4" />
-                            جاري الإضافة...
-                        </span>
+                            <span class="line-clamp-1">جاري الإضافة...</span>
+                        </p>
                     </div>
                 </x-primary-button>
             </div>

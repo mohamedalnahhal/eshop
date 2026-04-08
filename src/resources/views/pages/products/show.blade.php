@@ -75,7 +75,7 @@ new class extends Component
                     </div>
 
                     <div class="absolute top-4 right-4">
-                        <div class="flex flex-row items-center gap-2 bg-bg/90 backdrop-blur px-4 py-2 rounded-theme-full text-xs font-bold shadow-sm border border-border-muted">
+                        <div class="flex flex-row items-center gap-2 bg-bg/90 backdrop-blur px-4 py-2 rounded-theme-full text-theme-xs font-bold shadow-sm border border-border-muted">
                             @icon('search', 'w-4 h-4')
                             تكبير
                         </div>
@@ -102,17 +102,17 @@ new class extends Component
         <div class="lg:col-span-5 py-2 flex flex-col gap-6 h-full justify-start">
    
             @if($product->categories->isNotEmpty())
-                <span class="badge bg-primary/10 text-primary border border-primary/25 uppercase tracking-widest text-[10px] font-black w-fit">
+                <span class="badge bg-primary/10 text-primary border border-primary/25 uppercase tracking-widest text-theme-xs font-black w-fit">
                     {{ $product->categories->first()->name }}
                 </span>
             @endif
 
-            <h1 class="text-3xl md:text-4xl font-extrabold text-theme">{{ $product->name }}</h1>
+            <h1 class="text-theme-3xl md:text-theme-4xl font-extrabold text-theme">{{ $product->name }}</h1>
 
             <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" size="large" />
 
             <div class="flex items-center gap-4">
-                <div class="text-5xl font-black text-accent">
+                <div class="text-theme-5xl font-black text-accent">
                     {{ tenant()->resolvedTheme()->formatPrice($product->price) }}
                 </div>
                 @if($product->stock > 0)
@@ -127,7 +127,7 @@ new class extends Component
             </div>
 
             <div>
-                <h3 class="text-lg font-bold mb-2 text-theme">وصف المنتج:</h3>
+                <h3 class="text-theme-lg font-bold mb-2 text-theme">وصف المنتج:</h3>
                 <p class="text-muted leading-relaxed">
                     {{ $product->description ?? 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
                 </p>
@@ -137,7 +137,7 @@ new class extends Component
                 wire:click="addToCart" 
                 wire:loading.class="opacity-75 pointer-events-none"
                 :disabled="$product->stock == 0"
-                class="mt-12 text-lg font-bold py-3 px-6 rounded-theme-xl">
+                class="mt-12 text-theme-lg font-bold py-3 px-6 rounded-theme-xl">
                 <span wire:loading.remove wire:target="addToCart">
                     إضافة للسلة
                 </span>

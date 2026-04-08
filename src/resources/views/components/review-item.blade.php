@@ -43,21 +43,21 @@ new class extends Component
             </div>
             <x-simple-rating-stars :rating="$review->rating"/>
         </div>
-        <p class="text-sm text-muted">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
+        <p class="text-theme-sm text-muted">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
     </div>
 
     @if($review->comment)
-        <p class="text-sm text-muted">{{ $review->comment }}</p>
+        <p class="text-theme-sm text-muted">{{ $review->comment }}</p>
     @endif
 
     <div class="flex items-end justify-between mt-3">
         <div class="flex items-center gap-2">
-            <span class="text-xs text-muted">
+            <span class="text-theme-xs text-muted">
                 {{ $review->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
             </span>
             @if($review->wasEdited())
-                <span class="text-xs text-muted">·</span>
-                <span class="text-xs text-muted italic">
+                <span class="text-theme-xs text-muted">·</span>
+                <span class="text-theme-xs text-muted italic">
                     تم التعديل {{ $review->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
                 </span>
             @endif
@@ -65,7 +65,7 @@ new class extends Component
 
         @auth
         @if($canVote)
-            <div class="flex items-center gap-2 text-sm text-muted">
+            <div class="flex items-center gap-2 text-theme-sm text-muted">
                 <span>مفيد؟</span>
                 <div class="flex items-center">
                     <button wire:click="vote(true)"

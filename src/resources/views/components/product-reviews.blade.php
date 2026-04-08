@@ -74,7 +74,7 @@ new class extends Component
 
     <div class="lg:col-span-2">
         <div class="flex items-center justify-between border-b border-border pb-4 mb-6">
-            <h2 class="text-2xl font-bold text-theme">آراء الزبائن</h2>
+            <h2 class="text-theme-2xl font-bold text-theme">آراء الزبائن</h2>
             <div class="relative">
                 <select wire:model.live="reviewSort"
                         wire:loading.attr="disabled"

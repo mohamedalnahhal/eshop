@@ -13,11 +13,11 @@
         $contactPhone = tenant()->setting?->contact_phone;
         $theme = tenant()->resolvedTheme();
 
-        $font = $theme->resolvedFont();
+        $theme_font = $theme->resolvedFont();
         $iconPack = $theme->resolvedIconPack();
 
-        $primaryFamily = explode(',', $font['primary_family'])[0];
-        $secondaryFamily = explode(',', $font['secondary_family'])[0];
+        $primaryFamily = explode(',', $theme_font['primary_family'])[0];
+        $secondaryFamily = explode(',', $theme_font['secondary_family'])[0];
         $googleFamilies = array_unique([$primaryFamily, $secondaryFamily]);
         $googleQuery = implode('&family=', array_map(
             fn($f) => str_replace(' ', '+', trim($f)) . ':wght@400;600;700',
@@ -60,7 +60,11 @@
             font-weight: var(--font-weight-heading);
         }
 
-        .bg-navbar    { background-color: var(--color-navbar); box-shadow: var(--shadow-navbar); }
+        .header    { 
+            background-color: var(--color-header);
+            color: var(--color-on-header);
+            box-shadow: var(--shadow-header);
+        }
         .border-theme { border-color: var(--color-border); }
         .text-theme  { color: var(--color-text); }
         .text-muted    { color: var(--color-text-muted); }
@@ -117,6 +121,26 @@
             outline-width: 4px;
             outline-style: solid;
         }
+        .header-input {
+            border: 1px solid var(--color-border-input-m-header) !important;
+            box-shadow: none !important;
+            padding: var(--m-header-search-py) var(--m-header-search-px) !important;
+        }
+        .header-input:focus {
+            border-color: var(--color-on-m-header) !important;
+            outline-color: color-mix(in oklab, var(--color-on-m-header) 10%, transparent) !important;
+        }
+        @media (width >= 40rem) {
+            .header-input {
+                border: 1px solid var(--color-border-input-header) !important;
+                box-shadow: none !important;
+                padding: var(--header-search-py) var(--header-search-px) !important;
+            }
+            .header-input:focus {
+                border-color: var(--color-on-header) !important;
+                outline-color: color-mix(in oklab, var(--color-on-header) 10%, transparent) !important;
+            }
+        }
 
         .badge {
             display: inline-flex;
@@ -139,14 +163,17 @@
  
     @livewireStyles
 </head>
-<body>
 
-<header class="w-full bg-navbar mb-6 pt-8 pb-6 lg:pt-10 lg:pb-8">
-    <div class="container flex flex-row gap-8 max-lg:gap-6 items-center justify-between">
+<body class="text-theme-base">
+<header class="sm:w-header-w sm:pt-header-pt sm:pb-header-pb sm:mt-header-mt sm:mb-header-mb sm:[position:var(--header-position)] sm:top-header-st left-0 right-0 z-50 mx-auto sm:rounded-header sm:border-b-header-bb sm:border-t-header-bt sm:border-l-header-bl sm:border-r-header-br sm:border-border-header sm:bg-header sm:backdrop-blur-header sm:shadow-header sm:text-on-header
+               w-m-header-w pt-m-header-pt pb-m-header-pb mt-m-header-mt mb-m-header-mb [position:var(--m-header-position)] top-m-header-st rounded-m-header border-b-m-header-bb border-t-m-header-bt border-l-m-header-bl border-r-m-header-br border-border-m-header bg-m-header backdrop-blur-m-header shadow-m-header text-on-m-header">
+    <div class="flex flex-row gap-m-header-gap sm:gap-header-gap items-center justify-between
+                sm:w-header-content-w sm:mr-header-content-mr sm:ml-header-content-ml sm:pl-header-content-pl sm:pr-header-content-pr
+                w-m-header-content-w mr-m-header-content-mr ml-m-header-content-ml pl-m-header-content-pl pr-m-header-content-pr">
         <div class="flex flex-col items-center">
             <a class="flex flex-row gap-2 items-center" href="{{ route('shop.index') }}">
-                <img class="h-10" src="{{ tenant('logo_url') ? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
-                <h1 class="text-4xl text-nowrap font-extrabold text-theme">{{ tenant('name') }}</h1>
+                <img class="sm:w-header-logo-w sm:h-header-logo-h w-m-header-logo-w h-m-header-logo-h object-contain" src="{{ tenant('logo_url') ? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" />
+                <h1 class="sm:text-header-title sm:font-header-title sm:text-on-header text-m-header-title font-m-header-title text-on-m-header text-nowrap">{{ tenant('name') }}</h1>
             </a>
         </div>
     
@@ -156,20 +183,20 @@
     </div>
 </header>
 @if(session('success'))
-    <div class="container max-w-4xl bg-success/10 border border-success/60 text-success py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
+    <div class="theme-container max-w-4xl bg-success/10 border border-success/60 text-success py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <strong class="font-bold">رائع!</strong>
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
 @endif
 @if(session('error'))
-    <div class="container max-w-4xl bg-danger/10 border border-danger/60 text-danger py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
+    <div class="theme-container max-w-4xl bg-danger/10 border border-danger/60 text-danger py-3 rounded-theme-md relative mb-6 text-center shadow-sm">
         <span class="block sm:inline">{{ session('error') }}</span>
     </div>
 @endif
 
 {{ $top ?? '' }}
 
-<div class="container">
+<div class="theme-container">
     <main>
         {{ $slot }}
     </main>

@@ -86,7 +86,7 @@
     class="space-y-4 select-none"
     dir="ltr"
 >
-    <div class="flex items-center justify-between text-sm font-semibold text-muted" dir="rtl">
+    <div class="flex items-center justify-between text-theme-sm font-semibold text-muted" dir="rtl">
         <span x-text="max + ' {{ $unit }}'"></span>
         <span x-text="min + ' {{ $unit }}'"></span>
     </div>

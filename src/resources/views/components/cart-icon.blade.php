@@ -24,11 +24,11 @@ new class extends Component
 ?>
 
 <a href="\cart" class="relative inline-block rounded-theme-full hover:bg-surface-100 p-2 transition-colors" wire:navigate>
-    @icon('cart', 'w-8 h-8 text-theme')
+    @icon('cart', 'sm:w-header-icon sm:h-header-icon w-m-header-icon h-m-header-icon sm:text-on-header text-on-m-header')
     <span wire:loading.class="animate-pulse bg-red-400"
         wire:loading.class.remove="bg-red-600"
         wire:target="updateCartCount"
-        class="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-bg transform translate-x-1/2 -translate-y-1/2 bg-danger rounded-theme-full">
+        class="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-theme-xs font-bold leading-none text-bg transform translate-x-1/2 -translate-y-1/2 bg-danger rounded-theme-full">
         {{ $this->count }} 
     </span>
 </a>

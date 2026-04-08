@@ -93,16 +93,16 @@ new class extends Component
     </div>
 
     @if($userReview->comment)
-        <p class="text-muted text-sm">{{ $userReview->comment }}</p>
+        <p class="text-muted text-theme-sm">{{ $userReview->comment }}</p>
     @endif
 
     <div class="flex items-center gap-2 mt-3">
-        <span class="text-xs text-muted">
+        <span class="text-theme-xs text-muted">
             {{ $userReview->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
         </span>
         @if($userReview->wasEdited())
-            <span class="text-xs text-muted">·</span>
-            <span class="text-xs text-muted italic">
+            <span class="text-theme-xs text-muted">·</span>
+            <span class="text-theme-xs text-muted italic">
                 تم التعديل {{ $userReview->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
             </span>
         @endif
@@ -111,7 +111,7 @@ new class extends Component
 
 @elseif($editing)
 <div class="card p-5 outline-3 outline-primary/20 border-primary/30">
-    <h3 class="text-base font-bold text-theme mb-2">تعديل تقييمك</h3>
+    <h3 class="text-theme-base font-bold text-theme mb-2">تعديل تقييمك</h3>
 
     <div class="mb-4">
         <div class="flex gap-1" x-data="{ hovered: 0 }">
@@ -121,14 +121,14 @@ new class extends Component
                     @mouseenter="hovered = {{ $i }}"
                     @mouseleave="hovered = 0"
                     :class="{{ $i }} <= $wire.rating ? 'text-gold' : (hovered >= {{ $i }} ? 'text-gold/50' : 'text-surface-300')"
-                    class="text-3xl transition-transform hover:scale-110 cursor-pointer leading-none">★</button>
+                    class="text-theme-3xl transition-transform hover:scale-110 cursor-pointer leading-none">★</button>
             @endfor
         </div>
-        @error('rating') <span class="text-danger text-xs mt-1">{{ $message }}</span> @enderror
+        @error('rating') <span class="text-danger text-theme-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <textarea wire:model="comment" rows="3"
-              class="input w-full resize-none text-sm mb-2"
+              class="input w-full resize-none text-theme-sm mb-2"
               placeholder="اكتب رأيك في المنتج هنا..."></textarea>
 
     <div class="flex gap-2">
@@ -146,14 +146,14 @@ new class extends Component
             </div>
         </x-primary-button>
         <button wire:click="cancelEdit"
-                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-sm">
+                class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-theme-sm">
             إلغاء
         </button>
         <button wire:click="deleteReview(); $parent.loadStats?.(); $parent.$parent?.refreshReviews();"
                 wire:confirm="هل تريد حذف تقييمك؟"
                 wire:loading.class="opacity-75 pointer-events-none"
                 wire:target="deleteReview"
-                class="btn flex-1 text-center bg-danger hover:opacity-75! text-bg text-sm">
+                class="btn flex-1 text-center bg-danger hover:opacity-75! text-bg text-theme-sm">
             <div wire:loading.remove wire:target="deleteReview">
                 @icon('trash', 'w-5 h-5')
             </div>
@@ -164,10 +164,10 @@ new class extends Component
 
 @else
 <div class="card p-5">
-    <h3 class="text-base font-bold text-theme mb-2">أضف تقييمك</h3>
+    <h3 class="text-theme-base font-bold text-theme mb-2">أضف تقييمك</h3>
 
     @if(session('review_message'))
-        <div class="bg-success/10 text-success px-4 py-2 rounded-lg mb-4 text-sm font-medium">
+        <div class="bg-success/10 text-success px-4 py-2 rounded-lg mb-4 text-theme-sm font-medium">
             {{ session('review_message') }}
         </div>
     @endif
@@ -183,11 +183,11 @@ new class extends Component
                     class="text-3xl transition-transform hover:scale-110 cursor-pointer leading-none">★</button>
             @endfor
         </div>
-        @error('rating') <span class="text-danger text-xs mt-1">{{ $message }}</span> @enderror
+        @error('rating') <span class="text-danger text-theme-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <textarea wire:model="comment" rows="3"
-              class="input w-full resize-none text-sm mb-2"
+              class="input w-full resize-none text-theme-sm mb-2"
               placeholder="اكتب رأيك في المنتج هنا..."></textarea>
 
     <x-primary-button 

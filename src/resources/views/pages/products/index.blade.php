@@ -96,31 +96,31 @@ new class extends Component
     ]" />
 
     <div id="top-title-portal"></div>
-    <div id="top-search-portal" class="sticky top-0 z-50"></div>
+    <div id="top-search-portal" class="stick-header"></div>
 </x-slot>
 
 <div>
     <template x-teleport="#header-search-portal">
         <div class="relative">
-            <span class="absolute inset-s-5 top-3.5" wire:loading.remove wire:target="search">
-                @icon('search', 'w-5 h-5 text-muted')
+            <span class="absolute top-1/2 -translate-y-1/2 sm:inset-s-header-search-px inset-s-m-header-search-px z-10 pointer-events-none" wire:loading.remove wire:target="search">
+                @icon('search', 'w-5 h-5 sm:text-on-header/50 text-on-m-header/50')
             </span>
     
-            <div wire:loading wire:target="search" class="absolute inset-s-5 top-3.5 z-10">
-                <x-spinner class="h-5 w-5 text-primary" stroke-width="2" />
+            <div wire:loading wire:target="search" class="absolute top-1/2 -translate-y-1/2 sm:inset-s-header-search-px inset-s-m-header-search-px z-10 pointer-events-none">
+                <x-spinner class="h-5 w-5 sm:text-on-header text-on-m-header" stroke-width="2" />
             </div>
 
             <input 
                 wire:model.live.debounce.400ms="search"
                 type="text"
-                class="input w-full py-3! pr-14! rounded-input-full!" 
+                class="input header-input w-full sm:pr-[calc(var(--spacing-header-search-px)+2rem)]! pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!" 
                 placeholder="عن ماذا تبحث ؟">
         </div>
     </template>
 
     <template x-teleport="#top-title-portal">
-        <div class="container flex flex-row justify-between mb-2">
-            <h1 class="text-2xl font-bold text-theme">تصفح جميع منتجاتنا</h1>
+        <div class="theme-container flex flex-row justify-between mb-2">
+            <h1 class="text-theme-2xl font-bold text-theme">تصفح جميع منتجاتنا</h1>
             <select
                 wire:model.live="sortBy"
                 wire:loading.attr="disabled"
@@ -135,29 +135,29 @@ new class extends Component
     <template x-teleport="#top-search-portal">
         <div x-data="{ filtersOpen: false }" 
             @toggle-filters.window="filtersOpen = !filtersOpen"
-            :class="filtersOpen ? 'bg-bg' : 'bg-bg/50 backdrop-blur-md'"
+            :class="filtersOpen ? 'bg-bg' : 'bg-m-header backdrop-blur-m-header text-on-m-header'"
             class="py-4 w-full lg:hidden">
-            <div class="container flex flex-row gap-4">
+            <div class="theme-container flex flex-row gap-4">
                 <div class="relative grow">
-                    <span class="absolute inset-s-5 top-3.5 z-50" wire:loading.remove wire:target="search">
-                        @icon('search', 'w-5 h-5')
+                    <span class="absolute top-1/2 -translate-y-1/2 inset-s-header-search-px z-10 pointer-events-none" wire:loading.remove wire:target="search">
+                        @icon('search', 'w-5 h-5 text-muted')
                     </span>
                         
-                        <div wire:loading wire:target="search" class="absolute inset-s-5 top-3.5 z-10">
+                    <div wire:loading wire:target="search" class="absolute top-1/2 -translate-y-1/2 inset-s-header-search-px z-10 pointer-events-none">
                         <x-spinner class="h-5 w-5 text-primary" stroke-width="2" />
                     </div>
 
                     <input
                         wire:model.live.debounce.400ms="search"
                         type="text"
-                        class="input bg-surface-100/50 backdrop-blur-md w-full py-3! pr-14! rounded-input-full!"
+                        class="input header-input shadow-input! border-border-input! w-full pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full! bg-surface-100/50 backdrop-blur-md"
                         placeholder="عن ماذا تبحث ؟"
                     />
                 </div>
                 <button type="button"
                         @click="$dispatch('toggle-filters')"
-                        class="flex items-center justify-center px-4 bg-surface-100/50 backdrop-blur-md border border-border rounded-input text-theme focus:ring-4 focus:ring-primary/10 transition-all shadow-input">
-                    @icon('filter', 'h-6 w-6')
+                        class="flex items-center justify-center py-m-header-search-py px-btn-x bg-surface-100/50 backdrop-blur-md border border-border-input rounded-input text-theme focus:outline-4 focus:outline-primary/10 transition-all shadow-input">
+                    @icon('filter', 'h-5 w-5')
                 </button>
             </div>
         </div>
@@ -167,11 +167,11 @@ new class extends Component
         <!-- filters -->
         <div x-data="{ showFilters: false }" 
              @toggle-filters.window="showFilters = !showFilters"
-             class="lg:col-span-1 sticky top-20 lg:top-4 h-max z-10 transition-all duration-300 bg-bg max-lg:pb-6 max-lg:-mx-4 max-lg:px-4"
+             class="lg:col-span-1 sticky top-[calc(var(--m-header-height)+var(--m-header-search-height)+2rem)] lg:top-header-hm h-max z-10 transition-all duration-300 bg-bg max-lg:pb-6 max-lg:-mx-4 max-lg:px-4"
              :class="showFilters ? 'block' : 'hidden lg:block'">
              <div class="flex flex-col gap-8">
                 <div>
-                    <label class="block text-xs font-black text-muted uppercase mr-1 mb-2">الاقسام</label>
+                    <label class="block text-theme-xs font-black text-muted uppercase mr-1 mb-2">الاقسام</label>
                     <select
                         wire:model.live="categoryId"
                         wire:loading.attr="disabled"
@@ -183,8 +183,8 @@ new class extends Component
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-muted uppercase mr-1 mb-3">
-                        السعر (ريال)
+                    <label class="block text-theme-xs font-black text-muted uppercase mr-1 mb-3">
+                        السعر ({{tenant()->setting?->currency ?? 'USD'}})
                     </label>
 
                     <div
@@ -204,7 +204,7 @@ new class extends Component
                     </div>
                 </div>
                 <div class="sm:hidden">
-                    <label class="block text-xs font-black text-muted uppercase mr-1 mb-2">ترتيب حسب</label>
+                    <label class="block text-theme-xs font-black text-muted uppercase mr-1 mb-2">ترتيب حسب</label>
                     <select
                         wire:model.live="sortBy"
                         wire:loading.attr="disabled" 
@@ -248,7 +248,7 @@ new class extends Component
                         <livewire:listing-product :product="$product" :key="'product-'.$product->id.'-'.request('page', 1)" />
                     @empty
                         <div class="col-span-full text-center py-20 rounded-card border-2 border-dashed border-border">
-                            <p class="text-2xl font-bold text-muted">لا توجد منتجات متوفرة حالياً.</p>
+                            <p class="text-theme-2xl font-bold text-muted">لا توجد منتجات متوفرة حالياً.</p>
                         </div>
                     @endforelse
                 </div>

@@ -18,18 +18,18 @@
 
         <div class="grow min-w-0">
             <h3 class="mb-1 line-clamp-1">
-                <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block text-xl font-bold text-theme hover:underline">
+                <a href="{{ route('shop.product.show', ['id' => $item->product->id]) }}" class="block text-theme-xl font-bold text-theme hover:underline">
                     {{ $item->product->name }}
                 </a>
             </h3>
-            <p class="text-muted text-sm mb-2 line-clamp-1">
+            <p class="text-muted text-theme-sm mb-2 line-clamp-1">
                 {{ $item->product->description ? Str::limit($item->product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
             </p>
             <p>
-                <span class="text-xl font-black text-accent">
+                <span class="text-theme-xl font-black text-accent">
                     {{ tenant()->resolvedTheme()->formatPrice($subtotal) }}
                 </span>
-                <span class="text-muted text-sm font-semibold whitespace-nowrap">
+                <span class="text-muted text-theme-sm font-semibold whitespace-nowrap">
                     سعر الوحدة: {{ tenant()->resolvedTheme()->formatPrice($item->price) }}
                 </span>
             </p>
@@ -61,7 +61,7 @@
                 <span wire:loading.remove wire:target="incrementItem('{{ $item->id }}')">+</span>
                 <x-spinner wire:loading wire:target="incrementItem('{{ $item->id }}')" class="h-3 w-3" />
             </button>
-            <div class="border border-border-input rounded-icon px-4 py-2 sm:py-1 text-sm font-bold text-theme">
+            <div class="border border-border-input rounded-icon px-4 py-2 sm:py-1 text-theme-sm font-bold text-theme">
                 <span class="sm:hidden">الكمية : </span>
                 {{ $item->quantity }}
             </div>

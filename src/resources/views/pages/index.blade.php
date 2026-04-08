@@ -65,13 +65,13 @@ new class extends Component
     <template x-teleport="#header-search-portal">
         <form action="{{ route('shop.products') }}" method="GET">
             <div class="relative">
-                <span class="absolute inset-s-5 top-3.5">
-                    @icon('search', 'w-5 h-5 text-muted')
+                <span class="absolute top-1/2 -translate-y-1/2 sm:inset-s-header-search-px inset-s-m-header-search-px z-10 pointer-events-none">
+                    @icon('search', 'w-5 h-5 sm:text-on-header/50 text-on-m-header/50')
                 </span>
                 <input 
                     type="text"
                     name="search"
-                    class="input w-full py-3! pr-14! rounded-input-full!" 
+                    class="input header-input w-full sm:pr-[calc(var(--spacing-header-search-px)+2rem)]! pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!" 
                     placeholder="عن ماذا تبحث ؟">
             </div>
         </form>
@@ -83,12 +83,12 @@ new class extends Component
 
         <div class="relative flex flex-col md:flex-row items-center gap-10">
             <div class="flex-1">
-                <h1 class="text-4xl md:text-5xl font-black text-theme leading-tight mb-4">
+                <h1 class="text-theme-4xl md:text-theme-5xl font-black text-theme leading-tight mb-4">
                     نأتيك بصافي اللبن من خير المزارع
                     <br class="max-lg:hidden">
                     <span class="text-primary">في مكان واحد</span>
                 </h1>
-                <p class="text-muted text-lg sm:text-xl mb-8 max-w-md me-auto">
+                <p class="text-muted text-theme-lg sm:text-theme-xl mb-8 max-w-md me-auto">
                     تسوّق من أوسع تشكيلة من  شتى انواع الالبان والاجبان المختارة بعناية بأفضل الأسعار.
                 </p>
                 <div class="flex flex-wrap gap-3 justify-center md:justify-start">
@@ -109,9 +109,9 @@ new class extends Component
 
     <section id="categories">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-theme">تصفح الأقسام</h2>
+            <h2 class="text-theme-2xl font-bold text-theme">تصفح الأقسام</h2>
             <a href="{{ route('shop.products') }}" wire:navigate
-               class="text-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
+               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
                 عرض الكل
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
@@ -122,14 +122,14 @@ new class extends Component
                 <div class="card h-fit overflow-hidden">
                     <a href="{{ route('shop.products', ['category' => $category->id]) }}"
                        class="flex items-center gap-3 px-5 py-4 hover:bg-surface-100 transition-colors group">
-                        <div class="w-10 h-10 rounded-icon bg-primary/10 text-primary group-hover:bg-primary/15 flex items-center justify-center text-xl shrink-0 transition-colors">
+                        <div class="w-10 h-10 rounded-icon bg-primary/10 text-primary group-hover:bg-primary/15 flex items-center justify-center text-theme-xl shrink-0 transition-colors">
                             @icon('tag', 'w-5 h-5')
                         </div>
                         <div class="flex-1 min-w-0">
                             <span class="font-bold text-theme group-hover:text-primary! transition-colors">
                                 {{ $category->name }}
                             </span>
-                            <span class="block text-xs text-muted">{{ $category->products_count }} منتج</span>
+                            <span class="block text-theme-xs text-muted">{{ $category->products_count }} منتج</span>
                         </div>
                         @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors')
                     </a>
@@ -155,11 +155,11 @@ new class extends Component
     <section>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-                <h2 class="text-2xl font-bold text-theme">وصل حديثاً</h2>
+                <h2 class="text-theme-2xl font-bold text-theme">وصل حديثاً</h2>
                 <span class="badge bg-primary text-on-primary">جديد</span>
             </div>
             <a href="{{ route('shop.products', ['sort' => 'latest']) }}" wire:navigate
-               class="text-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
+               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
                 عرض الكل
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
@@ -170,7 +170,7 @@ new class extends Component
                 <livewire:listing-product :product="$product" :key="'new-'.$product->id" />
             @empty
                 <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-xl font-bold text-muted">لا توجد منتجات بعد.</p>
+                    <p class="text-theme-xl font-bold text-muted">لا توجد منتجات بعد.</p>
                 </div>
             @endforelse
         </div>
@@ -179,11 +179,11 @@ new class extends Component
     <section>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-                <h2 class="text-2xl font-bold text-theme">الأعلى تقييماً</h2>
+                <h2 class="text-theme-2xl font-bold text-theme">الأعلى تقييماً</h2>
                 <span class="badge bg-gold-surface text-on-gold border border-gold">★ مميز</span>
             </div>
             <a href="{{ route('shop.products', ['sort' => 'top_rated']) }}" wire:navigate
-               class="text-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
+               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
                 عرض الكل
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
@@ -194,7 +194,7 @@ new class extends Component
                 <livewire:listing-product :product="$product" :key="'top-'.$product->id" />
             @empty
                 <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-xl font-bold text-muted">لا توجد منتجات بعد.</p>
+                    <p class="text-theme-xl font-bold text-muted">لا توجد منتجات بعد.</p>
                 </div>
             @endforelse
         </div>
