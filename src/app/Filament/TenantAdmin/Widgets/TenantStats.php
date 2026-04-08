@@ -5,6 +5,8 @@ namespace App\Filament\TenantAdmin\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class TenantStats extends BaseWidget
 {
@@ -12,17 +14,45 @@ class TenantStats extends BaseWidget
 
     protected function getStats(): array
     {
+        $tenantId = tenant("id");
+
+        $totalSales = Order::where("tenant_id", $tenantId)
+            ->where("status", "completed")
+            ->where("final_price", ">", 0)
+            ->sum("final_price");
+
+        $totalOrders = Order::where("tenant_id", $tenantId)->count();
+
+        $totalProducts = Product::where("tenant_id", $tenantId)->count();
+
+        $totalCustomers = DB::table("tenant_users")
+            ->where("tenant_id", $tenantId)
+            ->count();
+
         return [
-            Stat::make('Total orders', Order::count())
-                ->description('Orders placed in your store')
-                ->descriptionIcon('heroicon-m-shopping-bag')
-                ->color('success')
+            Stat::make("إجمالي المبيعات", number_format($totalSales, 2) . " ₪")
+                ->description("مجموع الطلبات المكتملة")
+                ->descriptionIcon("heroicon-m-banknotes")
+                ->color("success")
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
 
-            // Stat::make('Registered customers', User::count())
-            //     ->description('Number of customers in this store')
-            //     ->descriptionIcon('heroicon-m-users')
-            //     ->color('primary'),
+            Stat::make("عدد الطلبات", $totalOrders)
+                ->description("إجمالي الطلبات في المتجر")
+                ->descriptionIcon("heroicon-m-shopping-bag")
+                ->color("primary")
+                ->chart([3, 7, 5, 12, 8, 15, 20]),
+
+            Stat::make("عدد المنتجات", $totalProducts)
+                ->description("المنتجات المضافة في متجرك")
+                ->descriptionIcon("heroicon-m-cube")
+                ->color("warning")
+                ->chart([10, 8, 12, 9, 14, 11, 15]),
+
+            Stat::make("عدد العملاء", $totalCustomers)
+                ->description("عملاء مسجلون في المتجر")
+                ->descriptionIcon("heroicon-m-users")
+                ->color("info")
+                ->chart([2, 5, 3, 8, 6, 10, 9]),
         ];
     }
 }
