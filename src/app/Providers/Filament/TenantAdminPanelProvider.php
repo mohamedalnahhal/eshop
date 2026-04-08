@@ -59,7 +59,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 // --- Scope to tenant ---
                 InitializeTenancyByDomain::class,
                 PreventAccessFromCentralDomains::class,
-                ApplyTenantTheme::class,
+                // ApplyTenantTheme::class,
                 //------------------------
 
                 SubstituteBindings::class,
