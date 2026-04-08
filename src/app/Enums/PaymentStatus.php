@@ -4,13 +4,18 @@ namespace App\Enums;
 
 enum PaymentStatus: string
 {
-    case Pending = 'pending';
+    case PENDING = 'pending';
     case COMPLETED = 'completed';
     case FAILED = 'failed';
     case REFUNDED = 'refunded';
 
     public function label(): string {
-        return ucfirst($this->value);
+        return match($this) {
+            self::PENDING => 'Pending',
+            self::COMPLETED => 'Completed',
+            self::FAILED => 'Failed',
+            self::REFUNDED => 'Refunded',
+        };
     }
 
     public function color(): string

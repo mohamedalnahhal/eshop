@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('tenants', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name', 100);
-            $table->enum('status', ['active', 'inactive', 'pending', 'banned', 'maintenance']);
+            $table->enum('status', ['active', 'inactive', 'pending', 'banned', 'maintenance'])->default('active');
             $table->timestamps();
         });
     }

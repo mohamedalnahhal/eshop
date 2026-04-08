@@ -11,10 +11,11 @@ class CartItem extends Model
     use HasUuids;
     use BelongsToPrimaryModel;
 
-    protected $fillable = ['cart_id', 'product_id', 'quantity'];
+    protected $fillable = ['cart_id', 'product_id', 'quantity', 'price'];
 
     protected $casts = [
         'quantity' => 'integer',
+        'price' => 'decimal:2',
     ];
 
     public function getRelationshipToPrimaryModel(): string

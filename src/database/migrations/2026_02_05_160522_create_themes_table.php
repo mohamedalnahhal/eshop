@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('themes', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')
+                  ->constrained('tenants')
+                  ->onDelete('cascade')
+                  ->nullable();
             $table->string('name', 100); 
             $table->jsonb('palette'); 
-            $table->string('font', 100); 
-            $table->string('icon_style', 50);
+            $table->string('font', 100);
             $table->timestamps();
+
+            $table->unique(['tenant_id', 'name']);
         });
     }
 

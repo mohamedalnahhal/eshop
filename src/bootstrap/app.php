@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+            // 👇 Add this to the 'web' group
+        $middleware->web(append: [
+            \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
