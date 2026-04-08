@@ -2,11 +2,12 @@
 
 namespace App\Filament\TenantAdmin\Resources\Products\Pages;
 
-use App\Filament\TenantAdmin\Resources\Products\ProductResource;
 use App\Models\Product;
+use App\Filament\TenantAdmin\Resources\Products\ProductResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
@@ -29,7 +30,7 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
 
     public function getTitle(): string
     {
-        return __('Stock Management');
+        return __('Stock Levels');
     }
 
     public function table(Table $table): Table
@@ -37,44 +38,64 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
         return $table
             ->query(Product::query())
             ->columns([
-                Tables\Columns\ImageColumn::make('image')->circular(),
-                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->circular()
+                    ->label(__('Image')),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Product Name'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('categories.name')
+                    ->label(__('Category'))
+                    ->badge(),
                 Tables\Columns\TextColumn::make('stock')
+                    ->label(__('Current Stock'))
                     ->badge()
-                    ->color(fn ($state) => $state <= 10 ? 'danger' : 'success'),
+                    ->color(fn ($state) => match(true) {
+                        $state <= 0  => 'danger',
+                        $state <= 10 => 'warning',
+                        default      => 'success',
+                    }),
             ])
             ->actions([
-    Action::make('update_stock')
-        ->label(__('Update Stock'))
-        ->icon('heroicon-o-arrow-up-circle')
-        ->color('success')
-        ->form([
-            \Filament\Forms\Components\Select::make('type')
-                ->label(__('Type'))
-                ->options([
-                    'add'    => '⬆️ Add',
-                    'remove' => '⬇️ Remove',
-                ])
-                ->required()
-                ->default('add'),
-            TextInput::make('amount')
-                ->label(__('Quantity'))
-                ->numeric()
-                ->required()
-                ->minValue(1),
-        ])
-        ->action(function ($record, array $data) {
-            if ($data['type'] === 'add') {
-                $record->increment('stock', $data['amount']);
-            } else {
-                $record->decrement('stock', $data['amount']);
-            }
+                Action::make('update_stock')
+                    ->label(__('Update'))
+                    ->icon('heroicon-o-arrow-up-circle')
+                    ->color('primary')
+                    ->form([
+                        Select::make('type')
+                            ->label(__('Type'))
+                            ->options([
+                                'add'    => '⬆️ Add',
+                                'remove' => '⬇️ Remove',
+                            ])
+                            ->required()
+                            ->default('add'),
+                        TextInput::make('amount')
+                            ->label(__('Quantity'))
+                            ->numeric()
+                            ->required()
+                            ->minValue(1),
+                    ])
+                    ->action(function ($record, array $data) {
+                        if ($data['type'] === 'add') {
+                            $record->increment('stock', $data['amount']);
+                        } else {
+                            $record->decrement('stock', $data['amount']);
+                        }
 
-            Notification::make()
-                ->title(__('Stock Updated Successfully'))
-                ->success()
-                ->send();
-        }),
-]);
+                        Notification::make()
+                            ->title(__('Stock Updated Successfully'))
+                            ->success()
+                            ->send();
+                    }),
+            ]);
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\TenantAdmin\Resources\Products\Widgets\InventoryOverview::class,
+        ];
     }
 }
