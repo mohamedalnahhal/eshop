@@ -30,26 +30,26 @@ class TenantStats extends BaseWidget
             ->count();
 
         return [
-            Stat::make("إجمالي المبيعات", number_format($totalSales, 2) . " ₪")
-                ->description("مجموع الطلبات المكتملة")
+            Stat::make("Total Sales", number_format($totalSales, 2) . " ₪")
+                ->description("Total Completed Sales")
                 ->descriptionIcon("heroicon-m-banknotes")
                 ->color("success")
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
 
-            Stat::make("عدد الطلبات", $totalOrders)
-                ->description("إجمالي الطلبات في المتجر")
+            Stat::make("Total Orders", $totalOrders)
+                ->description("Total Orders In The Store")
                 ->descriptionIcon("heroicon-m-shopping-bag")
                 ->color("primary")
                 ->chart([3, 7, 5, 12, 8, 15, 20]),
 
-            Stat::make("عدد المنتجات", $totalProducts)
-                ->description("المنتجات المضافة في متجرك")
+            Stat::make("Number of Products", $totalProducts)
+                ->description("Products In The Store")
                 ->descriptionIcon("heroicon-m-cube")
                 ->color("warning")
                 ->chart([10, 8, 12, 9, 14, 11, 15]),
 
-            Stat::make("عدد العملاء", $totalCustomers)
-                ->description("عملاء مسجلون في المتجر")
+            Stat::make("Number of Customers", $totalCustomers)
+                ->description("Customers Registered In The Store")
                 ->descriptionIcon("heroicon-m-users")
                 ->color("info")
                 ->chart([2, 5, 3, 8, 6, 10, 9]),

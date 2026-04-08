@@ -12,7 +12,7 @@ class StatsOverview extends StatsOverviewWidget
 {
     return [
         Stat::make('Total Tenants', Tenant::count())
-            ->description('Stores registered in the system')
+            ->description('Stores Registered In The System')
             ->descriptionIcon('heroicon-m-users')
             ->chart([7, 2, 10, 3, 15, 4, 17])
             ->color('success'),

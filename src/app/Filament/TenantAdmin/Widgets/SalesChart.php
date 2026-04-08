@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class SalesChart extends ChartWidget
 {
-    protected ?string $heading = "المبيعات - آخر 7 أيام";
+    protected ?string $heading = "Sales - last 7 days";
     protected static ?int $sort = 2;
 
     protected function getData(): array
@@ -34,14 +34,14 @@ class SalesChart extends ChartWidget
         return [
             "datasets" => [
                 [
-                    "label" => "المبيعات",
+                    "label" => "Sales",
                     "data" => $sales->values()->toArray(),
                     "borderColor" => "#3b82f6",
                     "fill" => true,
                     "backgroundColor" => "rgba(59, 130, 246, 0.1)",
                 ],
                 [
-                    "label" => "عدد الطلبات",
+                    "label" => "Number of Orders",
                     "data" => $orders->values()->toArray(),
                     "borderColor" => "#10b981",
                     "fill" => true,
