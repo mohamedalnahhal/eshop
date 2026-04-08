@@ -99,7 +99,6 @@ class Theme extends Model
         return [
             'primary_family'   => 'Tajawal, sans-serif',
             'secondary_family' => 'Tajawal, sans-serif',
-            'base_size'        => '16px',
             'base_weight'      => '400',
             'heading_weight'   => '700',
             'line_height'      => '1.6',
