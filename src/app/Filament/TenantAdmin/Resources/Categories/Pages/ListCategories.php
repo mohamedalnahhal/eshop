@@ -4,7 +4,6 @@ namespace App\Filament\TenantAdmin\Resources\Categories\Pages;
 
 use App\Filament\TenantAdmin\Resources\Categories\CategoryResource;
 use Filament\Actions;
-use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\ListRecords;
 
 class ListCategories extends ListRecords
@@ -19,16 +18,4 @@ class ListCategories extends ListRecords
         ];
     }
 
-    protected function getTableActions(): array
-    {
-        return [
-            ActionGroup::make([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
-            ])
-                ->label('Actions')
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->button(),
-        ];
-    }
 }

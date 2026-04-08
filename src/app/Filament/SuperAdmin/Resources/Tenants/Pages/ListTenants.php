@@ -3,9 +3,8 @@
 namespace App\Filament\SuperAdmin\Resources\Tenants\Pages;
 
 use App\Filament\SuperAdmin\Resources\Tenants\TenantResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Actions\ActionGroup;
+use Filament\Actions\CreateAction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -19,7 +18,7 @@ class ListTenants extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            CreateAction::make()
                 ->label('Create Tenant')
                 ->using(function (array $data, string $model): Model {
                 return DB::transaction(function () use ($data, $model) {

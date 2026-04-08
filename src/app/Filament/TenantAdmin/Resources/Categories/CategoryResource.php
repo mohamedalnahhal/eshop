@@ -2,8 +2,6 @@
 
 namespace App\Filament\TenantAdmin\Resources\Categories;
 
-use App\Filament\TenantAdmin\Resources\Categories\Pages\CreateCategory;
-use App\Filament\TenantAdmin\Resources\Categories\Pages\EditCategory;
 use App\Filament\TenantAdmin\Resources\Categories\Pages\ListCategories;
 use App\Filament\TenantAdmin\Resources\Categories\Schemas\CategoryForm;
 use App\Filament\TenantAdmin\Resources\Categories\Tables\CategoriesTable;

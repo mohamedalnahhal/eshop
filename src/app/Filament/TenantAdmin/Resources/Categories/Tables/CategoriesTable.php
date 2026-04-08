@@ -5,6 +5,9 @@ namespace App\Filament\TenantAdmin\Resources\Categories\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 
 class CategoriesTable
 {
@@ -37,6 +40,15 @@ class CategoriesTable
                         'main' => 'Main Only',
                         'sub' => 'Sub Only',
                     ]),
+            ])
+            ->recordActions([
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ])
+                ->label("Actions"),
             ]);
     }
 }

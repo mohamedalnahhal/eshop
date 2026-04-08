@@ -2,8 +2,6 @@
 
 namespace App\Filament\SuperAdmin\Resources\Tenants;
 
-use App\Filament\SuperAdmin\Resources\Tenants\Pages\CreateTenant;
-use App\Filament\SuperAdmin\Resources\Tenants\Pages\EditTenant;
 use App\Filament\SuperAdmin\Resources\Tenants\Pages\ListTenants;
 use App\Filament\SuperAdmin\Resources\Tenants\Schemas\TenantForm;
 use App\Filament\SuperAdmin\Resources\Tenants\Tables\TenantsTable;
@@ -14,9 +12,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use \Illuminate\Database\Eloquent\Builder;
-use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
-use Filament\Actions\EditAction;
 
 class TenantResource extends Resource
 {

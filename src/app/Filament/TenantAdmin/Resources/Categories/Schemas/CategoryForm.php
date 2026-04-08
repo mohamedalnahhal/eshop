@@ -5,8 +5,6 @@ namespace App\Filament\TenantAdmin\Resources\Categories\Schemas;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 
 
