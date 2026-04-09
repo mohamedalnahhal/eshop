@@ -13,10 +13,17 @@ class Location extends Model
     use BelongsToTenant;
     use SoftDeletes;
 
-    protected $fillable = ['tenant_id', 'name', 'is_pickup_point'];
+    protected $fillable = [
+        'tenant_id',
+        'name',
+        'phone',
+        'is_pickup_point',
+        'is_visible_to_customers',
+    ];
 
     protected $casts = [
-        'is_pickup_point' => 'boolean',
+        'is_pickup_point'         => 'boolean',
+        'is_visible_to_customers' => 'boolean',
     ];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
