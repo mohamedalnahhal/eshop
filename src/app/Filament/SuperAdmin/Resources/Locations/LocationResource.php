@@ -2,8 +2,6 @@
 
 namespace App\Filament\SuperAdmin\Resources\Locations;
 
-use App\Filament\SuperAdmin\Resources\Locations\Pages\CreateLocation;
-use App\Filament\SuperAdmin\Resources\Locations\Pages\EditLocation;
 use App\Filament\SuperAdmin\Resources\Locations\Pages\ListLocations;
 use App\Filament\SuperAdmin\Resources\Locations\Schemas\LocationForm;
 use App\Filament\SuperAdmin\Resources\Locations\Tables\LocationsTable;

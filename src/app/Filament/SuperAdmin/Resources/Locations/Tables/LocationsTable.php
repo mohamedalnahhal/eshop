@@ -31,12 +31,12 @@ class LocationsTable
             ])
             ->recordActions([
                 EditAction::make(),
-               
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                ])
+                ->label("Actions"),
             ]);
     }
 }
