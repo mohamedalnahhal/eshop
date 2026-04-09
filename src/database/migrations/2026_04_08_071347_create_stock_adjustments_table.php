@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('stock_adjustments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete(); 
             $table->integer('amount'); 
             $table->string('status')->default('waiting'); 
