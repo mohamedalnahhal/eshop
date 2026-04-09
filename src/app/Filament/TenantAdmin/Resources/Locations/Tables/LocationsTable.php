@@ -2,6 +2,7 @@
 
 namespace App\Filament\TenantAdmin\Resources\Locations\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -21,22 +22,6 @@ class LocationsTable
                     ->label('Location Name')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('type')
-                    ->label('Type')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'branch'       => 'success',
-                        'warehouse'    => 'warning',
-                        'pickup_point' => 'info',
-                        default        => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'branch'       => 'Branch',
-                        'warehouse'    => 'Warehouse',
-                        'pickup_point' => 'Pickup Point',
-                        default        => $state,
-                    }),
 
                 TextColumn::make('address.city')
                     ->label('City')
@@ -75,14 +60,17 @@ class LocationsTable
                         'pickup_point' => 'Pickup Point',
                     ]),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    DeleteAction::make(),
+                ])
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                ]),
+                ])
+                ->label('Actions'),
             ]);
     }
 }

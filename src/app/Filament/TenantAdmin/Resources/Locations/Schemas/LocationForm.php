@@ -3,6 +3,7 @@
 namespace App\Filament\TenantAdmin\Resources\Locations\Schemas;
 
 use App\Enums\AddressType;
+use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -10,67 +11,103 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Dotswan\MapPicker\Fields\Map;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 
 class LocationForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(2)
             ->components([
-                Section::make('Location Information')
-                    ->description('Basic branch or warehouse data')
+                Group::make()
+                    ->columnSpan(1)
                     ->schema([
-                        Grid::make(2)
+                        Section::make('Location Information')
+                            ->description('Basic branch or warehouse data')
                             ->schema([
-                                TextInput::make('name')
-                                    ->label('Location Name')
-                                    ->placeholder('Main Branch')
-                                    ->required()
-                                    ->maxLength(100),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->label('Location Name')
+                                            ->placeholder('Main Branch')
+                                            ->required()
+                                            ->maxLength(100),
 
-                                Select::make('type')
-                                    ->label('Location Type')
-                                    ->options([
-                                        'branch'       => 'Sales Branch',
-                                        'warehouse'    => 'Warehouse',
-                                        'pickup_point' => 'Pickup Point',
-                                    ])
-                                    ->default('branch')
-                                    ->native(false)
-                                    ->required(),
+                                        TextInput::make('phone')
+                                            ->label('Contact Phone')
+                                            ->tel(),
 
-                                TextInput::make('phone')
-                                    ->label('Contact Phone')
-                                    ->tel(),
+                                        Toggle::make('is_visible_to_customers')
+                                            ->label('Show to Customers?')
+                                            ->default(true),
 
-                                Toggle::make('is_visible_to_customers')
-                                    ->label('Show to Customers?')
-                                    ->default(true),
+                                        Toggle::make('is_pickup_point')
+                                            ->label('Is Pickup Point?')
+                                            ->default(false),
+                                    ]),
+                            ]),
+                        Section::make('Map & Coordinates')
+                            ->description('Pinpoint the location on the map')
+                            ->relationship('address')
+                            ->schema([
+                                Map::make('location')
+                                    ->label('Pick Location on Map')
+                                    ->columnSpanFull()
+                                    ->defaultLocation(latitude: 31.9, longitude: 35.2)
+                                    ->live()
+                                    ->dehydrated(false) // Prevents Filament from trying to save this virtual field to the DB
+                                    ->afterStateUpdated(function (?array $state, Set $set) {
+                                        if (isset($state['lat'], $state['lng'])) {
+                                            $set('lat', $state['lat']);
+                                            $set('lng', $state['lng']);
+                                        }
+                                    })
+                                    ->afterStateHydrated(function (?array $state, Set $set, Get $get) {
+                                        // Grab lat/lng directly from the sibling fields in this relationship context
+                                        $lat = $get('lat');
+                                        $lng = $get('lng');
+                                    
+                                        if ($lat !== null && $lng !== null) {
+                                            $set('location', [
+                                                'lat' => (float) $lat,
+                                                'lng' => (float) $lng,
+                                            ]);
+                                        }
+                                    }),
 
-                                Toggle::make('is_pickup_point')
-                                    ->label('Is Pickup Point?')
-                                    ->default(false),
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('lat')
+                                            ->label('Latitude')
+                                            ->numeric()
+                                            ->dehydrated(),
+
+                                        TextInput::make('lng')
+                                            ->label('Longitude')
+                                            ->numeric()
+                                            ->dehydrated(),
+                                    ]),
                             ]),
                     ]),
-
-                Section::make('Address & Coordinates')
-                    ->description('Location address and map pin')
-                    ->relationship('address')
+                Group::make()
+                    ->columnSpan(1)
                     ->schema([
-                        Grid::make(2)
+                        Section::make('Address Details')
+                            ->description('Location street address information')
+                            ->relationship('address')
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Address Name')
                                     ->placeholder('e.g., Main Branch Address')
                                     ->required()
-                                    ->maxLength(100)
-                                    ->columnSpanFull(),
+                                    ->maxLength(100),
 
                                 TextInput::make('address_line_1')
                                     ->label('Street Address')
                                     ->required()
-                                    ->maxLength(255)
-                                    ->columnSpanFull(),
+                                    ->maxLength(255),
 
                                 TextInput::make('city')
                                     ->label('City')
@@ -99,36 +136,6 @@ class LocationForm
                                     ->native(false)
                                     ->required(),
                             ]),
-
-                        Map::make('location')
-                            ->label('Pick Location on Map')
-                            ->columnSpanFull()
-                            ->defaultLocation(latitude: 31.9, longitude: 35.2)
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if (isset($state['lat'], $state['lng'])) {
-                                    $set('lat', $state['lat']);
-                                    $set('lng', $state['lng']);
-                                }
-                            })
-                            ->afterStateHydrated(function ($state, callable $set, $record) {
-                                if ($record?->address) {
-                                    $set('location', [
-                                        'lat' => $record->address->lat,
-                                        'lng' => $record->address->lng,
-                                    ]);
-                                }
-                            }),
-
-                        TextInput::make('lat')
-                            ->label('Latitude')
-                            ->numeric()
-                            ->dehydrated(),
-
-                        TextInput::make('lng')
-                            ->label('Longitude')
-                            ->numeric()
-                            ->dehydrated(),
                     ]),
             ]);
     }
