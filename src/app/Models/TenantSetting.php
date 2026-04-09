@@ -11,7 +11,6 @@ class TenantSetting extends Model
     use HasUuids;
     use BelongsToTenant;
     
-    // أضف الحقول المفقودة هنا فوراً
     protected $fillable = [
         'tenant_id', 
         'language', 

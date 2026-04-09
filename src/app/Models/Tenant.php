@@ -42,6 +42,18 @@ class Tenant extends BaseTenant
             'status',
         ];
     }
+    
+    // internal name
+    public function getSlugAttribute(): string
+    {
+        return $this->name;
+    }
+
+    // public facing store name
+    public function getNameAttribute($value): string
+    {
+        return $this->settings?->store_name ?? $value;
+    }
 
     public function domain() { return $this->hasOne(Domain::class); }
     public function products() { return $this->hasMany(Product::class); }
