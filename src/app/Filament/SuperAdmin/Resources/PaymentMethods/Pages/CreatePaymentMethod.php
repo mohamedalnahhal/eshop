@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources\PaymentMethodResource\Pages;
+namespace App\Filament\SuperAdmin\Resources\PaymentMethods\Pages;
 
-use App\Filament\SuperAdmin\Resources\PaymentMethodResource;
+use App\Filament\SuperAdmin\Resources\PaymentMethods\PaymentMethodResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePaymentMethod extends CreateRecord

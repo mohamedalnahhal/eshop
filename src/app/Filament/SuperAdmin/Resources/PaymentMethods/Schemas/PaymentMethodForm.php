@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources\Subscriptions\Schemas;
+namespace App\Filament\SuperAdmin\Resources\PaymentMethods\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
-class SubscriptionForm
+class PaymentMethodForm
 {
     public static function configure(Schema $schema): Schema
     {
