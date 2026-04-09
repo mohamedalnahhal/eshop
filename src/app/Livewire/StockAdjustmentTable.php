@@ -9,6 +9,7 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -70,6 +71,31 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                     }),
             ])
             ->headerActions([
+                Action::make('create_supplier')
+                    ->label(__('New Supplier'))
+                    ->icon('heroicon-o-building-storefront')
+                    ->color('gray')
+                    ->form([
+                        TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required(),
+                        Textarea::make('info')
+                            ->label(__('Info'))
+                            ->nullable(),
+                    ])
+                    ->action(function (array $data) {
+                        Supplier::create([
+                            'tenant_id' => auth()->user()->tenants()->first()->id,
+                            'name'      => $data['name'],
+                            'info'      => $data['info'] ?? null,
+                        ]);
+
+                        Notification::make()
+                            ->title(__('Supplier Created Successfully'))
+                            ->success()
+                            ->send();
+                    }),
+
                 Action::make('create_adjustment')
                     ->label(__('New Request'))
                     ->form([
@@ -92,7 +118,7 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                             ->options(Supplier::pluck('name', 'id'))
                             ->searchable()
                             ->nullable()
-                            ->hidden(fn ($get) => $get('type') !== 'purchase'), // ← هنا التغيير
+                            ->hidden(fn ($get) => $get('type') !== 'purchase'),
                         TextInput::make('updated_value')
                             ->label(__('Quantity'))
                             ->numeric()
