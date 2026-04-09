@@ -44,6 +44,7 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                         'purchase'   => 'success',
                         'production' => 'info',
                         'damaged'    => 'danger',
+                        default      => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('updated_value')
                     ->label(__('Qty'))
@@ -91,7 +92,7 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                             ->options(Supplier::pluck('name', 'id'))
                             ->searchable()
                             ->nullable()
-                            ->visible(fn ($get) => $get('type') === 'purchase'),
+                            ->hidden(fn ($get) => $get('type') !== 'purchase'), // ← هنا التغيير
                         TextInput::make('updated_value')
                             ->label(__('Quantity'))
                             ->numeric()
@@ -108,8 +109,10 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                             ->required(),
                     ])
                     ->action(function (array $data) {
+                        $tenantId = auth()->user()->tenants()->first()->id;
+
                         StockAdjustment::create([
-                            'tenant_id'     => auth()->user()->tenant_id,
+                            'tenant_id'     => $tenantId,
                             'product_id'    => $data['product_id'],
                             'type'          => $data['type'],
                             'supplier_id'   => $data['supplier_id'] ?? null,
