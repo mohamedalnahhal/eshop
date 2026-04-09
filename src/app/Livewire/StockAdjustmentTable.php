@@ -71,31 +71,6 @@ class StockAdjustmentTable extends Component implements HasActions, HasSchemas, 
                     }),
             ])
             ->headerActions([
-                Action::make('create_supplier')
-                    ->label(__('New Supplier'))
-                    ->icon('heroicon-o-building-storefront')
-                    ->color('gray')
-                    ->form([
-                        TextInput::make('name')
-                            ->label(__('Name'))
-                            ->required(),
-                        Textarea::make('info')
-                            ->label(__('Info'))
-                            ->nullable(),
-                    ])
-                    ->action(function (array $data) {
-                        Supplier::create([
-                            'tenant_id' => auth()->user()->tenants()->first()->id,
-                            'name'      => $data['name'],
-                            'info'      => $data['info'] ?? null,
-                        ]);
-
-                        Notification::make()
-                            ->title(__('Supplier Created Successfully'))
-                            ->success()
-                            ->send();
-                    }),
-
                 Action::make('create_adjustment')
                     ->label(__('New Request'))
                     ->form([
