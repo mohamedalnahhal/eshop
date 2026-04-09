@@ -27,5 +27,6 @@ class Location extends Model
     ];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
+    
     public function address() { return $this->morphOne(Address::class, 'addressable'); }
 }
