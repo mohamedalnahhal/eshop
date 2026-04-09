@@ -14,12 +14,19 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Tables\Grouping\Group;
 
 class CategoriesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->groups([
+                Group::make('parent.name')
+                ->label('Parent Category')
+                ->titlePrefixedWithLabel(false)
+                ->collapsible(),
+            ])
             ->columns([
                 TextColumn::make('name')
                     ->label('Category Name')

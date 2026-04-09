@@ -15,12 +15,20 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Grouping\Group;
 
 class OrdersTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->groups([
+                Group::make('user.username')
+                ->label('User')
+                ->collapsible(),
+                Group::make('status')
+                ->collapsible(),
+            ])
             ->columns([
                 TextColumn::make('id')
                     ->label('Order ID')
