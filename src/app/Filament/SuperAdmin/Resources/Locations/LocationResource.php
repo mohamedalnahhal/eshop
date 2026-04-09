@@ -42,8 +42,6 @@ class LocationResource extends Resource
     {
         return [
             'index' => ListLocations::route('/'),
-            'create' => CreateLocation::route('/create'),
-            'edit' => EditLocation::route('/{record}/edit'),
         ];
     }
 }
