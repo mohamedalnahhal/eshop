@@ -14,7 +14,7 @@ return new class extends Migration
     $tables = [
         'tenants', 'users', 'products', 'categories', 
         'orders', 'addresses', 'payments', 'subscriptions', 
-        'locations'
+        'tenant_subscriptions', 'locations'
     ];
 
     foreach ($tables as $tableName) {
@@ -30,7 +30,7 @@ return new class extends Migration
 
 public function down(): void
 {
-    foreach (['tenants', 'users', 'products', 'categories', 'orders', 'addresses', 'payments', 'subscriptions', 'tenant_subscriptions', 'locations', 'media'] as $tableName) {
+    foreach (['tenants', 'users', 'products', 'categories', 'orders', 'addresses', 'payments', 'subscriptions', 'tenant_subscriptions', 'locations'] as $tableName) {
         if (Schema::hasTable($tableName)) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->dropSoftDeletes();

@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('order_items', function (Blueprint $table) {
-            $table->timestamp('created_at')->useCurrent();
             $table->dropTimestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 };
