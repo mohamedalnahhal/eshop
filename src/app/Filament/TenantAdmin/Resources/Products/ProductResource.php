@@ -5,6 +5,7 @@ namespace App\Filament\TenantAdmin\Resources\Products;
 use App\Filament\TenantAdmin\Resources\Products\Pages\CreateProduct;
 use App\Filament\TenantAdmin\Resources\Products\Pages\EditProduct;
 use App\Filament\TenantAdmin\Resources\Products\Pages\ListProducts;
+use App\Filament\TenantAdmin\Resources\Products\Pages\ManageInventory;
 use App\Filament\TenantAdmin\Resources\Products\Schemas\ProductForm;
 use App\Filament\TenantAdmin\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
@@ -45,7 +46,7 @@ class ProductResource extends Resource
             'index' => ListProducts::route('/'),
             'create' => CreateProduct::route('/create'),
             'edit' => EditProduct::route('/{record}/edit'),
-            'inventory' => Pages\ManageInventory::route('/inventory'),
+            'inventory' => ManageInventory::route('/inventory'),
         ];
     }
 
@@ -53,10 +54,9 @@ class ProductResource extends Resource
     {
         return [
             ...parent::getNavigationItems(),
-            \Filament\Navigation\NavigationItem::make(__('Stock Levels'))
+            \Filament\Navigation\NavigationItem::make('Inventory')
                  
                 ->icon('heroicon-o-chart-bar')
-                // تم إزالة activeAppearance لأنه غير موجود في v5
                 ->url(static::getUrl('inventory'))
                 ->isActiveWhen(fn () => request()->routeIs('filament.tenant-admin.resources.products.pages.inventory'))
                 ->sort(2), 

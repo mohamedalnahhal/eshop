@@ -1,13 +1,20 @@
 <x-filament-panels::page>
-    <x-filament::section :heading="__('Products Stock')">
-        {{ $this->table }}
-    </x-filament::section>
+    <div class="w-full flex flex-col lg:flex-row gap-6">
 
-    <x-filament::section :heading="__('Stock Adjustment Requests')">
-        @livewire(\App\Livewire\StockAdjustmentTable::class)
-    </x-filament::section>
+        <div class="w-full lg:flex-1 min-w-0">
+            {{ $this->table }}
+        </div>
 
-    <x-filament::section :heading="__('Suppliers')" collapsible>
-        @livewire(\App\Livewire\SupplierTable::class)
-    </x-filament::section>
+        <div class="w-full lg:w-72 shrink-0">
+            <x-filament::section
+                heading="Suppliers"
+                icon="heroicon-o-truck"
+                :contained="false"
+            >
+                @livewire(\App\Livewire\SupplierTable::class)
+            </x-filament::section>
+        </div>
+
+    </div>
+    <x-filament-actions::modals />
 </x-filament-panels::page>

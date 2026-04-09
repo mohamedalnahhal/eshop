@@ -23,37 +23,23 @@ class SupplierTable extends Component implements HasActions, HasSchemas, HasTabl
     use InteractsWithSchemas;
     use InteractsWithTable;
 
-    public bool $collapsed = false;
-
-    public function makeFilamentTranslatableContentDriver(): ?\Filament\Support\Contracts\TranslatableContentDriver
-    {
-        return null;
-    }
-
-    public function toggleCollapse(): void
-    {
-        $this->collapsed = !$this->collapsed;
-    }
-
     public function table(Table $table): Table
     {
         return $table
             ->query(Supplier::query()->latest())
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
-                    ->searchable(),
+                    ->label('Name'),
                 Tables\Columns\TextColumn::make('info')
-                    ->label(__('Info'))
+                    ->label('Info')
                     ->limit(50)
                     ->default('-'),
             ])
             ->headerActions([
                 Action::make('create_supplier')
-                    ->label(__('New Supplier'))
-                    ->icon('heroicon-o-building-storefront')
+                    ->label('New Supplier')
                     ->color('primary')
-                    ->form([
+                    ->schema([
                         TextInput::make('name')
                             ->label(__('Name'))
                             ->required(),
@@ -63,13 +49,12 @@ class SupplierTable extends Component implements HasActions, HasSchemas, HasTabl
                     ])
                     ->action(function (array $data) {
                         Supplier::create([
-                            'tenant_id' => auth()->user()->tenants()->first()->id,
                             'name'      => $data['name'],
                             'info'      => $data['info'] ?? null,
                         ]);
 
                         Notification::make()
-                            ->title(__('Supplier Created Successfully'))
+                            ->title('Supplier Created Successfully')
                             ->success()
                             ->send();
                     }),

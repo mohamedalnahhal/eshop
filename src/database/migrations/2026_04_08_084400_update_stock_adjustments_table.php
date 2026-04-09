@@ -7,10 +7,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('stock_adjustments', function (Blueprint $table) {
-            $table->foreignUuid('tenant_id')->after('id')->constrained('tenants')->cascadeOnDelete(); // ← أضف هذا
+            $table->foreignUuid('tenant_id')->after('id')->constrained('tenants')->cascadeOnDelete();
             $table->string('type')->after('product_id');
             $table->string('status')->default('issued')->change();
-            $table->foreignId('supplier_id')->nullable()->after('type')->constrained('suppliers')->nullOnDelete();
+            $table->foreignUuid('supplier_id')->nullable()->after('type')->constrained('suppliers')->nullOnDelete();
             $table->integer('updated_value')->after('supplier_id');
             $table->dropColumn('amount');
         });

@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class StockAdjustment extends Model
 {
+    use HasUuids;
+    use BelongsToTenant;
+
     protected $fillable = [
         'tenant_id',
         'product_id',
