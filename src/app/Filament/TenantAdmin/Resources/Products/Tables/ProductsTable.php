@@ -58,9 +58,6 @@ class ProductsTable
             ->recordActions([
                 EditAction::make(),
                 ActionGroup::make([
-                    DeleteAction::make(),
-                    RestoreAction::make(),
-                    ForceDeleteAction::make(),
                     Action::make('update_stock')
                         ->label('Update Stock')
                         ->icon('heroicon-o-arrow-up-circle')
@@ -91,7 +88,10 @@ class ProductsTable
                                 ->title(__('Stock Updated Successfully'))
                                 ->success()
                                 ->send();
-                        }),    
+                        }),
+                        DeleteAction::make(),
+                        RestoreAction::make(),
+                        ForceDeleteAction::make(), 
                 ])
             ])
             ->toolbarActions([
