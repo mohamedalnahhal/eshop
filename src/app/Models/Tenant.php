@@ -7,13 +7,16 @@ use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\UserRole;
 
 class Tenant extends BaseTenant
 {
-    use HasUuids, HasDomains;
+    use HasUuids, HasDomains , SoftDeletes;
 
     protected $fillable = ['name', 'logo_url', 'status'];
+
+    protected $dates = ['deleted_at'];
 
     public function users()
     {
@@ -40,6 +43,18 @@ class Tenant extends BaseTenant
             'status',
             'logo_url',
         ];
+    }
+    
+    // internal name
+    public function getSlugAttribute(): string
+    {
+        return $this->name;
+    }
+
+    // public facing store name
+    public function getNameAttribute($value): string
+    {
+        return $this->settings?->store_name ?? $value;
     }
 
     public function domain() { return $this->hasOne(Domain::class); }

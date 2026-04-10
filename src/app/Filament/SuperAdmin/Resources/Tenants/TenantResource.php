@@ -2,8 +2,6 @@
 
 namespace App\Filament\SuperAdmin\Resources\Tenants;
 
-use App\Filament\SuperAdmin\Resources\Tenants\Pages\CreateTenant;
-use App\Filament\SuperAdmin\Resources\Tenants\Pages\EditTenant;
 use App\Filament\SuperAdmin\Resources\Tenants\Pages\ListTenants;
 use App\Filament\SuperAdmin\Resources\Tenants\Schemas\TenantForm;
 use App\Filament\SuperAdmin\Resources\Tenants\Tables\TenantsTable;
@@ -14,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use \Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TenantResource extends Resource
 {
@@ -44,13 +43,14 @@ class TenantResource extends Resource
     {
         return [
             'index' => ListTenants::route('/'),
-            'create' => CreateTenant::route('/create'),
-            'edit' => EditTenant::route('/{record}/edit'),
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with(['domain', 'owner']);
-    }
+  public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+{
+    return parent::getEloquentQuery()
+        ->withoutGlobalScopes([
+            \Illuminate\Database\Eloquent\SoftDeletingScope::class,
+        ]);
+}
 }

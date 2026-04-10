@@ -3,6 +3,7 @@
 namespace App\Filament\TenantAdmin\Resources\Orders\Pages;
 
 use App\Filament\TenantAdmin\Resources\Orders\OrderResource;
+use App\Filament\TenantAdmin\Widgets\OrdersOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,13 @@ class ListOrders extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+    
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            OrdersOverview::class,
         ];
     }
 }

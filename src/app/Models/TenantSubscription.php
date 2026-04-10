@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\SubscriptionStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TenantSubscription extends Model
 {
-    use HasUuids;
+    use HasUuids, SoftDeletes;
     use BelongsToTenant;
 
     protected $fillable = ['tenant_id', 'subscription_id', 'starts_at', 'ends_at', 'status'];

@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\OrderStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = [
         'tenant_id',
@@ -26,6 +28,7 @@ class Order extends Model
         'total_price' => 'decimal:2',
         'discount' => 'decimal:2',
         'final_price' => 'decimal:2',
+        'updated_at' => 'datetime',
         'created_at' => 'datetime',
         'status' => OrderStatus::class,
     ];

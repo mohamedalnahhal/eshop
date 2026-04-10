@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = ['name', 'price', 'avg_rating', 'description', 'stock', 'tenant_id', 'reviews_count', 'rating_sum'];
 

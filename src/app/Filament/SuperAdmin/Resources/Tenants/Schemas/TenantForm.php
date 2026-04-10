@@ -45,16 +45,9 @@ class TenantForm
                     ->label('Owner Email')
                     ->email()
                     ->required()
-                    ->rules([
-                        function () {
-                            return function (string $attribute, $value, \Closure $fail) {
-                                $user = User::where('email', $value)->first();
-                        
-                                if (!$user) {
-                                    $fail("No user with '{$value}' email exists.");
-                                }
-                            };
-                        },
+                    ->exists(table: User::class, column: 'email')
+                    ->validationMessages([
+                        'exists' => 'No user with this email exists.',
                     ]),
                 Select::make('status')
                     ->options(TenantStatus::class)

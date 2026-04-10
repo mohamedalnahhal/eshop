@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = [
         'tenant_id',
