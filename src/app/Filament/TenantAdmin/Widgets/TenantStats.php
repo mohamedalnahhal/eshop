@@ -2,11 +2,13 @@
 
 namespace App\Filament\TenantAdmin\Widgets;
 
+use App\Enums\OrderStatus;
+use App\Enums\UserRole;
+use App\Models\Order;
+use App\Models\TenantUser;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Models\Order;
-use App\Models\Product;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class TenantStats extends BaseWidget
 {
@@ -14,45 +16,58 @@ class TenantStats extends BaseWidget
 
     protected function getStats(): array
     {
-        $tenantId = tenant("id");
+        $start = Carbon::today()->subDays(6)->startOfDay();
 
-        $totalSales = Order::where("tenant_id", $tenantId)
-            ->where("status", "completed")
-            ->where("final_price", ">", 0)
-            ->sum("final_price");
+        $dailySales = Order::where('status', OrderStatus::DELIVERED)
+            ->where('final_price', '>', 0)
+            ->where('created_at', '>=', $start)
+            ->selectRaw('DATE(created_at) as date, SUM(final_price) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date');
 
-        $totalOrders = Order::where("tenant_id", $tenantId)->count();
+        $dailyOrders = Order::where('created_at', '>=', $start)
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date');
 
-        $totalProducts = Product::where("tenant_id", $tenantId)->count();
+        $dailyCustomers = TenantUser::where('role', UserRole::CUSTOMER)
+            ->where('created_at', '>=', $start)
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date');
 
-        $totalCustomers = DB::table("tenant_users")
-            ->where("tenant_id", $tenantId)
-            ->count();
+        $days = collect(range(6, 0))->map(fn ($i) => Carbon::today()->subDays($i)->toDateString());
+
+        $salesChart    = $days->map(fn ($d) => (float) ($dailySales[$d]    ?? 0))->values()->toArray();
+        $ordersChart   = $days->map(fn ($d) => (int)   ($dailyOrders[$d]   ?? 0))->values()->toArray();
+        $customersChart = $days->map(fn ($d) => (int)  ($dailyCustomers[$d] ?? 0))->values()->toArray();
+
+        $totalSales = Order::where('status', OrderStatus::DELIVERED)
+            ->where('final_price', '>', 0)
+            ->sum('final_price');
+
+        $totalOrders = Order::count();
+
+        $totalCustomers = TenantUser::where('role', UserRole::CUSTOMER)->count();
 
         return [
-            Stat::make("Total Sales", number_format($totalSales, 2) . " ₪")
-                ->description("Total Completed Sales")
-                ->descriptionIcon("heroicon-m-banknotes")
-                ->color("success")
-                ->chart([7, 2, 10, 3, 15, 4, 17]),
+            Stat::make(__('Total Sales'), number_format($totalSales, 2) . ' ₪')
+                ->description(__('Delivered orders only'))
+                ->descriptionIcon('heroicon-m-banknotes')
+                ->color('success')
+                ->chart($salesChart),
 
-            Stat::make("Total Orders", $totalOrders)
-                ->description("Total Orders In The Store")
-                ->descriptionIcon("heroicon-m-shopping-bag")
-                ->color("primary")
-                ->chart([3, 7, 5, 12, 8, 15, 20]),
+            Stat::make(__('Total Orders'), $totalOrders)
+                ->description(__('All orders in the store'))
+                ->descriptionIcon('heroicon-m-shopping-bag')
+                ->color('primary')
+                ->chart($ordersChart),
 
-            // Stat::make("Number of Products", $totalProducts)
-            //     ->description("Products In The Store")
-            //     ->descriptionIcon("heroicon-m-cube")
-            //     ->color("warning")
-            //     ->chart([10, 8, 12, 9, 14, 11, 15]),
-
-            Stat::make("Number of Customers", $totalCustomers)
-                ->description("Customers Registered In The Store")
-                ->descriptionIcon("heroicon-m-users")
-                ->color("info")
-                ->chart([2, 5, 3, 8, 6, 10, 9]),
+            Stat::make(__('Customers'), $totalCustomers)
+                ->description(__('Registered customers'))
+                ->descriptionIcon('heroicon-m-users')
+                ->color('info')
+                ->chart($customersChart),
         ];
     }
 }

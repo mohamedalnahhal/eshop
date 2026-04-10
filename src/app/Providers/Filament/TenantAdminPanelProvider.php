@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\TenantAdmin\Widgets\SalesChart;
+use App\Filament\TenantAdmin\Widgets\TenantStats;
 use App\Http\Middleware\ApplyTenantTheme;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -45,10 +47,9 @@ class TenantAdminPanelProvider extends PanelProvider
                 \App\Filament\TenantAdmin\Pages\Inventory::class,
                 \App\Filament\TenantAdmin\Pages\Settings::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/TenantAdmin/Widgets'), for: 'App\\Filament\\TenantAdmin\\Widgets')
             ->widgets([
-            Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                TenantStats::class,
+                SalesChart::class
             ])
             ->middleware([
                 EncryptCookies::class,
