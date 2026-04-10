@@ -16,6 +16,10 @@ class LocationsTable
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
+                    ->limit(7)
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
                     ->searchable(),
                 TextColumn::make('tenant.name')
                     ->label('Store Name')

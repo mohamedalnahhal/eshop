@@ -32,6 +32,10 @@ class OrdersTable
             ->columns([
                 TextColumn::make('id')
                     ->label('Order ID')
+                    ->limit(7)
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
                     ->searchable(),
                 TextColumn::make('user.username')
                     ->searchable(),
