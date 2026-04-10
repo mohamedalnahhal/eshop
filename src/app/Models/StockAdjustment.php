@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\StockAdjustmentStatus;
+use App\Enums\StockAdjustmentType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -19,6 +21,11 @@ class StockAdjustment extends Model
         'status',
         'supplier_id',
         'updated_value',
+    ];
+
+    protected $casts = [
+        'type' => StockAdjustmentType::class,
+        'status' => StockAdjustmentStatus::class,
     ];
 
     public function tenant(): BelongsTo

@@ -2,6 +2,8 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\StockAdjustmentStatus;
+use App\Enums\StockAdjustmentType;
 use App\Models\Product;
 use App\Models\StockAdjustment;
 use App\Models\Supplier;
@@ -38,13 +40,7 @@ class Inventory extends Page implements HasTable
                     ->label('Product'),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Type')
-                    ->badge()
-                    ->color(fn ($state) => match($state) {
-                        'purchase'   => 'success',
-                        'production' => 'info',
-                        'damaged'    => 'danger',
-                        default      => 'gray',
-                    }),
+                    ->badge(),
                 Tables\Columns\TextColumn::make('updated_value')
                     ->label('Qty')
                     ->badge(),
@@ -53,23 +49,20 @@ class Inventory extends Page implements HasTable
                     ->default('-'),
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
-                    ->options([
-                        'issued'  => 'Issued',
-                        'waiting' => 'Waiting',
-                        'done'    => 'Done',
-                    ])
+                    ->options(StockAdjustmentStatus::class)
                     ->beforeStateUpdated(function ($record, $state) use (&$old) {
                         $old = $record->status;
                     })
                     ->afterStateUpdated(function ($record, $state) use (&$old) {
-                        if ($state === 'done' && $old !== 'done') {
+                        $status = StockAdjustmentStatus::tryFrom($state);
+                        if ($status === StockAdjustmentStatus::DONE && $old !== StockAdjustmentStatus::DONE) {
                             $record->product->increment('stock', $record->updated_value);
                 
                             Notification::make()
                                 ->title('Stock Incremented')
                                 ->success()
                                 ->send();
-                        } elseif ($old === 'done' && $state !== 'done') {
+                        } elseif ($old === StockAdjustmentStatus::DONE && $status !== StockAdjustmentStatus::DONE) {
                             $record->product->decrement('stock', $record->updated_value);
                 
                             Notification::make()
@@ -82,7 +75,7 @@ class Inventory extends Page implements HasTable
             ->filters([
                 Tables\Filters\Filter::make('not_done')
                     ->label('Hide Completed')
-                    ->query(fn ($query) => $query->where('status', '!=', 'done'))
+                    ->query(fn ($query) => $query->where('status', '!=', StockAdjustmentStatus::DONE))
                     ->default(),
             ])
             ->headerActions([
@@ -96,19 +89,14 @@ class Inventory extends Page implements HasTable
                             ->required(),
                         Select::make('type')
                             ->label('Type')
-                            ->options([
-                                'purchase'   => 'Purchase',
-                                'production' => 'Production',
-                                'damaged'    => 'Damaged',
-                            ])
-                            ->required()
-                            ->live(),
+                            ->options(StockAdjustmentType::class)
+                            ->required(),
                         Select::make('supplier_id')
                             ->label('Supplier')
                             ->options(Supplier::pluck('name', 'id'))
                             ->searchable()
                             ->nullable()
-                            ->hidden(fn ($get) => $get('type') !== 'purchase'),
+                            ->hidden(fn ($get) => $get('type') !== StockAdjustmentType::PURCHASE->value),
                         TextInput::make('updated_value')
                             ->label('Quantity')
                             ->numeric()
@@ -116,12 +104,8 @@ class Inventory extends Page implements HasTable
                             ->minValue(1),
                         Select::make('status')
                             ->label('Status')
-                            ->options([
-                                'issued'  => 'Issued',
-                                'waiting' => 'Waiting',
-                                'done'    => 'Done',
-                            ])
-                            ->default('issued')
+                            ->options(StockAdjustmentStatus::class)
+                            ->default(StockAdjustmentStatus::ISSUED)
                             ->required(),
                     ])
                     ->action(function (array $data) {
