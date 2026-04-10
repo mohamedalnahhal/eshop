@@ -2,6 +2,7 @@
 
 namespace App\Filament\TenantAdmin\Resources\Orders;
 
+use App\Enums\OrderStatus;
 use App\Filament\TenantAdmin\Resources\Orders\Pages\CreateOrder;
 use App\Filament\TenantAdmin\Resources\Orders\Pages\EditOrder;
 use App\Filament\TenantAdmin\Resources\Orders\Pages\ListOrders;
@@ -20,8 +21,11 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
+    
+    protected static string|\UnitEnum|null $navigationGroup = 'Store';
 
+    
     public static function form(Schema $schema): Schema
     {
         return OrderForm::configure($schema);
@@ -49,10 +53,25 @@ class OrderResource extends Resource
     }
 
     public static function getEloquentQuery(): Builder
-{
-    return parent::getEloquentQuery()
-        ->withoutGlobalScopes([
-            SoftDeletingScope::class,
-        ]);
-}
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', OrderStatus::PENDING)->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::where('status', OrderStatus::PENDING)->count() > 10 ? 'warning' : 'primary';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Pending Orders';
+    }
 }

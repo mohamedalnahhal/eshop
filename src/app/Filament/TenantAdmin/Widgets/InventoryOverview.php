@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\TenantAdmin\Resources\Products\Widgets;
+namespace App\Filament\TenantAdmin\Widgets;
 
 use App\Models\Product;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -25,14 +25,6 @@ class InventoryOverview extends BaseWidget
                 ->description(__('Urgent attention needed'))
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
-
-            Stat::make(__('Value of Stock'), function () {
-                $totalValue = Product::sum(\DB::raw('stock * price'));
-                return '$' . number_format($totalValue, 2);
-            })
-                ->description(__('Total assets value'))
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success'),
         ];
     }
 }

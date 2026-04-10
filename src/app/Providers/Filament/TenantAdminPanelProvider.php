@@ -42,6 +42,7 @@ class TenantAdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/TenantAdmin/Pages'), for: 'App\\Filament\\TenantAdmin\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                \App\Filament\TenantAdmin\Pages\Inventory::class,
                 \App\Filament\TenantAdmin\Pages\Settings::class,
             ])
             ->discoverWidgets(in: app_path('Filament/TenantAdmin/Widgets'), for: 'App\\Filament\\TenantAdmin\\Widgets')

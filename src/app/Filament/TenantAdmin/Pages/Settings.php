@@ -17,9 +17,10 @@ class Settings extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static ?string $navigationLabel = 'Settings';
+    protected static ?string $navigationLabel = 'General';
     protected static ?int $navigationSort = 99;
-    protected static ?string $title = 'Store Settings';
+    protected static ?string $title = 'General Store Settings';
+    protected static string|\UnitEnum|null $navigationGroup = 'Store Settings';
     
     protected string $view = 'filament.tenant-admin.pages.settings';
 

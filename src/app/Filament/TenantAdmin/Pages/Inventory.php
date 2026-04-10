@@ -1,39 +1,33 @@
 <?php
 
-namespace App\Filament\TenantAdmin\Resources\Products\Pages;
+namespace App\Filament\TenantAdmin\Pages;
 
 use App\Models\Product;
 use App\Models\StockAdjustment;
 use App\Models\Supplier;
-use App\Filament\TenantAdmin\Resources\Products\ProductResource;
+use App\Filament\TenantAdmin\Widgets\InventoryOverview;
 use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\Page;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
+class Inventory extends Page implements HasTable
 {
-    use InteractsWithActions;
-    use InteractsWithSchemas;
     use InteractsWithTable;
-
-    protected static string $resource = ProductResource::class;
 
     protected string $view = 'filament.tenant-admin.resources.products.pages.manage-inventory';
 
-    public function getTitle(): string
-    {
-        return 'Inventory Management';
-    }
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationLabel = 'Inventory';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $title = 'Inventory Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Products';
+
 
     public function table(Table $table): Table
     {
@@ -151,7 +145,36 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\TenantAdmin\Resources\Products\Widgets\InventoryOverview::class,
+            InventoryOverview::class,
         ];
+    }
+    
+    public static function getNavigationBadge(): ?string
+    {
+        $low = Product::whereBetween('stock', [1, 10])->count();
+        $out = Product::where('stock', '<=', 0)->count();
+    
+        return (string) ($low + $out);
+    }
+    
+    public static function getNavigationBadgeColor(): ?string
+    {
+        if (Product::where('stock', '<=', 0)->exists()) {
+            return 'danger';
+        }
+    
+        if (Product::whereBetween('stock', [1, 10])->exists()) {
+            return 'warning';
+        }
+    
+        return 'primary';
+    }
+    
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        $low = Product::whereBetween('stock', [1, 10])->count();
+        $out = Product::where('stock', '<=', 0)->count();
+    
+        return "{$out} Out of Stock · {$low} Low Stock";
     }
 }

@@ -42,11 +42,11 @@ class TenantStats extends BaseWidget
                 ->color("primary")
                 ->chart([3, 7, 5, 12, 8, 15, 20]),
 
-            Stat::make("Number of Products", $totalProducts)
-                ->description("Products In The Store")
-                ->descriptionIcon("heroicon-m-cube")
-                ->color("warning")
-                ->chart([10, 8, 12, 9, 14, 11, 15]),
+            // Stat::make("Number of Products", $totalProducts)
+            //     ->description("Products In The Store")
+            //     ->descriptionIcon("heroicon-m-cube")
+            //     ->color("warning")
+            //     ->chart([10, 8, 12, 9, 14, 11, 15]),
 
             Stat::make("Number of Customers", $totalCustomers)
                 ->description("Customers Registered In The Store")
