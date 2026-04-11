@@ -13,9 +13,7 @@ class Category extends Model
     use BelongsToTenant;
     use SoftDeletes;
     
-    public $incrementing = false;
-    protected $keyType = 'string';
-    protected $fillable = ['name', 'type', 'parent_id', 'tenant_id'];
+    protected $fillable = ['name', 'type', 'parent_id'];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
 

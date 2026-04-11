@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('stock_adjustments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete(); 
-            $table->integer('amount'); 
-            $table->string('status')->default('waiting'); 
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained('products')->onDelete('cascade'); 
+            $table->enum('type', ['purchase', 'production', 'damaged']);
+            $table->foreignUuid('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');
+            $table->integer('updated_value');
+            $table->enum('status', ['issued', 'waiting', 'done'])->default('issued');
             $table->timestamps();
         });
     }

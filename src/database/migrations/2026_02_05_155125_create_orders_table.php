@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained('users');
+            $table->foreignUuid('shipping_address_id')->constrained('addresses');
             $table->decimal('total_price', 10, 2);   
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('final_price', 10, 2);    
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'refunded']);
-            $table->foreignUuid('user_id')->constrained('users');
-            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->foreignUuid('shipping_address_id')->constrained('addresses');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

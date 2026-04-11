@@ -20,7 +20,12 @@ class PaymentMethod extends Model
     protected $hidden = ['config'];
 
     protected $casts = [
-        'config' => 'string',
+        'config' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'payment_method', 'payment_method');
+    }
 }

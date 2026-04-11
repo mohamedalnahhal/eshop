@@ -12,7 +12,6 @@ class Supplier extends Model
     use BelongsToTenant;
 
     protected $fillable = [
-        'tenant_id',
         'name',
         'info',
     ];

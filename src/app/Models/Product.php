@@ -17,12 +17,20 @@ class Product extends Model
     use BelongsToTenant;
     use SoftDeletes;
 
-    protected $fillable = ['name', 'price', 'avg_rating', 'description', 'stock', 'tenant_id', 'reviews_count', 'rating_sum'];
+    protected $fillable = [
+        'name',
+        'price',
+        'description',
+        'stock',
+        'avg_rating',
+        'reviews_count',
+        'rating_sum'
+    ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'avg_rating' => 'decimal:1',
         'stock' => 'integer',
+        'avg_rating' => 'decimal:1',
         'reviews_count' => 'integer',
         'rating_sum' => 'integer',
     ];

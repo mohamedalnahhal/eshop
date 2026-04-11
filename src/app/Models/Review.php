@@ -11,10 +11,14 @@ class Review extends Model
     use HasUuids;
 
     protected $fillable = ['product_id', 'user_id', 'rating', 'comment'];
+    
+    protected $casts = [
+        'rating' => 'integer',
+    ];
 
     public function wasEdited()
     {
-        return $this->updated_at->notEqualTo($this->created_at);
+        return $this->updated_at->diffInSeconds($this->created_at) > 1;
     }
 
     public function product()

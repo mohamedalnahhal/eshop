@@ -5,14 +5,15 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToTenantOrGlobal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Theme extends Model
 {
     use HasUuids;
     use BelongsToTenantOrGlobal;
+    use SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'name',
         'is_default',
         'currency',

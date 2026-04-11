@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignUuid('cart_id')->constrained('carts')->onDelete('cascade');
             $table->foreignUuid('product_id')->constrained('products')->onDelete('cascade');
             $table->integer('quantity')->default(1);
+            $table->decimal('unit_price', 10, 2);
             $table->timestamps();
         });
     }

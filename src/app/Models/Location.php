@@ -14,7 +14,6 @@ class Location extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'name',
         'phone',
         'is_pickup_point',

@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name', 100);
             $table->uuidMorphs('addressable');
             $table->enum('type', ['shipping', 'billing', 'pickup']);
             $table->string('address_line_1', 255);
@@ -22,6 +23,9 @@ return new class extends Migration {
             $table->decimal('lng', 11, 8)->nullable();
             $table->decimal('lat', 10, 8)->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['addressable_type', 'addressable_id', 'name']);
         });
     }
 

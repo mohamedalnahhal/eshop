@@ -14,7 +14,8 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'quantity'
+        'quantity',
+        'unit_price'
     ];
 
     protected $casts = [

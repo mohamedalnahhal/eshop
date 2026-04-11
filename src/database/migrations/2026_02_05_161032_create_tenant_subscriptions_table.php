@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->timestamp('ends_at');
             $table->enum('status', ['trialing', 'active', 'expired', 'cancelled', 'pending', 'past_due']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

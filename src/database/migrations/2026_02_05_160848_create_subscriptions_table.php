@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->integer('max_products');
             $table->jsonb('features')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

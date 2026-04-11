@@ -14,9 +14,7 @@ class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains , SoftDeletes;
 
-    protected $fillable = ['name', 'logo_url', 'status'];
-
-    protected $dates = ['deleted_at'];
+    protected $fillable = ['name', 'status', 'data'];
 
     public function users()
     {
@@ -33,6 +31,7 @@ class Tenant extends BaseTenant
 
     protected $casts = [
         'status' => TenantStatus::class,
+        'data' => 'array'
     ];
 
     public static function getCustomColumns(): array
@@ -41,7 +40,7 @@ class Tenant extends BaseTenant
             'id',
             'name',
             'status',
-            'logo_url',
+            'data'
         ];
     }
     
@@ -54,7 +53,17 @@ class Tenant extends BaseTenant
     // public facing store name
     public function getNameAttribute($value): string
     {
-        return $this->settings?->store_name ?? $value;
+        return $this->settings?->shop_name ?? $value;
+    }
+
+    public function getLogoUrlAttribute($value): ?string
+    {
+        return $this->settings?->logo_url ?? $value;
+    }
+
+    public function getFaviconUrlAttribute($value): ?string
+    {
+        return $this->settings?->favicon_url ?? $value;
     }
 
     public function domain() { return $this->hasOne(Domain::class); }

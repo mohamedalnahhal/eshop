@@ -17,7 +17,11 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->text('description')->nullable();
             $table->integer('stock')->default(0);
+            $table->decimal('avg_rating', 3, 2)->default(0);
+            $table->unsignedInteger('reviews_count')->default(0);
+            $table->unsignedBigInteger('rating_sum')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
