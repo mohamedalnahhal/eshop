@@ -49,4 +49,14 @@ class LocationResource extends Resource
             'edit' => EditLocation::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count() === 0? 'No Locations' : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
 }

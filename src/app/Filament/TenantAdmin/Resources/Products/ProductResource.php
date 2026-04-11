@@ -11,7 +11,6 @@ use App\Models\Product;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -60,4 +59,13 @@ class ProductResource extends Resource
             ]);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count() === 0? 'No Prodcuts' : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
 }
