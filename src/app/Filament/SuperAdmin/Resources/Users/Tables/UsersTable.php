@@ -22,6 +22,13 @@ class UsersTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('username')

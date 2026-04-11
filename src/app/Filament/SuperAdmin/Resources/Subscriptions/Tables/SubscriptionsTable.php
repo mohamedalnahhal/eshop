@@ -24,7 +24,7 @@ class SubscriptionsTable
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
-                    ->limit(7)
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')

@@ -2,14 +2,11 @@
 
 namespace App\Filament\TenantAdmin\Resources\Orders\Tables;
 
-use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -32,7 +29,7 @@ class OrdersTable
             ->columns([
                 TextColumn::make('id')
                     ->label('Order ID')
-                    ->limit(7)
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
