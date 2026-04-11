@@ -57,7 +57,7 @@ new class extends Component
         <div class="mt-auto flex flex-col gap-3">
             <div class="flex flex-row items-center gap-3">
                 <span class="text-theme-2xl font-bold text-accent">
-                    {{ tenant()->resolvedTheme()->formatPrice($product->price) }}
+                    {{ tenant()->formatPrice($product->price) }}
                 </span>
                 @if($product->stock > 0)
                     <div class="badge bg-success/10 text-success">

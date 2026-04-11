@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenantOrGlobal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class Theme extends Model
 {
     use HasUuids;
-    use BelongsToTenant;
+    use BelongsToTenantOrGlobal;
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'is_default',
         'currency',
@@ -39,6 +40,32 @@ class Theme extends Model
         'corners'    => 'array',
     ];
  
+    protected static function booted(): void
+    {
+        static::withoutGlobalScope(\Stancl\Tenancy\Database\TenantScope::class);
+    
+        static::addGlobalScope('tenant_with_global', function ($query) {
+            $tenantId = tenant()?->getTenantKey();
+    
+            $query->where(function ($q) use ($tenantId) {
+                $q->whereNull('tenant_id');
+    
+                if ($tenantId) {
+                    $q->orWhere('tenant_id', $tenantId);
+                }
+            });
+        });
+    
+        // Prevent the trait's creating hook from stomping tenant_id = null on global themes
+        static::creating(function ($model) {
+            if ($model->getAttribute('tenant_id') === null) {
+                // Do nothing — keep null
+            } elseif (! $model->getAttribute('tenant_id') && tenancy()->initialized) {
+                $model->setAttribute('tenant_id', tenant()->getTenantKey());
+            }
+        });
+    }
+
     public static function getSymbol(string $currencyCode)
     {
         $formatter = new \NumberFormatter("en_US@currency={$currencyCode}", \NumberFormatter::CURRENCY);
@@ -352,7 +379,6 @@ class Theme extends Model
             // font
             '--font-primary'        => $f['primary_family'],
             '--font-secondary'      => $f['secondary_family'],
-            '--font-size-base'      => $f['base_size'],
             '--font-weight-base'    => $f['base_weight'],
             '--font-weight-heading' => $f['heading_weight'],
             '--line-height'         => $f['line_height'],
@@ -481,24 +507,8 @@ class Theme extends Model
         return implode("\n", $lines);
     }
  
-    /**
-     * Format a price amount using this theme's currency config.
-     */
-    public function formatPrice(float $amount)
-    {
-        $c = $this->resolvedCurrency();
-        $code = $this->tenantSettings?->currency ?? 'USD';
-        $symbol = static::getSymbol($code);
-        $decimals = $c['decimals'] ?? 2;
-        $formatted = number_format($amount, $decimals);
-
-        return $c['position'] === 'before'
-            ? $symbol . $formatted
-            : $formatted . ' ' . $symbol;
-    }
- 
     public function tenantSettings()
     {
-        return $this->belongsTo(TenantSetting::class);
+        return $this->hasMany(TenantSetting::class);
     }
 }

@@ -97,4 +97,20 @@ class Tenant extends BaseTenant
  
         return $new;
     }
+
+    /**
+     * Format a price amount using this theme's currency config.
+     */
+    public function formatPrice(float $amount)
+    {
+        $c = $this->resolvedTheme()->resolvedCurrency();
+        $code = $this->settings?->currency ?? 'USD';
+        $symbol = Theme::getSymbol($code);
+        $decimals = $c['decimals'] ?? 2;
+        $formatted = number_format($amount, $decimals);
+
+        return $c['position'] === 'before'
+            ? $symbol . $formatted
+            : $formatted . ' ' . $symbol;
+    }
 }

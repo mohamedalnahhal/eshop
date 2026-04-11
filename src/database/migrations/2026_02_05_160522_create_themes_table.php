@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('themes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')
+                  ->nullable()
+                  ->default(null)
                   ->constrained('tenants')
-                  ->onDelete('cascade')
-                  ->nullable();
+                  ->onDelete('cascade');
             $table->string('name', 100); 
             $table->jsonb('palette'); 
             $table->string('font', 100);
