@@ -8,7 +8,6 @@ return new class extends Migration
     {
         Schema::table('stock_adjustments', function (Blueprint $table) {
             $table->foreignUuid('tenant_id')->after('id')->constrained('tenants')->cascadeOnDelete();
-            $table->string('type')->after('product_id');
             $table->enum('type', ['purchase', 'production', 'damaged'])->after('product_id');
             $table->enum('status', ['issued', 'waiting', 'done'])->default('issued')->change();
             $table->foreignUuid('supplier_id')->nullable()->after('type')->constrained('suppliers')->nullOnDelete();

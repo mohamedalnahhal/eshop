@@ -15,8 +15,6 @@ return new class extends Migration
             $table->text('favicon_url')->nullable()->after('language');
             $table->string('slogan')->nullable()->after('favicon_url');
             $table->string('currency', 3)->default('USD')->after('slogan');
-            $table->string('contact_email')->nullable()->after('theme_id');
-            $table->string('contact_phone')->nullable()->after('contact_email');
         });
     }
 
@@ -27,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('tenant_settings', function (Blueprint $table) {
             $table->dropColumn([
-                'favicon_url', 'slogan', 'currency', 'contact_email', 'contact_phone'
+                'favicon_url', 'slogan', 'currency',
             ]);
         });
     }
