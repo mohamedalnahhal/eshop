@@ -7,10 +7,10 @@
     @php
         $storeName = tenant('name') ?? '';
         $storeLogo = tenant('logo_url');
-        $storeSlogan = tenant()->setting?->slogan;
-        $storeFavicon = tenant()->setting?->favicon_url;
-        $contactEmail = tenant()->setting?->contact_email;
-        $contactPhone = tenant()->setting?->contact_phone;
+        $storeSlogan = tenant()->settings?->slogan;
+        $storeFavicon = tenant()->settings?->favicon_url;
+        $contactEmail = tenant()->settings?->contact_email;
+        $contactPhone = tenant()->settings?->contact_phone;
         $theme = tenant()->resolvedTheme();
 
         $theme_font = $theme->resolvedFont();
