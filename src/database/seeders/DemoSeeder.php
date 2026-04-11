@@ -306,6 +306,20 @@ class DemoSeeder extends Seeder
 
     public function run(): void
     {
+
+        $this->command->info('Seeding Super Admin User...');
+        User::updateOrCreate(
+            ['email' => 'admin@eshop.com'],
+            [
+                'name'     => 'admin',
+                'username' => 'admin',
+                'password' => bcrypt('password'),
+                'gender'   => 'male',
+                'phone'    => '970591234567',
+                'role'     => UserRole::ADMIN,
+            ]
+        );
+
         // ------------------------------------------------------------------
         // Seed global themes
         // ------------------------------------------------------------------
