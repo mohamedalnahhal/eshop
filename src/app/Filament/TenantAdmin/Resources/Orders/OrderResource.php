@@ -23,7 +23,7 @@ class OrderResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
     
-    protected static string|\UnitEnum|null $navigationGroup = 'Store';
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop';
 
     
     public static function form(Schema $schema): Schema

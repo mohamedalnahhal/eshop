@@ -20,7 +20,7 @@ class LocationResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
     protected static ?int $navigationSort = 2;
-    protected static string|\UnitEnum|null $navigationGroup = 'Store';
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop';
 
     protected static ?string $recordTitleAttribute = 'name';
 
