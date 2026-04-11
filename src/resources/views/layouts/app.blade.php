@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ app()->getLocale() }}" dir="{{ in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -177,10 +177,14 @@
             </a>
         </div>
     
-        {{ $header ?? '' }}
+        <div class="grow">
+            {{ $header ?? '' }}
+        </div>
     
+        <x-locale-switcher />
         <livewire:cart-icon />
     </div>
+</header>
 </header>
 @if(session('success'))
     <div class="theme-container max-w-4xl bg-success/10 border border-success/60 text-success py-3 rounded-theme-md relative mb-6 text-center shadow-sm">

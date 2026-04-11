@@ -9,9 +9,10 @@ class ProductService
 {
     public function getFiltered(array $filters): LengthAwarePaginator
     {
-        // dd($filters);
+        $locale = app()->getLocale();
+
         return Product::query()
-            ->with(['categories', 'media'])
+            ->with(['categories', 'media', 'translations'])
             ->when($filters['category_id'] ?? null,
                 fn($q, $v) => $q->whereHas('categories', fn($q) => $q->where('categories.id', $v))
             )
@@ -22,14 +23,17 @@ class ProductService
                 fn($q, $v) => $q->whereRaw('price <= ?', [(int)$v + 0.99])
             )
             ->when($filters['search'] ?? null,
-                fn($q, $v) => $q->where('name', 'like', "%{$v}%")
+                fn($q, $v) => $q->whereHas('translations', function ($q) use ($v, $locale) {
+                    $q->where('locale', $locale)
+                      ->where('name', 'like', "%{$v}%");
+                })
             )
-            ->when($filters['sort'] ?? 'latest', function($q, $sort) {
+            ->when($filters['sort'] ?? 'latest', function ($q, $sort) {
                 return match($sort) {
-                    'price_asc'    => $q->orderBy('price'),
-                    'price_desc'   => $q->orderByDesc('price'),
-                    'top_rated'    => $q->orderByDesc('avg_rating'),
-                    default        => $q->latest(),
+                    'price_asc'  => $q->orderBy('price'),
+                    'price_desc' => $q->orderByDesc('price'),
+                    'top_rated'  => $q->orderByDesc('avg_rating'),
+                    default      => $q->latest(),
                 };
             })
             ->paginate(12);
@@ -41,8 +45,8 @@ class ProductService
 
         if ($categoryId) {
             $query->whereHas('categories', function ($q) use ($categoryId) {
-              $q->where('categories.id', $categoryId);
-          });
+                $q->where('categories.id', $categoryId);
+            });
         }
 
         return [

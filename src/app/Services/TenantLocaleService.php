@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Astrotomic\Translatable\Facades\Translatable;
-
 class TenantLocaleService
 {
     public function getSupportedLocales(): array
@@ -14,8 +12,13 @@ class TenantLocaleService
             return config('translatable.locales', ['en']);
         }
 
-        return $tenant->settings?->supported_languages
-            ?? config('translatable.locales', ['en']);
+        $supported = $tenant->settings?->supported_languages;
+
+        if (! empty($supported)) {
+            return $supported;
+        }
+
+        return config('translatable.locales', ['en', 'ar']);
     }
 
     public function getDefaultLocale(): string

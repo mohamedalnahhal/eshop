@@ -5,7 +5,7 @@ return [
         Spatie\TranslationLoader\TranslationLoaders\Db::class,
     ],
 
-    'model' => Spatie\TranslationLoader\LanguageLine::class,
+    'model' => App\Models\LanguageLine::class,
 
     'translation_manager' => Spatie\TranslationLoader\TranslationLoaderManager::class,
 

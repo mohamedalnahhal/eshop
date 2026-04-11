@@ -13,9 +13,14 @@ new class extends Component
 
     public function mount(string $id)
     {
-        $this->product = Product::with(['categories', 'media', 'reviews.user'])->findOrFail($id);
+        $this->product = Product::with([
+            'categories',
+            'media',
+            'reviews.user',
+            'translations',
+        ])->findOrFail($id);
     }
-    
+
     public function refreshReviews()
     {
         $this->product->refresh();
@@ -24,23 +29,20 @@ new class extends Component
     public function addToCart(CartService $cartService)
     {
         $cartService->add($this->product->id);
-
         $this->dispatch('cart-updated');
-
-        session()->flash('success', 'تمت إضافة المنتج إلى السلة بنجاح!');
+        session()->flash('success', __('Product added to cart successfully!'));
     }
 };
 ?>
 
 <x-slot name="top">
     <x-breadcrumbs :links="[
-        'المنتجات' => route('shop.products'),
-        'تفاصيل المنتج' => null,
+        __('Products') => route('shop.products'),
+        __('Product Details') => null,
     ]" />
 </x-slot>
 
 <div>
-
 <div wire:loading.class="animate-pulse opacity-50" wire:target="refreshReviews" class="mb-12 transition-all duration-200">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
         x-data="{
@@ -54,12 +56,10 @@ new class extends Component
                      @mousemove="onMove($event)"
                      @mouseleave="active = false"
                      x-ref="container">
-
                     <img :src="activeImage"
                          alt="{{ $product->name }}"
                          class="max-w-full max-h-125 object-contain"
                          x-ref="img" />
-
                     <div x-show="active"
                          class="absolute pointer-events-none rounded-theme-full border-2 border-bg shadow-modal overflow-hidden"
                          :style="`
@@ -73,18 +73,17 @@ new class extends Component
                            background-position: ${bgX}px ${bgY}px;
                          `">
                     </div>
-
                     <div class="absolute top-4 right-4">
                         <div class="flex flex-row items-center gap-2 bg-bg/90 backdrop-blur px-4 py-2 rounded-theme-full text-theme-xs font-bold shadow-sm border border-border-muted">
                             @icon('search', 'w-4 h-4')
-                            تكبير
+                            {{ __('Zoom') }}
                         </div>
                     </div>
                 </div>
                 @if($product->media->count() > 1)
                     <div class="flex md:flex-col gap-3 overflow-x-visible md:overflow-y-visible max-h-125 custom-scrollbar2">
                         @foreach($product->media as $media)
-                            <button @click="activeImage = '{{ asset('storage/' . $media->file_path) }}'" 
+                            <button @click="activeImage = '{{ asset('storage/' . $media->file_path) }}'"
                                     class="relative shrink-0 w-20 h-20 rounded-[calc(var(--radius-card)-0.25rem)] border-2 overflow-hidden transition-all duration-300"
                                     :class="activeImage === '{{ asset('storage/' . $media->file_path) }}' ? 'border-primary ring-4 ring-primary/15' : 'border-transparent hover:border-primary/40'">
                                 <img src="{{ asset('storage/' . $media->file_path) }}" class="w-full h-full object-cover"/>
@@ -95,12 +94,12 @@ new class extends Component
             @else
                 <div class="w-full max-h-125 flex flex-col items-center justify-center rounded-[calc(var(--radius-card)-0.25rem)] aspect-square shadow-card bg-surface-200 text-muted">
                     @icon('image', 'h-12 w-12 mb-4')
-                    <p>لا توجد صورة لهذا المنتج</p>
+                    <p>{{ __('No image available') }}</p>
                 </div>
             @endif
         </div>
+
         <div class="lg:col-span-5 py-2 flex flex-col gap-6 h-full justify-start">
-   
             @if($product->categories->isNotEmpty())
                 <span class="badge bg-primary/10 text-primary border border-primary/25 uppercase tracking-widest text-theme-xs font-black w-fit">
                     {{ $product->categories->first()->name }}
@@ -117,38 +116,37 @@ new class extends Component
                 </div>
                 @if($product->stock > 0)
                     <div class="badge bg-success/10 text-success">
-                        متاح : ({{ $product->stock }})
+                        {{ __('In stock') }} : ({{ $product->stock }})
                     </div>
                 @else
                     <div class="badge bg-warning/10 text-warning">
-                        نفذ من المتجر
+                        {{ __('Out of stock') }}
                     </div>
                 @endif
             </div>
 
             <div>
-                <h3 class="text-theme-lg font-bold mb-2 text-theme">وصف المنتج:</h3>
+                <h3 class="text-theme-lg font-bold mb-2 text-theme">{{ __('Product Description') }}:</h3>
                 <p class="text-muted leading-relaxed">
-                    {{ $product->description ?? 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
+                    {{ $product->description ?? __('No products found') }}
                 </p>
             </div>
 
-            <x-primary-button 
-                wire:click="addToCart" 
+            <x-primary-button
+                wire:click="addToCart"
                 wire:loading.class="opacity-75 pointer-events-none"
                 :disabled="$product->stock == 0"
                 class="mt-12 text-theme-lg font-bold py-3 px-6 rounded-theme-xl">
                 <span wire:loading.remove wire:target="addToCart">
-                    إضافة للسلة
+                    {{ __('Add to cart') }}
                 </span>
                 <div wire:loading.remove wire:target="addToCart">
                     @icon('cart', 'w-5 h-5')
                 </div>
-            
-                <div wire:loading wire:target="addToCart" >
+                <div wire:loading wire:target="addToCart">
                     <span class="flex flex-row flex-nowrap items-center gap-2">
                         <x-spinner class="h-4 w-4" />
-                        جاري الإضافة...
+                        {{ __('Loading...') }}
                     </span>
                 </div>
             </x-primary-button>
@@ -167,33 +165,21 @@ new class extends Component
             lensW: 150, lensH: 150,
             bgX: 0, bgY: 0, bgW: 0, bgH: 0,
             zoom: 3,
-            
             onMove(e) {
                 this.active = true;
                 const img = this.$refs.img;
                 const rect = this.$refs.container.getBoundingClientRect();
-                
                 const cx = e.clientX - rect.left;
                 const cy = e.clientY - rect.top;
-                
-                // clamp lens inside container
                 this.lx = Math.max(0, Math.min(cx - this.lensW / 2, rect.width  - this.lensW));
                 this.ly = Math.max(0, Math.min(cy - this.lensH / 2, rect.height - this.lensH));
-                
-                // actual rendered size of image (object-contain adds letterboxing)
                 const scale = Math.min(rect.width / img.naturalWidth, rect.height / img.naturalHeight);
                 const rendW = img.naturalWidth  * scale;
                 const rendH = img.naturalHeight * scale;
-                
-                // image offset inside container (centered)
                 const offX = (rect.width  - rendW) / 2;
                 const offY = (rect.height - rendH) / 2;
-                
-                // scale up the rendered image by zoom factor
                 this.bgW = rendW * this.zoom;
                 this.bgH = rendH * this.zoom;
-                
-                // position so the zoomed region is centered under the cursor
                 this.bgX = -((cx - offX) * this.zoom - this.lensW / 2);
                 this.bgY = -((cy - offY) * this.zoom - this.lensH / 2);
             }
@@ -201,6 +187,4 @@ new class extends Component
     }
 </script>
 @endscript
-
 </div>
-

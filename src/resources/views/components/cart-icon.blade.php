@@ -23,7 +23,7 @@ new class extends Component
 };
 ?>
 
-<a href="\cart" class="relative inline-block rounded-theme-full hover:bg-surface-100 p-2 transition-colors" wire:navigate>
+<a href="{{ url(app()->getLocale() . '/cart') }}" class="relative inline-block rounded-theme-full hover:bg-surface-100 p-2 transition-colors" wire:navigate>
     @icon('cart', 'sm:w-header-icon sm:h-header-icon w-m-header-icon h-m-header-icon sm:text-on-header text-on-m-header')
     <span wire:loading.class="animate-pulse bg-red-400"
         wire:loading.class.remove="bg-red-600"

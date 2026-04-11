@@ -23,7 +23,8 @@
                 </a>
             </h3>
             <p class="text-muted text-theme-sm mb-2 line-clamp-1">
-                {{ $item->product->description ? Str::limit($item->product->description, 60) : 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
+                {{ $item->product->description ? Str::limit($item->product->description, 60) : __('No products found') }}
+
             </p>
             <p>
                 <span class="text-theme-xl font-black text-accent">

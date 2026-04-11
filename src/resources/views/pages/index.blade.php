@@ -12,7 +12,10 @@ new class extends Component
     public function featuredCategories()
     {
         return Category::whereNull('parent_id')
-            ->with(['children' => fn($q) => $q->withCount('products')])
+            ->with([
+                'translations',
+                'children' => fn($q) => $q->withCount('products')->with('translations'),
+            ])
             ->withCount('products')
             ->orderBy('name')
             ->get();
@@ -40,8 +43,8 @@ new class extends Component
     public function stats()
     {
         return [
-            'products' => Product::count(),
-            'categories' => Category::count(),
+            'products'   => Product::count(),
+            'categories' => Category::with('translations')->count(),
         ];
     }
 
@@ -49,13 +52,14 @@ new class extends Component
     {
         return view('pages.index', [
             'featuredCategories' => $this->featuredCategories,
-            'newArrivals' => $this->newArrivals,
-            'topRated' => $this->topRated,
-            'stats' => $this->stats,
+            'newArrivals'        => $this->newArrivals,
+            'topRated'           => $this->topRated,
+            'stats'              => $this->stats,
         ]);
     }
 };
 ?>
+
 <x-slot name="header">
     <div class="grow hidden lg:block" id="header-search-portal"></div>
 </x-slot>
@@ -68,11 +72,11 @@ new class extends Component
                 <span class="absolute top-1/2 -translate-y-1/2 sm:inset-s-header-search-px inset-s-m-header-search-px z-10 pointer-events-none">
                     @icon('search', 'w-5 h-5 sm:text-on-header/50 text-on-m-header/50')
                 </span>
-                <input 
+                <input
                     type="text"
                     name="search"
-                    class="input header-input w-full sm:pr-[calc(var(--spacing-header-search-px)+2rem)]! pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!" 
-                    placeholder="عن ماذا تبحث ؟">
+                    class="input header-input w-full sm:pr-[calc(var(--spacing-header-search-px)+2rem)]! pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!"
+                    placeholder="{{ __('What are you looking for?') }}">
             </div>
         </form>
     </template>
@@ -84,23 +88,23 @@ new class extends Component
         <div class="relative flex flex-col md:flex-row items-center gap-10">
             <div class="flex-1">
                 <h1 class="text-theme-4xl md:text-theme-5xl font-black text-theme leading-tight mb-4">
-                    نأتيك بصافي اللبن من خير المزارع
+                    {{ __('Browse all our products') }}
                     <br class="max-lg:hidden">
-                    <span class="text-primary">في مكان واحد</span>
+                    <span class="text-primary">{{ __('In one place') }}</span>
                 </h1>
                 <p class="text-muted text-theme-lg sm:text-theme-xl mb-8 max-w-md me-auto">
-                    تسوّق من أوسع تشكيلة من  شتى انواع الالبان والاجبان المختارة بعناية بأفضل الأسعار.
+                    {{ $storeSlogan ?? '' }}
                 </p>
                 <div class="flex flex-wrap gap-3 justify-center md:justify-start">
                     <a href="{{ route('shop.products') }}"
                        wire:navigate
                        class="btn btn-primary hover:opacity-75 font-bold rounded-cta! transition-all! shadow-glow! hover:-translate-y-0.5">
-                        تصفح المنتجات
+                        {{ __('Products') }}
                         @icon('arrow-r', 'w-4 h-4 rotate-180')
                     </a>
                     <a href="#categories"
                        class="btn bg-surface-200 hover:bg-surface-300 text-theme font-bold rounded-cta! transition-all! hover:-translate-y-0.5">
-                        الأقسام
+                        {{ __('Categories') }}
                     </a>
                 </div>
             </div>
@@ -109,10 +113,10 @@ new class extends Component
 
     <section id="categories">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-theme-2xl font-bold text-theme">تصفح الأقسام</h2>
+            <h2 class="text-theme-2xl font-bold text-theme">{{ __('Categories') }}</h2>
             <a href="{{ route('shop.products') }}" wire:navigate
                class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
-                عرض الكل
+                {{ __('View all') }}
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
@@ -129,7 +133,7 @@ new class extends Component
                             <span class="font-bold text-theme group-hover:text-primary! transition-colors">
                                 {{ $category->name }}
                             </span>
-                            <span class="block text-theme-xs text-muted">{{ $category->products_count }} منتج</span>
+                            <span class="block text-theme-xs text-muted">{{ $category->products_count }} {{ __('Products') }}</span>
                         </div>
                         @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors')
                     </a>
@@ -147,7 +151,7 @@ new class extends Component
                     @endif
                 </div>
             @empty
-                <p class="col-span-full text-center text-muted py-8">لا توجد أقسام بعد.</p>
+                <p class="col-span-full text-center text-muted py-8">{{ __('No products found') }}</p>
             @endforelse
         </div>
     </section>
@@ -155,12 +159,12 @@ new class extends Component
     <section>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-                <h2 class="text-theme-2xl font-bold text-theme">وصل حديثاً</h2>
-                <span class="badge bg-primary text-on-primary">جديد</span>
+                <h2 class="text-theme-2xl font-bold text-theme">{{ __('Latest') }}</h2>
+                <span class="badge bg-primary text-on-primary">{{ __('New') }}</span>
             </div>
             <a href="{{ route('shop.products', ['sort' => 'latest']) }}" wire:navigate
                class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
-                عرض الكل
+                {{ __('View all') }}
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
@@ -170,7 +174,7 @@ new class extends Component
                 <livewire:listing-product :product="$product" :key="'new-'.$product->id" />
             @empty
                 <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-theme-xl font-bold text-muted">لا توجد منتجات بعد.</p>
+                    <p class="text-theme-xl font-bold text-muted">{{ __('No products available') }}</p>
                 </div>
             @endforelse
         </div>
@@ -179,12 +183,12 @@ new class extends Component
     <section>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
-                <h2 class="text-theme-2xl font-bold text-theme">الأعلى تقييماً</h2>
-                <span class="badge bg-gold-surface text-on-gold border border-gold">★ مميز</span>
+                <h2 class="text-theme-2xl font-bold text-theme">{{ __('Top Rated') }}</h2>
+                <span class="badge bg-gold-surface text-on-gold border border-gold">★ {{ __('Featured') }}</span>
             </div>
             <a href="{{ route('shop.products', ['sort' => 'top_rated']) }}" wire:navigate
                class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
-                عرض الكل
+                {{ __('View all') }}
                 @icon('chevron-r', 'w-4 h-4 rotate-180')
             </a>
         </div>
@@ -194,7 +198,7 @@ new class extends Component
                 <livewire:listing-product :product="$product" :key="'top-'.$product->id" />
             @empty
                 <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-theme-xl font-bold text-muted">لا توجد منتجات بعد.</p>
+                    <p class="text-theme-xl font-bold text-muted">{{ __('No products available') }}</p>
                 </div>
             @endforelse
         </div>
