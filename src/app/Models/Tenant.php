@@ -14,13 +14,14 @@ class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains , SoftDeletes;
 
-    protected $fillable = ['name', 'status'];
+    protected $fillable = ['name', 'logo_url', 'status'];
 
     protected $dates = ['deleted_at'];
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'tenant_users')
+        ->using(TenantUser::class)
         ->withPivot('role')
         ->withTimestamps();
     }
@@ -40,6 +41,7 @@ class Tenant extends BaseTenant
             'id',
             'name',
             'status',
+            'logo_url',
         ];
     }
     
@@ -64,4 +66,51 @@ class Tenant extends BaseTenant
     public function settings() { return $this->hasOne(TenantSetting::class); }
     public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
     public function payments() { return $this->hasMany(Payment::class); }
+
+    public function getLanguage(string $default = 'ar'): string
+    {
+        return $this->settings?->language ?? $default;
+    }
+
+    public function resolvedTheme()
+    {
+        if ($this->settings?->theme) {
+            return $this->settings->theme;
+        }
+ 
+        $default = Theme::where('is_default', true)->first();
+        if ($default) {
+            return $default;
+        }
+ 
+        $new = new Theme();
+        $new->forceFill([
+            'name'      => 'System Default',
+            'icon_pack' => Theme::defaultIconPack(),
+            'currency'  => Theme::defaultCurrency(),
+            'palette'   => Theme::defaultPalette(),
+            'font'      => Theme::defaultFont(),
+            'buttons'   => Theme::defaultButtons(),
+            'glows'     => Theme::defaultGlows(),
+            'corners'   => Theme::defaultCorners(),
+        ]);
+ 
+        return $new;
+    }
+
+    /**
+     * Format a price amount using this theme's currency config.
+     */
+    public function formatPrice(float $amount)
+    {
+        $c = $this->resolvedTheme()->resolvedCurrency();
+        $code = $this->settings?->currency ?? 'USD';
+        $symbol = Theme::getSymbol($code);
+        $decimals = $c['decimals'] ?? 2;
+        $formatted = number_format($amount, $decimals);
+
+        return $c['position'] === 'before'
+            ? $symbol . $formatted
+            : $formatted . ' ' . $symbol;
+    }
 }

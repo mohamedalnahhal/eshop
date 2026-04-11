@@ -1,39 +1,35 @@
 <?php
 
-namespace App\Filament\TenantAdmin\Resources\Products\Pages;
+namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\StockAdjustmentStatus;
+use App\Enums\StockAdjustmentType;
 use App\Models\Product;
 use App\Models\StockAdjustment;
 use App\Models\Supplier;
-use App\Filament\TenantAdmin\Resources\Products\ProductResource;
+use App\Filament\TenantAdmin\Widgets\InventoryOverview;
 use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\Page;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 
-class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
+class Inventory extends Page implements HasTable
 {
-    use InteractsWithActions;
-    use InteractsWithSchemas;
     use InteractsWithTable;
-
-    protected static string $resource = ProductResource::class;
 
     protected string $view = 'filament.tenant-admin.resources.products.pages.manage-inventory';
 
-    public function getTitle(): string
-    {
-        return 'Inventory Management';
-    }
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationLabel = 'Inventory';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $title = 'Inventory Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Products';
+
 
     public function table(Table $table): Table
     {
@@ -44,13 +40,7 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
                     ->label('Product'),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Type')
-                    ->badge()
-                    ->color(fn ($state) => match($state) {
-                        'purchase'   => 'success',
-                        'production' => 'info',
-                        'damaged'    => 'danger',
-                        default      => 'gray',
-                    }),
+                    ->badge(),
                 Tables\Columns\TextColumn::make('updated_value')
                     ->label('Qty')
                     ->badge(),
@@ -59,23 +49,20 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
                     ->default('-'),
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
-                    ->options([
-                        'issued'  => 'Issued',
-                        'waiting' => 'Waiting',
-                        'done'    => 'Done',
-                    ])
+                    ->options(StockAdjustmentStatus::class)
                     ->beforeStateUpdated(function ($record, $state) use (&$old) {
                         $old = $record->status;
                     })
                     ->afterStateUpdated(function ($record, $state) use (&$old) {
-                        if ($state === 'done' && $old !== 'done') {
+                        $status = StockAdjustmentStatus::tryFrom($state);
+                        if ($status === StockAdjustmentStatus::DONE && $old !== StockAdjustmentStatus::DONE) {
                             $record->product->increment('stock', $record->updated_value);
                 
                             Notification::make()
                                 ->title('Stock Incremented')
                                 ->success()
                                 ->send();
-                        } elseif ($old === 'done' && $state !== 'done') {
+                        } elseif ($old === StockAdjustmentStatus::DONE && $status !== StockAdjustmentStatus::DONE) {
                             $record->product->decrement('stock', $record->updated_value);
                 
                             Notification::make()
@@ -88,7 +75,7 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
             ->filters([
                 Tables\Filters\Filter::make('not_done')
                     ->label('Hide Completed')
-                    ->query(fn ($query) => $query->where('status', '!=', 'done'))
+                    ->query(fn ($query) => $query->where('status', '!=', StockAdjustmentStatus::DONE))
                     ->default(),
             ])
             ->headerActions([
@@ -102,19 +89,14 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
                             ->required(),
                         Select::make('type')
                             ->label('Type')
-                            ->options([
-                                'purchase'   => 'Purchase',
-                                'production' => 'Production',
-                                'damaged'    => 'Damaged',
-                            ])
-                            ->required()
-                            ->live(),
+                            ->options(StockAdjustmentType::class)
+                            ->required(),
                         Select::make('supplier_id')
                             ->label('Supplier')
                             ->options(Supplier::pluck('name', 'id'))
                             ->searchable()
                             ->nullable()
-                            ->hidden(fn ($get) => $get('type') !== 'purchase'),
+                            ->hidden(fn ($get) => $get('type') !== StockAdjustmentType::PURCHASE->value),
                         TextInput::make('updated_value')
                             ->label('Quantity')
                             ->numeric()
@@ -122,12 +104,8 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
                             ->minValue(1),
                         Select::make('status')
                             ->label('Status')
-                            ->options([
-                                'issued'  => 'Issued',
-                                'waiting' => 'Waiting',
-                                'done'    => 'Done',
-                            ])
-                            ->default('issued')
+                            ->options(StockAdjustmentStatus::class)
+                            ->default(StockAdjustmentStatus::ISSUED)
                             ->required(),
                     ])
                     ->action(function (array $data) {
@@ -151,7 +129,36 @@ class ManageInventory extends Page implements HasActions, HasSchemas, HasTable
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\TenantAdmin\Resources\Products\Widgets\InventoryOverview::class,
+            InventoryOverview::class,
         ];
+    }
+    
+    public static function getNavigationBadge(): ?string
+    {
+        $low = Product::whereBetween('stock', [1, 10])->count();
+        $out = Product::where('stock', '<=', 0)->count();
+    
+        return (string) ($low + $out);
+    }
+    
+    public static function getNavigationBadgeColor(): ?string
+    {
+        if (Product::where('stock', '<=', 0)->exists()) {
+            return 'danger';
+        }
+    
+        if (Product::whereBetween('stock', [1, 10])->exists()) {
+            return 'warning';
+        }
+    
+        return 'primary';
+    }
+    
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        $low = Product::whereBetween('stock', [1, 10])->count();
+        $out = Product::where('stock', '<=', 0)->count();
+    
+        return "{$out} Out of Stock · {$low} Low Stock";
     }
 }

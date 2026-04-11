@@ -11,14 +11,7 @@ class TenantSetting extends Model
     use HasUuids;
     use BelongsToTenant;
     
-    protected $fillable = [
-        'tenant_id', 
-        'language', 
-        'theme_id',
-        'store_name',  
-        'contact_email', 
-        'contact_phone', 
-    ];
+    protected $fillable = ['tenant_id', 'language', 'theme_id', 'favicon_url', 'slogan', 'currency', 'contact_email', 'contact_phone'];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }
     public function theme() { return $this->belongsTo(Theme::class); }

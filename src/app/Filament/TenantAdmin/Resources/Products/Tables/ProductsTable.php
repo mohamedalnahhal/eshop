@@ -16,9 +16,9 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\TrashedFilter;
-
 
 class ProductsTable
 {
@@ -33,6 +33,11 @@ class ProductsTable
                     ->copyable() 
                     ->fontFamily('mono')
                     ->searchable(),
+                ImageColumn::make('media.file_path')
+                    ->label('image')
+                    ->disk('public')
+                    ->stacked()
+                    ->limit(1),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')

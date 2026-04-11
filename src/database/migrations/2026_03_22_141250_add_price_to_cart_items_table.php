@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->dropColumn("unit_price");
+        Schema::table('cart_items', function (Blueprint $table) {
+            $table->decimal('price', 10, 2);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_items', function (Blueprint $table) {
-            $table->decimal('unit_price', 10, 2);
+        Schema::table('cart_items', function (Blueprint $table) {
+            $table->dropColumn('price');
         });
     }
 };
