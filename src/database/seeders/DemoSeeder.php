@@ -365,6 +365,7 @@ class DemoSeeder extends Seeder
                     'password' => bcrypt($entry['owner']['password']),
                     'gender'   => 'male',
                     'phone'    => '970591234567',
+                    'role'     => UserRole::TENANT_OWNER,
                 ]
             );
 
