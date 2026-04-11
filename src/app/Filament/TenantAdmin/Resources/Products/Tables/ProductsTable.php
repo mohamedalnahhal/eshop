@@ -16,6 +16,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\TrashedFilter;
 
@@ -25,15 +26,14 @@ class ProductsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('media.file_path')
-                    ->label('المنتج')
-                    ->disk('public')
-                    ->circular() 
-                    ->stacked()
-                    ->limit(1),
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable(),
+                ImageColumn::make('media.file_path')
+                    ->label('image')
+                    ->disk('public')
+                    ->stacked()
+                    ->limit(1),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')

@@ -24,14 +24,14 @@ class ProductForm
                             ->label('Product name')
                             ->required(),
                          Select::make('categories')
-                        ->label('Sections')
-                        ->relationship('categories', 'name') 
-                        ->multiple() 
-                        ->preload()
-                        ->searchable()
-                       ->required(),
+                            ->label('Categories')
+                            ->relationship('categories', 'name') 
+                            ->multiple() 
+                            ->preload()
+                            ->searchable()
+                            ->required(),
                         TextInput::make('price')
-                            ->label('the price')
+                            ->label('Price')
                             ->required()
                             ->numeric()
                             ->prefix('$'),
@@ -50,7 +50,7 @@ class ProductForm
                     ->description('Upload product images here. You can drag and drop images to arrange them.')
                     ->schema([
                         FileUpload::make('gallery_images')
-                            ->label('the pictures')
+                            ->label('Pictures')
                             ->multiple()           
                             ->image()            
                             ->reorderable()        
