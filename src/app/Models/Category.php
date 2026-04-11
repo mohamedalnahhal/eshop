@@ -6,18 +6,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 
-class Category extends Model
+class Category extends Model implements TranslatableContract
 {
     use HasUuids;
     use BelongsToTenant;
     use SoftDeletes;
-    
+    use Translatable;
+
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['name', 'type', 'parent_id', 'tenant_id'];
 
-    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public array $translatedAttributes = ['name'];
+
+    protected $fillable = [
+        'type',
+        'parent_id',
+        'tenant_id',
+    ];
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     public function parent()
     {
