@@ -21,6 +21,14 @@ class AddressesTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
+                    ->searchable(),
+
                 TextColumn::make('addressable_type')
                     ->label('Linked To (Type)')
                     ->formatStateUsing(fn (string $state): string => class_basename($state))

@@ -28,6 +28,10 @@ class ProductsTable
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
                     ->searchable(),
                 ImageColumn::make('media.file_path')
                     ->label('image')
