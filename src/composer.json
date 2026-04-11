@@ -34,6 +34,7 @@
         "mallardduck/blade-boxicons": "^2.5",
         "mallardduck/blade-lucide-icons": "^1.26",
         "secondnetwork/blade-tabler-icons": "^3.41",
+        "spatie/laravel-translation-loader": "^2.8",
         "stancl/tenancy": "^3.9",
         "themesberg/flowbite-blade-icons": "^1.4"
     },
