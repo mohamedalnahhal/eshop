@@ -48,15 +48,18 @@ class UsersTable
                 TrashedFilter::make(),  
             ])
             ->recordActions([
-              ActionGroup::make([
+                EditAction::make(),
+                ActionGroup::make([
                     DeleteAction::make(),
                     RestoreAction::make(),
+                    ForceDeleteAction::make(),
                 ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }

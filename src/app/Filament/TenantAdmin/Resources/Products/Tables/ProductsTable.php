@@ -4,13 +4,11 @@ namespace App\Filament\TenantAdmin\Resources\Products\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -100,14 +98,12 @@ class ProductsTable
                         }),
                         DeleteAction::make(),
                         RestoreAction::make(),
-                        ForceDeleteAction::make(), 
                 ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }
