@@ -16,7 +16,7 @@
 
 <footer class="bg-footer text-on-footer
                pt-footer-pt pb-footer-pb mt-footer-mt
-               border-t-footer-bt border-b-footer-bb border-border-m-header">
+               border-t-footer-bt border-b-footer-bb border-border-m-header sm:border-border-header">
 
     <div class="theme-container">
 

@@ -319,7 +319,7 @@ class Theme extends Model
             'padding_b'   => '1.5rem',
             'margin_t'    => '4rem',
             'border_t'    => '1px',
-            'border_b'    => 'none',
+            'border_b'    => '0px',
             'logo_width'  => '2.5rem',
             'logo_height' => '2.5rem',
             'columns'     => 3,      // 1 | 2 | 3
