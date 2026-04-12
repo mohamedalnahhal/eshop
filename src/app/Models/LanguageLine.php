@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Spatie\TranslationLoader\LanguageLine as BaseLanguageLine;
+use Illuminate\Support\Arr;
 
 class LanguageLine extends BaseLanguageLine
 {
@@ -14,7 +15,7 @@ class LanguageLine extends BaseLanguageLine
             ->reduce(function ($lines, self $languageLine) use ($locale) {
                 $translation = $languageLine->getTranslation($locale);
                 if ($translation !== null) {
-                    array_set($lines, $languageLine->key, $translation);
+                    Arr::set($lines, $languageLine->key, $translation);
                 }
                 return $lines;
             }, []);
