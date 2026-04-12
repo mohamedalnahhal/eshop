@@ -42,6 +42,7 @@
     --color-m-header: var(--color-m-header);
     --color-on-m-header: var(--color-on-m-header);
     --color-footer: var(--color-footer);
+    --color-on-footer: var(--color-on-footer);
     --color-border: var(--color-border);
     --color-border-muted: var(--color-border-muted);
     --color-border-input: var(--color-border-input);
@@ -185,6 +186,14 @@
     --radius-theme-3xl: var(--radius-3xl);
     --radius-theme-4xl: var(--radius-4xl);
     --radius-theme-full: var(--radius-full);
+
+    --spacing-footer-pt: var(--footer-pt);
+    --spacing-footer-pb: var(--footer-pb);
+    --spacing-footer-mt: var(--footer-mt);
+    --border-width-footer-bt: var(--footer-border-t);
+    --border-width-footer-bb: var(--footer-border-b);
+    --spacing-footer-logo-w: var(--footer-logo-width);
+    --spacing-footer-logo-h: var(--footer-logo-height);
 }
 
 :root {

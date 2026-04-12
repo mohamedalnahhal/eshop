@@ -195,6 +195,23 @@ return new class extends Migration
              * }
              */
             $table->json('homepage')->nullable();
+            
+            /**
+             * footer: {
+             *   padding_t, padding_b, margin_t,
+             *   border_t, border_b,
+             *   logo_width, logo_height,
+             *   columns: 1|2|3,
+             *   show_logo, show_slogan, show_contact,
+             *   show_nav, show_copyright,
+             *   copyright_text,
+             *   nav_title, contact_title,
+             *   nav_links: [
+             *     { label, route, params }
+             *   ]
+             * }
+             */
+            $table->jsonb('footer')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

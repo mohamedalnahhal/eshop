@@ -28,6 +28,7 @@ class Theme extends Model
         'corners',
         'icon_pack',
         'homepage',
+        'footer',
     ];
  
     protected $casts = [
@@ -42,6 +43,7 @@ class Theme extends Model
         'glows'      => 'array',
         'corners'    => 'array',
         'homepage'   => 'array',
+        'footer'     => 'array',
     ];
 
     public static function getSymbol(string $currencyCode)
@@ -310,41 +312,31 @@ class Theme extends Model
         ];
     }
     
-    public function resolvedHomepage(): array
+    public static function defaultFooter(): array
     {
-        $default  = static::defaultHomepage();
-        $stored   = $this->homepage ?? [];
-    
-        if (empty($stored['sections'])) {
-            return $default;
-        }
-    
-        // Merge per-section by key so new sections added to defaults aren't lost
-        $defaultByKey = collect($default['sections'])->keyBy('key');
-        $storedByKey  = collect($stored['sections'])->keyBy('key');
-    
-        $merged = $defaultByKey->map(function ($defaultSection, $key) use ($storedByKey) {
-            return array_merge($defaultSection, $storedByKey->get($key, []));
-        });
-    
-        // Append any stored sections not in defaults (future custom sections)
-        $storedByKey->each(function ($section, $key) use (&$merged, $defaultByKey) {
-            if (!$defaultByKey->has($key)) {
-                $merged->put($key, $section);
-            }
-        });
-    
-        return ['sections' => $merged->sortBy('order')->values()->all()];
-    }
-    
-    public function homepageSections(): Collection
-    {
-        return collect($this->resolvedHomepage()['sections'])->sortBy('order')->values();
-    }
-    
-    public function homepageSection(string $key): array
-    {
-        return $this->homepageSections()->firstWhere('key', $key) ?? [];
+        return [
+            'padding_t'   => '3rem',
+            'padding_b'   => '1.5rem',
+            'margin_t'    => '4rem',
+            'border_t'    => '1px',
+            'border_b'    => 'none',
+            'logo_width'  => '2.5rem',
+            'logo_height' => '2.5rem',
+            'columns'     => 3,      // 1 | 2 | 3
+            'show_logo'         => true,
+            'show_slogan'       => true,
+            'show_contact'      => true,
+            'show_nav'          => true,
+            'show_copyright'    => true,
+            'copyright_text'    => 'جميع الحقوق محفوظة',
+            'nav_title'         => 'روابط سريعة',
+            'contact_title'     => 'تواصل معنا',
+            'nav_links' => [
+                ['label' => 'المنتجات',  'route' => 'shop.products', 'params' => []],
+                ['label' => 'من نحن',    'route' => 'shop.about',    'params' => []],
+                ['label' => 'اتصل بنا',  'route' => 'shop.contact',  'params' => []],
+            ],
+        ];
     }
 
     public function resolvedCurrency()
@@ -396,6 +388,48 @@ class Theme extends Model
     {
         return $this->icon_pack ?? static::defaultIconPack();
     }
+
+    public function resolvedHomepage(): array
+    {
+        $default  = static::defaultHomepage();
+        $stored   = $this->homepage ?? [];
+    
+        if (empty($stored['sections'])) {
+            return $default;
+        }
+    
+        // Merge per-section by key so new sections added to defaults aren't lost
+        $defaultByKey = collect($default['sections'])->keyBy('key');
+        $storedByKey  = collect($stored['sections'])->keyBy('key');
+    
+        $merged = $defaultByKey->map(function ($defaultSection, $key) use ($storedByKey) {
+            return array_merge($defaultSection, $storedByKey->get($key, []));
+        });
+    
+        // Append any stored sections not in defaults (future custom sections)
+        $storedByKey->each(function ($section, $key) use (&$merged, $defaultByKey) {
+            if (!$defaultByKey->has($key)) {
+                $merged->put($key, $section);
+            }
+        });
+    
+        return ['sections' => $merged->sortBy('order')->values()->all()];
+    }
+    
+    public function homepageSections(): Collection
+    {
+        return collect($this->resolvedHomepage()['sections'])->sortBy('order')->values();
+    }
+    
+    public function homepageSection(string $key): array
+    {
+        return $this->homepageSections()->firstWhere('key', $key) ?? [];
+    }
+
+    public function resolvedFooter(): array
+    {
+        return array_merge(static::defaultFooter(), $this->footer ?? []);
+    }
  
     public function toCssVars()
     {
@@ -407,6 +441,7 @@ class Theme extends Model
         $mh = $this->resolvedMobileHeader();
         $g  = $this->resolvedGlows();
         $c  = $this->resolvedCorners();
+        $fo = $this->resolvedFooter();
 
  
         $vars = [
@@ -565,6 +600,16 @@ class Theme extends Model
             '--radius-3xl'          => $c['3xl'],
             '--radius-4xl'          => $c['4xl'],
             '--radius-full'         => $c['full'],
+
+            // footer
+            '--footer-pt'            => $fo['padding_t'],
+            '--footer-pb'            => $fo['padding_b'],
+            '--footer-mt'            => $fo['margin_t'],
+            '--footer-border-t'      => $fo['border_t'],
+            '--footer-border-b'      => $fo['border_b'],
+            '--footer-logo-width'    => $fo['logo_width'],
+            '--footer-logo-height'   => $fo['logo_height'],
+            '--footer-cols'          => $fo['columns'],
         ];
  
         $lines = [':root {'];
