@@ -12,7 +12,8 @@ class ProductService
         $locale = app()->getLocale();
 
         return Product::query()
-            ->with(['categories', 'media', 'translations'])
+            ->withTranslation($locale)
+            ->with(['categories', 'media'])
             ->when($filters['category_id'] ?? null,
                 fn($q, $v) => $q->whereHas('categories', fn($q) => $q->where('categories.id', $v))
             )
@@ -23,10 +24,7 @@ class ProductService
                 fn($q, $v) => $q->whereRaw('price <= ?', [(int)$v + 0.99])
             )
             ->when($filters['search'] ?? null,
-                fn($q, $v) => $q->whereHas('translations', function ($q) use ($v, $locale) {
-                    $q->where('locale', $locale)
-                      ->where('name', 'like', "%{$v}%");
-                })
+                fn($q, $v) => $q->whereTranslation('name', 'like', "%{$v}%", $locale)
             )
             ->when($filters['sort'] ?? 'latest', function ($q, $sort) {
                 return match($sort) {

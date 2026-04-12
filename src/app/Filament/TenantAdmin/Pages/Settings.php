@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use App\Models\TenantSetting;
 
 class Settings extends Page implements HasForms
@@ -21,7 +22,7 @@ class Settings extends Page implements HasForms
     protected static ?int $navigationSort = 99;
     protected static ?string $title = 'General Store Settings';
     protected static string|\UnitEnum|null $navigationGroup = 'Store Settings';
-    
+
     protected string $view = 'filament.tenant-admin.pages.settings';
 
     public ?array $data = [];
@@ -37,6 +38,13 @@ class Settings extends Page implements HasForms
 
     public function form(Schema $schema): Schema
     {
+        $allLocales = collect(\ResourceBundle::getLocales(''))
+            ->mapWithKeys(fn($locale) => [
+                $locale => \Locale::getDisplayName($locale, 'en')
+            ])
+            ->sort()
+            ->toArray();
+
         return $schema
             ->components([
                 Section::make('Store Identity')
@@ -59,6 +67,24 @@ class Settings extends Page implements HasForms
                             ->label('Contact Phone')
                             ->tel()
                             ->maxLength(30),
+                    ]),
+
+                Section::make('Language Settings')
+                    ->icon('heroicon-o-language')
+                    ->columns(2)
+                    ->schema([
+                        Select::make('default_language')
+                            ->label('Default Language')
+                            ->options($allLocales)
+                            ->searchable()
+                            ->required(),
+
+                        Select::make('supported_languages')
+                            ->label('Supported Languages')
+                            ->options($allLocales)
+                            ->multiple()
+                            ->searchable()
+                            ->required(),
                     ]),
             ])
             ->statePath('data');
