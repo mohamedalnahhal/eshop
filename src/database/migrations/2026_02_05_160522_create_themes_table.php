@@ -145,6 +145,57 @@ return new class extends Migration
 
             $table->string('icon_pack')->default('heroicons');
 
+            /**
+             * homepage: {
+             *   sections: [
+             *     {
+             *       key: 'hero',
+             *       enabled: true,
+             *       order: 1,
+             *       title'   => 'عنوان كبير',
+             *       subtitle'=> 'عنوان فرعي لجذب الزبائن بجملة عن متجرك مثل تسوّق من أوسع تشكيلة...',
+             *       cta_primary_label' => 'تصفح المنتجات',
+             *       cta_secondary_label: 'الأقسام',
+             *     },
+             *     {
+             *       key: 'categories',
+             *       enabled: true,
+             *       order: 2,
+             *       title: 'تصفح الأقسام',
+             *       show_view_all: true,
+             *     },
+             *     {
+             *       key: 'new_arrivals',
+             *       enabled: true,
+             *       order: 3,
+             *       title: 'وصل حديثاً',
+             *       limit: 8,
+             *       badge_label: 'جديد',
+             *       show_view_all: true,
+             *     },
+             *     {
+             *       key: 'top_rated',
+             *       enabled: true,
+             *       order: 4,
+             *       title: 'الأعلى تقييماً',
+             *       limit: 4,
+             *       badge_label: '★ مميز',
+             *       show_view_all: true,
+             *     },
+             *     {
+             *       key: 'promo_banner',
+             *       enabled: false,
+             *       order: 2,
+             *       title: 'عروض خاصة',
+             *       subtitle: 'لا تفوّت أفضل الصفقات',
+             *       cta_label: 'اكتشف العروض',
+             *       cta_url: '',
+             *     },
+             *   ]
+             * }
+             */
+            $table->json('homepage')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 

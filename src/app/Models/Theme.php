@@ -6,6 +6,7 @@ use App\Models\Concerns\BelongsToTenantOrGlobal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Theme extends Model
 {
@@ -26,6 +27,7 @@ class Theme extends Model
         'glows',
         'corners',
         'icon_pack',
+        'homepage',
     ];
  
     protected $casts = [
@@ -39,33 +41,8 @@ class Theme extends Model
         'm_header'   => 'array',
         'glows'      => 'array',
         'corners'    => 'array',
+        'homepage'   => 'array',
     ];
- 
-    protected static function booted(): void
-    {
-        static::withoutGlobalScope(\Stancl\Tenancy\Database\TenantScope::class);
-    
-        static::addGlobalScope('tenant_with_global', function ($query) {
-            $tenantId = tenant()?->getTenantKey();
-    
-            $query->where(function ($q) use ($tenantId) {
-                $q->whereNull('tenant_id');
-    
-                if ($tenantId) {
-                    $q->orWhere('tenant_id', $tenantId);
-                }
-            });
-        });
-    
-        // Prevent the trait's creating hook from stomping tenant_id = null on global themes
-        static::creating(function ($model) {
-            if ($model->getAttribute('tenant_id') === null) {
-                // Do nothing — keep null
-            } elseif (! $model->getAttribute('tenant_id') && tenancy()->initialized) {
-                $model->setAttribute('tenant_id', tenant()->getTenantKey());
-            }
-        });
-    }
 
     public static function getSymbol(string $currencyCode)
     {
@@ -278,7 +255,98 @@ class Theme extends Model
     {
         return 'heroicon';
     }
- 
+
+    public static function defaultHomepage(): array
+    {
+        return [
+            'sections' => [
+                [
+                    'key'     => 'hero',
+                    'enabled' => true,
+                    'order'   => 1,
+                    'title'   => 'عنوان كبير',
+                    'subtitle'=> 'عنوان فرعي لجذب الزبائن بجملة عن متجرك مثل تسوّق من أوسع تشكيلة...',
+                    'cta_primary_label' => 'تصفح المنتجات',
+                    'cta_secondary_label' => 'الأقسام',
+                    'show_search' => true,
+                ],
+                [
+                    'key'     => 'categories',
+                    'enabled' => true,
+                    'order'   => 2,
+                    'title'   => 'تصفح الأقسام',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'new_arrivals',
+                    'enabled' => true,
+                    'order'   => 3,
+                    'title'   => 'وصل حديثاً',
+                    'limit'   => 8,
+                    'show_badge' => true,
+                    'badge_label' => 'جديد',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'top_rated',
+                    'enabled' => true,
+                    'order'   => 4,
+                    'title'   => 'الأعلى تقييماً',
+                    'limit'   => 4,
+                    'show_badge' => true,
+                    'badge_label' => '★ مميز',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'promo_banner',
+                    'enabled' => true,
+                    'order'   => 2,
+                    'title'   => 'عروض خاصة',
+                    'subtitle'=> 'لا تفوّت أفضل الصفقات',
+                    'cta_label' => 'اكتشف العروض',
+                    'cta_url'   => '',
+                ],
+            ],
+        ];
+    }
+    
+    public function resolvedHomepage(): array
+    {
+        $default  = static::defaultHomepage();
+        $stored   = $this->homepage ?? [];
+    
+        if (empty($stored['sections'])) {
+            return $default;
+        }
+    
+        // Merge per-section by key so new sections added to defaults aren't lost
+        $defaultByKey = collect($default['sections'])->keyBy('key');
+        $storedByKey  = collect($stored['sections'])->keyBy('key');
+    
+        $merged = $defaultByKey->map(function ($defaultSection, $key) use ($storedByKey) {
+            return array_merge($defaultSection, $storedByKey->get($key, []));
+        });
+    
+        // Append any stored sections not in defaults (future custom sections)
+        $storedByKey->each(function ($section, $key) use (&$merged, $defaultByKey) {
+            if (!$defaultByKey->has($key)) {
+                $merged->put($key, $section);
+            }
+        });
+    
+        return ['sections' => $merged->sortBy('order')->values()->all()];
+    }
+    
+    public function homepageSections(): Collection
+    {
+        return collect($this->resolvedHomepage()['sections'])->sortBy('order')->values();
+    }
+    
+    public function homepageSection(string $key): array
+    {
+        return $this->homepageSections()->firstWhere('key', $key) ?? [];
+    }
+
     public function resolvedCurrency()
     {
         return array_merge(static::defaultCurrency(), $this->currency ?? []);
