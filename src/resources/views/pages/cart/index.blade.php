@@ -66,7 +66,7 @@ new class extends Component
                 
                 @foreach($this->cart->items as $item)
                     @php 
-                        $itemSubtotal = $item->price * $item->quantity;
+                        $itemSubtotal = $item->unit_price * $item->quantity;
                         $totalPrice += $itemSubtotal;
                         $subtotals[] = $itemSubtotal;
                     @endphp
