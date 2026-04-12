@@ -13,7 +13,7 @@ class TenantSubscription extends Model
     use HasUuids, SoftDeletes;
     use BelongsToTenant;
 
-    protected $fillable = ['tenant_id', 'subscription_id', 'starts_at', 'ends_at', 'status'];
+    protected $fillable = ['subscription_id', 'starts_at', 'ends_at', 'status'];
 
     protected $casts = [
         'starts_at' => 'datetime',

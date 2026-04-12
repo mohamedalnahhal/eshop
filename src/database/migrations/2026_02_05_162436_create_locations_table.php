@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->boolean('is_pickup_point')->default(false);
             $table->boolean('is_visible_to_customers')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

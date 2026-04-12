@@ -5,14 +5,16 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToTenantOrGlobal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Theme extends Model
 {
     use HasUuids;
     use BelongsToTenantOrGlobal;
+    use SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'name',
         'is_default',
         'currency',
@@ -25,6 +27,8 @@ class Theme extends Model
         'glows',
         'corners',
         'icon_pack',
+        'homepage',
+        'footer',
     ];
  
     protected $casts = [
@@ -38,33 +42,9 @@ class Theme extends Model
         'm_header'   => 'array',
         'glows'      => 'array',
         'corners'    => 'array',
+        'homepage'   => 'array',
+        'footer'     => 'array',
     ];
- 
-    protected static function booted(): void
-    {
-        static::withoutGlobalScope(\Stancl\Tenancy\Database\TenantScope::class);
-    
-        static::addGlobalScope('tenant_with_global', function ($query) {
-            $tenantId = tenant()?->getTenantKey();
-    
-            $query->where(function ($q) use ($tenantId) {
-                $q->whereNull('tenant_id');
-    
-                if ($tenantId) {
-                    $q->orWhere('tenant_id', $tenantId);
-                }
-            });
-        });
-    
-        // Prevent the trait's creating hook from stomping tenant_id = null on global themes
-        static::creating(function ($model) {
-            if ($model->getAttribute('tenant_id') === null) {
-                // Do nothing — keep null
-            } elseif (! $model->getAttribute('tenant_id') && tenancy()->initialized) {
-                $model->setAttribute('tenant_id', tenant()->getTenantKey());
-            }
-        });
-    }
 
     public static function getSymbol(string $currencyCode)
     {
@@ -277,7 +257,88 @@ class Theme extends Model
     {
         return 'heroicon';
     }
- 
+
+    public static function defaultHomepage(): array
+    {
+        return [
+            'sections' => [
+                [
+                    'key'     => 'hero',
+                    'enabled' => true,
+                    'order'   => 1,
+                    'title'   => 'عنوان كبير',
+                    'subtitle'=> 'عنوان فرعي لجذب الزبائن بجملة عن متجرك مثل تسوّق من أوسع تشكيلة...',
+                    'cta_primary_label' => 'تصفح المنتجات',
+                    'cta_secondary_label' => 'الأقسام',
+                    'show_search' => true,
+                ],
+                [
+                    'key'     => 'categories',
+                    'enabled' => true,
+                    'order'   => 2,
+                    'title'   => 'تصفح الأقسام',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'new_arrivals',
+                    'enabled' => true,
+                    'order'   => 3,
+                    'title'   => 'وصل حديثاً',
+                    'limit'   => 8,
+                    'show_badge' => true,
+                    'badge_label' => 'جديد',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'top_rated',
+                    'enabled' => true,
+                    'order'   => 4,
+                    'title'   => 'الأعلى تقييماً',
+                    'limit'   => 4,
+                    'show_badge' => true,
+                    'badge_label' => '★ مميز',
+                    'show_view_all' => true,
+                ],
+                [
+                    'key'     => 'promo_banner',
+                    'enabled' => true,
+                    'order'   => 2,
+                    'title'   => 'عروض خاصة',
+                    'subtitle'=> 'لا تفوّت أفضل الصفقات',
+                    'cta_label' => 'اكتشف العروض',
+                    'cta_url'   => '',
+                ],
+            ],
+        ];
+    }
+    
+    public static function defaultFooter(): array
+    {
+        return [
+            'padding_t'   => '3rem',
+            'padding_b'   => '1.5rem',
+            'margin_t'    => '4rem',
+            'border_t'    => '1px',
+            'border_b'    => '0px',
+            'logo_width'  => '2.5rem',
+            'logo_height' => '2.5rem',
+            'columns'     => 3,      // 1 | 2 | 3
+            'show_logo'         => true,
+            'show_slogan'       => true,
+            'show_contact'      => true,
+            'show_nav'          => true,
+            'show_copyright'    => true,
+            'copyright_text'    => 'جميع الحقوق محفوظة',
+            'nav_title'         => 'روابط سريعة',
+            'contact_title'     => 'تواصل معنا',
+            'nav_links' => [
+                ['label' => 'المنتجات',  'route' => 'shop.products', 'params' => []],
+                ['label' => 'من نحن',    'route' => 'shop.about',    'params' => []],
+                ['label' => 'اتصل بنا',  'route' => 'shop.contact',  'params' => []],
+            ],
+        ];
+    }
+
     public function resolvedCurrency()
     {
         return array_merge(static::defaultCurrency(), $this->currency ?? []);
@@ -327,6 +388,48 @@ class Theme extends Model
     {
         return $this->icon_pack ?? static::defaultIconPack();
     }
+
+    public function resolvedHomepage(): array
+    {
+        $default  = static::defaultHomepage();
+        $stored   = $this->homepage ?? [];
+    
+        if (empty($stored['sections'])) {
+            return $default;
+        }
+    
+        // Merge per-section by key so new sections added to defaults aren't lost
+        $defaultByKey = collect($default['sections'])->keyBy('key');
+        $storedByKey  = collect($stored['sections'])->keyBy('key');
+    
+        $merged = $defaultByKey->map(function ($defaultSection, $key) use ($storedByKey) {
+            return array_merge($defaultSection, $storedByKey->get($key, []));
+        });
+    
+        // Append any stored sections not in defaults (future custom sections)
+        $storedByKey->each(function ($section, $key) use (&$merged, $defaultByKey) {
+            if (!$defaultByKey->has($key)) {
+                $merged->put($key, $section);
+            }
+        });
+    
+        return ['sections' => $merged->sortBy('order')->values()->all()];
+    }
+    
+    public function homepageSections(): Collection
+    {
+        return collect($this->resolvedHomepage()['sections'])->sortBy('order')->values();
+    }
+    
+    public function homepageSection(string $key): array
+    {
+        return $this->homepageSections()->firstWhere('key', $key) ?? [];
+    }
+
+    public function resolvedFooter(): array
+    {
+        return array_merge(static::defaultFooter(), $this->footer ?? []);
+    }
  
     public function toCssVars()
     {
@@ -338,6 +441,7 @@ class Theme extends Model
         $mh = $this->resolvedMobileHeader();
         $g  = $this->resolvedGlows();
         $c  = $this->resolvedCorners();
+        $fo = $this->resolvedFooter();
 
  
         $vars = [
@@ -496,6 +600,16 @@ class Theme extends Model
             '--radius-3xl'          => $c['3xl'],
             '--radius-4xl'          => $c['4xl'],
             '--radius-full'         => $c['full'],
+
+            // footer
+            '--footer-pt'            => $fo['padding_t'],
+            '--footer-pb'            => $fo['padding_b'],
+            '--footer-mt'            => $fo['margin_t'],
+            '--footer-border-t'      => $fo['border_t'],
+            '--footer-border-b'      => $fo['border_b'],
+            '--footer-logo-width'    => $fo['logo_width'],
+            '--footer-logo-height'   => $fo['logo_height'],
+            '--footer-cols'          => $fo['columns'],
         ];
  
         $lines = [':root {'];

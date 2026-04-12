@@ -13,14 +13,15 @@ return new class extends Migration {
     Schema::create('tenant_settings', function (Blueprint $table) {
         $table->uuid('id')->primary();
         $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-        
-        $table->string('store_name')->nullable();
+        $table->string('shop_name')->nullable();
+        $table->string('slogan')->nullable();
+        $table->text('logo_url')->nullable();
+        $table->text('favicon_url')->nullable();
         $table->string('contact_email')->nullable();
         $table->string('contact_phone')->nullable();
-        
         $table->string('language', 10)->default('ar');
+        $table->string('currency', 3)->default('USD');
         $table->foreignUuid('theme_id')->nullable()->constrained('themes')->onDelete('set null')->default(null);
-
         $table->timestamps();
     });
 }

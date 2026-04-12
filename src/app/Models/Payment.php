@@ -14,8 +14,9 @@ class Payment extends Model
     use BelongsToTenant;
     use SoftDeletes;
 
+    const UPDATED_AT = null;
+
     protected $fillable = [
-        'tenant_id',
         'paymentable_id',
         'paymentable_type',
         'payment_method',

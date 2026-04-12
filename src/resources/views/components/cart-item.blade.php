@@ -31,7 +31,7 @@
                     {{ tenant()->formatPrice($subtotal) }}
                 </span>
                 <span class="text-muted text-theme-sm font-semibold whitespace-nowrap">
-                    سعر الوحدة: {{ tenant()->formatPrice($item->price) }}
+                    سعر الوحدة: {{ tenant()->formatPrice($item->unit_price) }}
                 </span>
             </p>
             

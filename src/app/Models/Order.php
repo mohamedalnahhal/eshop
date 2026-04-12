@@ -15,7 +15,6 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'tenant_id',
         'user_id',
         'shipping_address_id',
         'total_price',

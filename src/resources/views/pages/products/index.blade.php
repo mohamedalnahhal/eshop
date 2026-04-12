@@ -97,7 +97,7 @@ new class extends Component
         __('Products') => null,
     ]" />
     <div id="top-title-portal"></div>
-    <div id="top-search-portal" class="stick-header"></div>
+    <div id="top-search-portal"></div>
 </x-slot>
 
 <div>
@@ -135,8 +135,8 @@ new class extends Component
     <template x-teleport="#top-search-portal">
         <div x-data="{ filtersOpen: false }"
             @toggle-filters.window="filtersOpen = !filtersOpen"
-            :class="filtersOpen ? 'bg-bg' : 'bg-m-header backdrop-blur-m-header text-on-m-header'"
-            class="py-4 w-full lg:hidden">
+            :class="filtersOpen ? 'border-b-none' : 'border-b border-border-muted'"
+            class="bg-bg py-4 w-full lg:hidden">
             <div class="theme-container flex flex-row gap-4">
                 <div class="relative grow">
                     <span class="absolute top-1/2 -translate-y-1/2 inset-s-header-search-px z-10 pointer-events-none" wire:loading.remove wire:target="search">
@@ -164,9 +164,9 @@ new class extends Component
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start mt-4">
         <div x-data="{ showFilters: false }"
              @toggle-filters.window="showFilters = !showFilters"
-             class="lg:col-span-1 sticky top-[calc(var(--m-header-height)+var(--m-header-search-height)+2rem)] lg:top-header-hm h-max z-10 transition-all duration-300 bg-bg max-lg:pb-6 max-lg:-mx-4 max-lg:px-4"
-             :class="showFilters ? 'block' : 'hidden lg:block'">
-            <div class="flex flex-col gap-8">
+             class="lg:col-span-1 lg:sticky lg:top-header-hm h-max z-10 transition-all duration-300 bg-bg max-lg:pb-6 max-lg:-mx-4 max-lg:px-4"
+             :class="showFilters ? 'block border-b border-border-muted' : 'hidden lg:block'">
+             <div class="flex flex-col gap-8">
                 <div>
                     <label class="block text-theme-xs font-black text-muted uppercase mr-1 mb-2">{{ __('Categories') }}</label>
                     <select

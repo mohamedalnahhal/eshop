@@ -24,6 +24,10 @@ class SubscriptionsTable
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                    ->tooltip(fn ($state): string => $state) 
+                    ->copyable() 
+                    ->fontFamily('mono')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
@@ -49,16 +53,20 @@ class SubscriptionsTable
                 TrashedFilter::make(),  
             ])
             ->recordActions([
-                 ActionGroup::make([
+                EditAction::make(),
+                ActionGroup::make([
                     DeleteAction::make(),
                     RestoreAction::make(),
+                    ForceDeleteAction::make()
                 ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
-                ]),
+                    ForceDeleteBulkAction::make()
+                ])
+                ->label("Actions"),
             ]);
     }
 }

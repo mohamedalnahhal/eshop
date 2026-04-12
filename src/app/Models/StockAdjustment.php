@@ -15,12 +15,11 @@ class StockAdjustment extends Model
     use BelongsToTenant;
 
     protected $fillable = [
-        'tenant_id',
         'product_id',
         'type',
-        'status',
         'supplier_id',
         'updated_value',
+        'status',
     ];
 
     protected $casts = [

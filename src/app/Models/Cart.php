@@ -10,10 +10,9 @@ class Cart extends Model
 {
     use HasUuids;
     use BelongsToTenant;
-    const UPDATED_AT = null;
-    protected $fillable = ['user_id', 'tenant_id'];
+    
+    protected $fillable = ['user_id'];
 
     public function user() { return $this->belongsTo(User::class); }
-    public function tenant() { return $this->belongsTo(Tenant::class); }
     public function items() { return $this->hasMany(CartItem::class); }
 }

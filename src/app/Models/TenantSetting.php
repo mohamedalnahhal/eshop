@@ -10,20 +10,21 @@ class TenantSetting extends Model
 {
     use HasUuids;
     use BelongsToTenant;
-
+    
     protected $fillable = [
-        'tenant_id',
-        'language',
-        'theme_id',
-        'favicon_url',
+        'shop_name',
         'slogan',
-        'currency',
+        'logo_url',
+        'favicon_url',
         'contact_email',
         'contact_phone',
+        'language',
+        'currency',
+        'theme_id',
         'supported_languages',
         'default_language',
     ];
-
+    
     protected $casts = [
         'supported_languages' => 'array',
     ];

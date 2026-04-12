@@ -23,20 +23,21 @@ class Product extends Model implements TranslatableContract
     public array $translatedAttributes = ['name', 'description'];
 
     protected $fillable = [
+        'name',
         'price',
-        'avg_rating',
+        'description',
         'stock',
-        'tenant_id',
+        'avg_rating',
         'reviews_count',
-        'rating_sum',
+        'rating_sum'
     ];
 
     protected $casts = [
-        'price'         => 'decimal:2',
-        'avg_rating'    => 'decimal:1',
-        'stock'         => 'integer',
+        'price' => 'decimal:2',
+        'stock' => 'integer',
+        'avg_rating' => 'decimal:1',
         'reviews_count' => 'integer',
-        'rating_sum'    => 'integer',
+        'rating_sum' => 'integer',
     ];
 
     public function tenant(): BelongsTo

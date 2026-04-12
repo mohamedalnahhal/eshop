@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('tenant_id')->references('id')->on('tenants');
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->string('name', 100);
             $table->enum('type', ['main', 'sub'])->default('main');
             $table->foreignUuid('parent_id')
@@ -20,6 +20,7 @@ return new class extends Migration {
                 ->constrained('categories')
                 ->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

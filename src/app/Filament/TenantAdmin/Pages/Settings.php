@@ -20,9 +20,8 @@ class Settings extends Page implements HasForms
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationLabel = 'General';
     protected static ?int $navigationSort = 99;
-    protected static ?string $title = 'General Store Settings';
-    protected static string|\UnitEnum|null $navigationGroup = 'Store Settings';
-
+    protected static ?string $title = 'General Shop Settings';
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
     protected string $view = 'filament.tenant-admin.pages.settings';
 
     public ?array $data = [];
@@ -47,12 +46,12 @@ class Settings extends Page implements HasForms
 
         return $schema
             ->components([
-                Section::make('Store Identity')
+                Section::make('Shop Identity')
                     ->icon('heroicon-o-building-storefront')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('store_name')
-                            ->label('Store Name')
+                        TextInput::make('shop_name')
+                            ->label('Shop Name')
                             ->required()
                             ->maxLength(100)
                             ->columnSpanFull(),

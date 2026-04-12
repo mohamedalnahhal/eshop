@@ -15,17 +15,11 @@ class Category extends Model implements TranslatableContract
     use BelongsToTenant;
     use SoftDeletes;
     use Translatable;
-
-    public $incrementing = false;
-    protected $keyType = 'string';
+    
+    protected $fillable = ['name', 'type', 'parent_id'];
 
     public array $translatedAttributes = ['name'];
 
-    protected $fillable = [
-        'type',
-        'parent_id',
-        'tenant_id',
-    ];
 
     public function tenant()
     {

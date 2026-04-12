@@ -39,7 +39,7 @@ class CartService
             $cart->items()->create([
                 'product_id' => $productId,
                 'quantity' => $quantity,
-                'price' => $product->price,
+                'unit_price' => $product->price,
             ]);
         }
     }

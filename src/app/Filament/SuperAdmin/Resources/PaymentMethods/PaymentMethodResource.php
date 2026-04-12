@@ -7,7 +7,6 @@ use App\Filament\SuperAdmin\Resources\PaymentMethods\Schemas\PaymentMethodForm;
 use App\Filament\SuperAdmin\Resources\PaymentMethods\Tables\PaymentMethodTable;
 use App\Models\PaymentMethod;
 use Filament\Resources\Resource;
-use Filament\Support\Icons\Heroicon;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 

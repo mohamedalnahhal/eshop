@@ -9,8 +9,28 @@ use Livewire\Attributes\Computed;
 new class extends Component
 {
     #[Computed]
+    public function theme()
+    {
+        return tenant()->resolvedTheme();
+    }
+    
+    #[Computed]
+    public function sections()
+    {
+        return $this->theme->homepageSections()->filter(fn($s) => $s['enabled']);
+    }
+    
+    #[Computed]
+    public function keys()
+    {
+        return $this->sections->pluck('key');
+    }
+    
+    #[Computed]
     public function featuredCategories()
     {
+        if (!$this->keys->contains('categories')) return collect();
+    
         return Category::whereNull('parent_id')
             ->with([
                 'translations',
@@ -20,43 +40,34 @@ new class extends Component
             ->orderBy('name')
             ->get();
     }
-
+    
     #[Computed]
     public function newArrivals()
     {
+        if (!$this->keys->contains('new_arrivals')) return collect();
+    
         return app(ProductService::class)->getFiltered([
-            'sort' => 'latest',
-            'limit' => 8,
+            'sort'  => 'latest',
+            'limit' => $this->theme->homepageSection('new_arrivals')['limit'] ?? 8,
         ]);
     }
-
+    
     #[Computed]
     public function topRated()
     {
+        if (!$this->keys->contains('top_rated')) return collect();
+    
         return app(ProductService::class)->getFiltered([
-            'sort' => 'top_rated',
-            'limit' => 4,
+            'sort'  => 'top_rated',
+            'limit' => $this->theme->homepageSection('top_rated')['limit'] ?? 4,
         ]);
-    }
-
-    #[Computed]
-    public function stats()
-    {
-        return [
-            'products'   => Product::count(),
-            'categories' => Category::with('translations')->count(),
-        ];
     }
 
     public function render()
     {
-        return view('pages.index', [
-            'featuredCategories' => $this->featuredCategories,
-            'newArrivals'        => $this->newArrivals,
-            'topRated'           => $this->topRated,
-            'stats'              => $this->stats,
-        ]);
+        return view('pages.index');
     }
+
 };
 ?>
 
@@ -81,127 +92,24 @@ new class extends Component
         </form>
     </template>
 
-    <section class="relative overflow-hidden rounded-card shadow-glow px-8 py-14 md:px-16 md:py-20">
-        <div class="pointer-events-none absolute -top-20 -inset-e-20 w-72 h-72 rounded-theme-full bg-primary/10 blur-3xl"></div>
-        <div class="pointer-events-none absolute -bottom-16 -inset-s-16 w-56 h-56 rounded-theme-full bg-primary/10 blur-3xl"></div>
-
-        <div class="relative flex flex-col md:flex-row items-center gap-10">
-            <div class="flex-1">
-                <h1 class="text-theme-4xl md:text-theme-5xl font-black text-theme leading-tight mb-4">
-                    {{ __('Browse all our products') }}
-                    <br class="max-lg:hidden">
-                    <span class="text-primary">{{ __('In one place') }}</span>
-                </h1>
-                <p class="text-muted text-theme-lg sm:text-theme-xl mb-8 max-w-md me-auto">
-                    {{ $storeSlogan ?? '' }}
-                </p>
-                <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                    <a href="{{ route('shop.products') }}"
-                       wire:navigate
-                       class="btn btn-primary hover:opacity-75 font-bold rounded-cta! transition-all! shadow-glow! hover:-translate-y-0.5">
-                        {{ __('Products') }}
-                        @icon('arrow-r', 'w-4 h-4 rotate-180')
-                    </a>
-                    <a href="#categories"
-                       class="btn bg-surface-200 hover:bg-surface-300 text-theme font-bold rounded-cta! transition-all! hover:-translate-y-0.5">
-                        {{ __('Categories') }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="categories">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-theme-2xl font-bold text-theme">{{ __('Categories') }}</h2>
-            <a href="{{ route('shop.products') }}" wire:navigate
-               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
-                {{ __('View all') }}
-                @icon('chevron-r', 'w-4 h-4 rotate-180')
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            @forelse($featuredCategories as $category)
-                <div class="card h-fit overflow-hidden">
-                    <a href="{{ route('shop.products', ['category' => $category->id]) }}"
-                       class="flex items-center gap-3 px-5 py-4 hover:bg-surface-100 transition-colors group">
-                        <div class="w-10 h-10 rounded-icon bg-primary/10 text-primary group-hover:bg-primary/15 flex items-center justify-center text-theme-xl shrink-0 transition-colors">
-                            @icon('tag', 'w-5 h-5')
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <span class="font-bold text-theme group-hover:text-primary! transition-colors">
-                                {{ $category->name }}
-                            </span>
-                            <span class="block text-theme-xs text-muted">{{ $category->products_count }} {{ __('Products') }}</span>
-                        </div>
-                        @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors')
-                    </a>
-
-                    @if($category->children->isNotEmpty())
-                        <div class="border-t border-border-muted px-5 py-3 flex flex-wrap gap-2">
-                            @foreach($category->children as $child)
-                                <a href="{{ route('shop.products', ['category' => $child->id]) }}"
-                                   class="badge bg-bg text-muted border border-border hover:bg-primary/10 hover:text-primary! hover:border-primary/30 transition-allall">
-                                    {{ $child->name }}
-                                    <span class="opacity-60">{{ $child->products_count }}</span>
-                                </a>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            @empty
-                <p class="col-span-full text-center text-muted py-8">{{ __('No products found') }}</p>
-            @endforelse
-        </div>
-    </section>
-
-    <section>
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-                <h2 class="text-theme-2xl font-bold text-theme">{{ __('Latest') }}</h2>
-                <span class="badge bg-primary text-on-primary">{{ __('New') }}</span>
-            </div>
-            <a href="{{ route('shop.products', ['sort' => 'latest']) }}" wire:navigate
-               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
-                {{ __('View all') }}
-                @icon('chevron-r', 'w-4 h-4 rotate-180')
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @forelse($newArrivals as $product)
-                <livewire:listing-product :product="$product" :key="'new-'.$product->id" />
-            @empty
-                <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-theme-xl font-bold text-muted">{{ __('No products available') }}</p>
-                </div>
-            @endforelse
-        </div>
-    </section>
-
-    <section>
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-                <h2 class="text-theme-2xl font-bold text-theme">{{ __('Top Rated') }}</h2>
-                <span class="badge bg-gold-surface text-on-gold border border-gold">★ {{ __('Featured') }}</span>
-            </div>
-            <a href="{{ route('shop.products', ['sort' => 'top_rated']) }}" wire:navigate
-               class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
-                {{ __('View all') }}
-                @icon('chevron-r', 'w-4 h-4 rotate-180')
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            @forelse($topRated as $product)
-                <livewire:listing-product :product="$product" :key="'top-'.$product->id" />
-            @empty
-                <div class="col-span-full text-center py-16 card border-2 border-dashed border-border">
-                    <p class="text-theme-xl font-bold text-muted">{{ __('No products available') }}</p>
-                </div>
-            @endforelse
-        </div>
-    </section>
+    @foreach($this->sections as $section)
+        @switch($section['key'])
+            @case('hero')
+                @include('pages.home._hero', ['section' => $section])
+                @break
+            @case('categories')
+                @include('pages.home._categories', ['section' => $section])
+                @break
+            @case('new_arrivals')
+                @include('pages.home._new-arrivals', ['section' => $section])
+                @break
+            @case('top_rated')
+                @include('pages.home._top-rated', ['section' => $section])
+                @break
+            @case('promo_banner')
+                @include('pages.home._promo-banner', ['section' => $section])
+                @break
+        @endswitch
+    @endforeach
 
 </div>
