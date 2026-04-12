@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('language_lines', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('group')->index();
             $table->string('key');
             $table->json('text');

@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_translations', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
             $table->foreignUuid('product_id')
                   ->constrained('products')
-                  ->cascadeOnDelete();
+                  ->onDelete('cascade');
             $table->string('locale', 8);
             $table->string('name', 100);
             $table->text('description')->nullable();
