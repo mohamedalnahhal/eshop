@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
 use App\Models\TenantSetting;
+use Filament\Forms\Components\FileUpload;
 
 class Settings extends Page implements HasForms
 {
@@ -39,6 +40,16 @@ class Settings extends Page implements HasForms
     {
         return $schema
             ->components([
+                  FileUpload::make('logo_url')
+                ->label('tenant Logo')
+                ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'])
+                ->image()
+                ->disk('public')
+                ->visibility('public')
+                ->directory('tenant-logos') 
+                // ->maxSize(2048) 
+                ->imageEditor() 
+                ->columnSpanFull(),
                 Section::make('Shop Identity')
                     ->icon('heroicon-o-building-storefront')
                     ->columns(2)
