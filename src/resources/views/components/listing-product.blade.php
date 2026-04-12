@@ -37,14 +37,6 @@ new class extends Component
                 </div>
             @endif
         </div>
-        <!-- first category -->
-        <div class="absolute top-5 right-5 flex flex-col gap-2">
-            @if($product->categories->isNotEmpty())
-                <span class="badge bg-card-bg/90 backdrop-blur-md text-primary shadow-card border border-border-muted">
-                    {{ $product->categories->first()->name }}
-                </span>
-            @endif
-        </div>
     </a>
     <div class="p-5 flex flex-col grow">
         <h2 class="line-clamp-1">
@@ -54,8 +46,26 @@ new class extends Component
             <x-rating-stars :rating="$product->avg_rating" :reviewsCount="$product->reviews_count" />
         </div>
         
+        @if($product->categories->isNotEmpty())
+            <div class="@container flex flex-row gap-2 mb-4 items-center w-full overflow-hidden">
+                @foreach ($product->categories->take(2) as $loopIndex => $cat)
+                    <span class="badge bg-card-bg/90 text-primary shadow-card border border-border min-w-0 shrink flex items-center {{ $loopIndex === 1 ? 'hidden! @[15rem]:flex!' : '' }}">
+                        <span class="truncate block w-full" dir="auto">
+                            {{ $cat->name }}
+                        </span>
+                    </span>
+                @endforeach
+                
+                @if ($product->categories->count() > 2)
+                    <span class="badge bg-secondary text-on-secondary shadow-card border border-border-muted shrink-0">
+                        اخرى
+                    </span>
+                @endif
+            </div>
+        @endif
+
         <div class="mt-auto flex flex-col gap-3">
-            <div class="flex flex-row items-center gap-3">
+            <div class="flex flex-row flex-wrap items-center gap-3">
                 <span class="text-theme-2xl font-bold text-accent">
                     {{ tenant()->formatPrice($product->price) }}
                 </span>

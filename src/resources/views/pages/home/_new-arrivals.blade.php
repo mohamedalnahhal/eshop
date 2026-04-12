@@ -15,7 +15,7 @@
       @endif
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       @forelse($this->newArrivals as $product)
           <livewire:listing-product :product="$product" :key="'new-'.$product->id" />
       @empty
