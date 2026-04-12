@@ -85,7 +85,7 @@ class ManageTranslations extends Page implements HasTable
                             ->send();
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->label('Edit')
                     ->schema(function ($record) {
