@@ -8,10 +8,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\LocaleHelper;
 
 class ProductForm
 {
@@ -28,6 +29,7 @@ class ProductForm
 
                     Textarea::make("translations.{$locale}.description")
                         ->label('Description')
+                        ->extraAttributes(LocaleHelper::isRtl($locale) ? ['dir' => 'rtl'] : [])
                         ->columnSpanFull(),
                 ]);
         }, $locales);
@@ -39,6 +41,7 @@ class ProductForm
                     ->schema([
                         Tabs::make('Translations')
                             ->tabs($translationTabs)
+                            ->scrollable(false) // overflowing tabs collapse into a dropdown
                             ->columnSpanFull(),
 
                         Select::make('categories')
@@ -47,7 +50,8 @@ class ProductForm
                             ->multiple()
                             ->preload()
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->columnSpanFull(),
 
                         TextInput::make('price')
                             ->label('Price')
