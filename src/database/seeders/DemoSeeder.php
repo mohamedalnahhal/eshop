@@ -606,13 +606,13 @@ class DemoSeeder extends Seeder
                     'password' => bcrypt($entry['owner']['password']),
                     'gender'   => 'male',
                     'phone'    => '970591234567',
-                    'role'     => UserRole::TENANT_OWNER,
+                    'role'     => UserRole::TENANT,
                 ]
             );
 
             // Attach owner to tenant if not already attached
             if (! $tenant->users()->where('user_id', $owner->id)->exists()) {
-                $tenant->users()->attach($owner->id, ['role' => UserRole::TENANT_OWNER]);
+                $tenant->users()->attach($owner->id, ['role' => UserRole::TENANT]);
             }
 
             // --- Tenant Settings + Theme assignment ---

@@ -67,7 +67,7 @@ class User extends Authenticatable implements FilamentUser
         }
 
         if ($panel->getId() === 'tenant_admin') {
-            return $this->role === UserRole::TENANT_OWNER; // TODO: Check if the user own the scoped tenant
+            return $this->role === UserRole::TENANT; // TODO: Check if the user own the scoped tenant
         }
 
         return false;

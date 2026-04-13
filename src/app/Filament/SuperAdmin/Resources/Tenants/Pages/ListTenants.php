@@ -36,7 +36,7 @@ class ListTenants extends ListRecords
 
                     $tenant->users()->attach($user->id, [
                         'id' => Str::uuid(),
-                        'role' => UserRole::TENANT_OWNER,
+                        'role' => UserRole::TENANT,
                     ]);
 
                     return $tenant;

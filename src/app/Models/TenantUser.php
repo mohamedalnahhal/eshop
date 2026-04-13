@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\UserRole;
+use App\Enums\TenantUserRole;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -17,6 +17,6 @@ class TenantUser extends Pivot
     public $timestamps = true;
 
     protected $casts = [
-        'role' => UserRole::class,
+        'role' => TenantUserRole::class,
     ];
 }

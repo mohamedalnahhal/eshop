@@ -26,7 +26,7 @@ class Tenant extends BaseTenant
 
     public function owner()
     {
-        return $this->users()->wherePivot('role', UserRole::TENANT_OWNER);
+        return $this->users()->wherePivot('role', UserRole::TENANT);
     }
 
     protected $casts = [

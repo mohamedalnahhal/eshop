@@ -4,17 +4,17 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum UserRole: int implements HasLabel
+enum TenantUserRole: int implements HasLabel
 {
-    case USER = 0;
-    case TENANT = 20;
+    case CUSTOMER = 0;
+    case MANAGER = 20;
     case ADMIN = 99;
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::USER => 'User',
-            self::TENANT => 'Tenant',
+            self::CUSTOMER => 'Customer',
+            self::MANAGER => 'Manager',
             self::ADMIN => 'System Admin',
         };
     }
