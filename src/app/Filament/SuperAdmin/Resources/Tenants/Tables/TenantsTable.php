@@ -58,13 +58,13 @@ class TenantsTable
                 TrashedFilter::make(),  
             ])
             ->recordActions([
-                Action::make('statistics')
-                    ->label('statistics')
+                Action::make('details')
+                    ->label('details')
                     ->icon('heroicon-m-chart-bar')
                     ->color('success')
                     ->url(fn (Tenant $record): string => TenantResource::getUrl('details', [
-                    'record' => $record->getKey(), 
-    ])),
+                        'record' => $record->getKey(), 
+                    ])),
                 EditAction::make()
                 ->mutateRecordDataUsing(function (Model $record, array $data): array {
                     $domain = $record->domain?->domain ?? '';
