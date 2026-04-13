@@ -31,7 +31,6 @@ class Tenant extends BaseTenant
 
     protected $casts = [
         'status' => TenantStatus::class,
-        'data' => 'array'
     ];
 
     public static function getCustomColumns(): array
@@ -40,7 +39,6 @@ class Tenant extends BaseTenant
             'id',
             'name',
             'status',
-            'data'
         ];
     }
     
