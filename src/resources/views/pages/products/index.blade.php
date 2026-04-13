@@ -81,7 +81,7 @@ new class extends Component
     {
         return view('pages.products.index', [
             'products'   => $this->products,
-            'categories' => Category::with('translations')->orderBy('name')->get(),
+            'categories' => Category::with('translations')->orderByTranslation('name')->get(),
             'isEmpty'    => $this->products->isEmpty(),
         ]);
     }

@@ -37,7 +37,7 @@ new class extends Component
                 'children' => fn($q) => $q->withCount('products')->with('translations'),
             ])
             ->withCount('products')
-            ->orderBy('name')
+            ->orderByTranslation('name')
             ->get();
     }
     
