@@ -2,6 +2,8 @@
 
 namespace App\Filament\SuperAdmin\Resources\Tenants\Tables;
 
+use App\Filament\SuperAdmin\Resources\Tenants\TenantResource;
+use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
@@ -11,11 +13,13 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use Filament\Tables\Filters\TrashedFilter;
+use App\Models\Tenant;
 
 class TenantsTable
 {
@@ -58,6 +62,13 @@ class TenantsTable
                 TrashedFilter::make(),  
             ])
             ->recordActions([
+                Action::make('details')
+                    ->label('details')
+                    ->icon('heroicon-m-chart-bar')
+                    ->color('success')
+                    ->url(fn (Tenant $record): string => TenantResource::getUrl('details', [
+                        'record' => $record->getKey(), 
+                    ])),
                 EditAction::make()
                 ->mutateRecordDataUsing(function (Model $record, array $data): array {
                     $domain = $record->domain?->domain ?? '';
