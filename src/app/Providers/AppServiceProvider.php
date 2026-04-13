@@ -18,16 +18,12 @@ class AppServiceProvider extends ServiceProvider
      * Register any application services.
      */
     public function register(): void
-{
-    $this->app->singleton(
-        \App\Services\TenantLocaleService::class
-    );
-
-    // Fix spatie/laravel-translation-loader cache tagging issue
-    $this->app->extend('translation.loader', function ($loader, $app) {
-        return $loader;
-    });
-}
+    {
+        // Fix spatie/laravel-translation-loader cache tagging issue
+        $this->app->extend('translation.loader', function ($loader, $app) {
+            return $loader;
+        });
+    }
 
     /**
      * Bootstrap any application services.
