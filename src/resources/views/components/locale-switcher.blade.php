@@ -21,7 +21,7 @@
 
         <div x-show="open"
              x-transition
-             class="absolute top-full mt-1 end-0 bg-card-bg border border-border rounded-card shadow-modal z-50 min-w-24 overflow-hidden">
+             class="absolute top-full mt-1 inset-e-0 bg-card-bg border border-border rounded-card shadow-modal z-50 min-w-24 overflow-hidden">
             @foreach($supported as $locale)
                 <a href="{{ url($locale . ($remainingPath ? '/' . $remainingPath : '')) }}"
                    class="flex items-center gap-2 px-4 py-2 text-theme-xs font-bold hover:bg-surface-100 transition-colors

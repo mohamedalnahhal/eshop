@@ -95,7 +95,7 @@ new class extends Component
                 wire:target="addToCart"
                 :disabled="$product->stock == 0"
                 class="grow-0 overflow-hidden text-theme-sm cursor-pointer px-2 py-2">
-                <span wire:loading.remove wire:target="addToCart">{{ __('Add to cart') }}</span>
+                <span wire:loading.remove wire:target="addToCart">{{ __('Cart') }}</span>
                 <div wire:loading.remove wire:target="addToCart">
                     @icon('cart', 'w-4 h-4')
                 </div>
@@ -103,7 +103,7 @@ new class extends Component
                 <div wire:loading wire:target="addToCart">
                     <p class="flex flex-row flex-nowrap items-center gap-1">
                         <x-spinner class="h-4 w-4" />
-                        <span class="line-clamp-1">{{ __('Add to cart') }}...</span>
+                        <span class="line-clamp-1">{{ __('Loading') }}...</span>
                     </p>
                 </div>
             </x-primary-button>
