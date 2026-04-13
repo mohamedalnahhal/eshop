@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->string('name', 100);
             $table->enum('type', ['main', 'sub'])->default('main');
             $table->foreignUuid('parent_id')
                 ->nullable()
