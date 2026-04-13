@@ -23,9 +23,7 @@ class Product extends Model implements TranslatableContract
     public array $translatedAttributes = ['name', 'description'];
 
     protected $fillable = [
-        'name',
         'price',
-        'description',
         'stock',
         'avg_rating',
         'reviews_count',
