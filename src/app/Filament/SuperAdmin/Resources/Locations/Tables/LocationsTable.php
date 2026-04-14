@@ -13,7 +13,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Columns\IconColumn;
 class LocationsTable
 {
     public static function configure(Table $table): Table
@@ -33,8 +33,10 @@ class LocationsTable
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
-                ToggleColumn::make('is_pickup_point')
-                    ->label('Pickup Point'),
+                IconColumn::make('is_pickup_point')
+                    ->label('Pickup Point')
+                    ->boolean()
+                    ->sortable(),
             ])
             ->filters([
                 //
