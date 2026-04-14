@@ -12,23 +12,24 @@ class Address extends Model
     use HasUuids, SoftDeletes;
 
     protected $fillable = [
-        'addressable_id',
-        'addressable_type',
         'name',
         'type',
-        'address_line_1',
+        'line_1',
+        'line_2',
         'city',
         'state',
         'postal_code',
         'country',
         'lng',
-        'lat'
+        'lat',
+        'is_default'
     ];
 
     protected $casts = [
         'lng' => 'decimal:8',
         'lat' => 'decimal:8',
         'type' => AddressType::class,
+        'is_default' => 'boolean',
     ];
 
     public function addressable() { return $this->morphTo(); }
