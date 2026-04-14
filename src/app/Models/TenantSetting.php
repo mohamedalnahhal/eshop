@@ -23,10 +23,12 @@ class TenantSetting extends Model
         'theme_id',
         'supported_languages',
         'default_language',
+        'guest_checkout_enabled',
     ];
     
     protected $casts = [
         'supported_languages' => 'array',
+        'guest_checkout_enabled' => 'boolean',
     ];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }

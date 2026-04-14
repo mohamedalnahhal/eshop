@@ -15,4 +15,14 @@ class Cart extends Model
 
     public function customer(){ return $this->belongsTo(Customer::class); }
     public function items() { return $this->hasMany(CartItem::class); }
+
+    public function isGuest()
+    {
+        return is_null($this->customer_id);
+    }
+
+    public function total()
+    {
+        return $this->items->sum(fn ($item) => $item->subtotal());
+    }
 }

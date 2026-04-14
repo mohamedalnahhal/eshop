@@ -15,6 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('guest_email')->nullable();
+            $table->string('guest_name')->nullable();
+            $table->string('guest_phone')->nullable();
             $table->jsonb('shipping_address'); // snapshot, no FK
             $table->jsonb('billing_address')->nullable(); // snapshot, no FK
             $table->decimal('total_price', 10, 2);   

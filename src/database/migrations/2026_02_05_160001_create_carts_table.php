@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('session_token')->nullable()->index();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

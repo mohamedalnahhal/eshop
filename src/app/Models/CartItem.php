@@ -25,4 +25,10 @@ class CartItem extends Model
 
     public function cart() { return $this->belongsTo(Cart::class); }
     public function product() { return $this->belongsTo(Product::class); }
+
+
+    public function subtotal()
+    {
+        return $this->unit_price * $this->quantity;
+    }
 }

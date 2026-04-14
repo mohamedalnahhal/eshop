@@ -22,6 +22,7 @@ return new class extends Migration {
         $table->string('language', 10)->default('ar');
         $table->string('currency', 3)->default('USD');
         $table->foreignUuid('theme_id')->nullable()->constrained('themes')->onDelete('set null')->default(null);
+        $table->boolean('guest_checkout_enabled')->default(true);
         $table->timestamps();
     });
 }

@@ -16,6 +16,9 @@ class Order extends Model
 
     protected $fillable = [
         'customer_id',
+        'guest_email',
+        'guest_name',
+        'guest_phone',
         'shipping_address',
         'billing_address',
         'total_price',
@@ -43,5 +46,25 @@ class Order extends Model
     public function successfulPayment()
     {
         return $this->morphOne(Payment::class, 'paymentable')->where('status', 'completed');
+    }
+
+    public function isGuest(): bool
+    {
+        return is_null($this->customer_id);
+    }
+
+    public function getContactEmailAttribute(): string
+    {
+        return $this->customer?->email ?? $this->guest_email;
+    }
+
+    public function getContactNameAttribute(): string
+    {
+        return $this->customer?->name ?? $this->guest_name;
+    }
+
+    public function getContactPhoneAttribute(): ?string
+    {
+        return $this->isGuest()? $this->guest_phone : $this->customer->phone;
     }
 }
