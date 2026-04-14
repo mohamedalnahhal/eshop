@@ -22,7 +22,8 @@ class Order extends Model
         'discount',
         'final_price',
         'currency',
-        'status'
+        'status',
+        'notes',
     ];
 
     protected $casts = [

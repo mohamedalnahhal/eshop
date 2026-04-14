@@ -8,6 +8,7 @@ enum OrderStatus: string
     case PROCESSING = 'processing';
     case SHIPPED = 'shipped';
     case DELIVERED = 'delivered';
+    case CANCELLED = 'cancelled';
     case REFUNDED = 'refunded';
 
     public function label(): string
@@ -17,6 +18,7 @@ enum OrderStatus: string
             self::PROCESSING => 'Processing',
             self::SHIPPED => 'Shipped',
             self::DELIVERED => 'Delivered',
+            self::CANCELLED => 'Cancelled',
             self::REFUNDED => 'Refunded',
         };
     }
@@ -28,6 +30,7 @@ enum OrderStatus: string
             self::PROCESSING => 'info',
             self::SHIPPED => 'primary',
             self::DELIVERED => 'success',
+            self::CANCELLED => 'danger',
             self::REFUNDED => 'gray',
         };
     }

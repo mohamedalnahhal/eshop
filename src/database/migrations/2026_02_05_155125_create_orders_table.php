@@ -21,7 +21,8 @@ return new class extends Migration
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('final_price', 10, 2);    
             $table->string('currency', 3); // snapshot
-            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'refunded']);
+            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']);
+            $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
