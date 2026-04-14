@@ -15,10 +15,12 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignUuid('shipping_address_id')->constrained('addresses');
+            $table->jsonb('shipping_address'); // snapshot, no FK
+            $table->jsonb('billing_address')->nullable(); // snapshot, no FK
             $table->decimal('total_price', 10, 2);   
             $table->decimal('discount', 10, 2)->default(0.00);
             $table->decimal('final_price', 10, 2);    
+            $table->string('currency', 3); // snapshot
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'refunded']);
             $table->timestamps();
             $table->softDeletes();

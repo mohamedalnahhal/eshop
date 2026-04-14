@@ -16,10 +16,12 @@ class Order extends Model
 
     protected $fillable = [
         'customer_id',
-        'shipping_address_id',
+        'shipping_address',
+        'billing_address',
         'total_price',
         'discount',
         'final_price',
+        'currency',
         'status'
     ];
 
@@ -30,14 +32,12 @@ class Order extends Model
         'updated_at' => 'datetime',
         'created_at' => 'datetime',
         'status' => OrderStatus::class,
+        'shipping_address' => 'array',
+        'billing_address'  => 'array',
     ];
 
     public function customer() { return $this->belongsTo(Customer::class); }
     public function items(){ return $this->hasMany(OrderItem::class); }
-    public function shippingAddress()
-    {
-        return $this->belongsTo(Address::class, 'shipping_address_id');
-    }
     public function payments() { return $this->morphMany(Payment::class, 'paymentable'); }
     public function successfulPayment()
     {
