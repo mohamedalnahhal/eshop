@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Pages\AdminLogin;
+use Illuminate\Database\Eloquent\Model;
 
 class SuperAdminPanelProvider extends PanelProvider
 {
@@ -29,6 +30,9 @@ class SuperAdminPanelProvider extends PanelProvider
             ->path('admin')
             ->domain(env('APP_URL'))
             ->login(AdminLogin::class)
+            ->bootUsing(function () {
+                Model::unguard();
+            })
             ->profile()
             ->passwordReset()
             ->spa()
