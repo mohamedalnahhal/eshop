@@ -29,6 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
         'role' => UserRole::class,
         'gender' => Gender::class,
+        'email_verified_at' => 'datetime'
     ];
 
     public function getAvatarUrlAttribute(): string
@@ -43,21 +44,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Tenant::class, 'tenant_users')
             ->withPivot('role')
             ->withTimestamps();
-    }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    public function carts(): HasMany
-    {
-        return $this->hasMany(Cart::class);
-    }
-
-    public function addresses(): MorphMany
-    {
-        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function canAccessPanel(Panel $panel): bool

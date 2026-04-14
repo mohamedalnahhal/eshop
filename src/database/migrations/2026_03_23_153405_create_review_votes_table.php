@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('review_votes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('customer_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('review_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_helpful');
             $table->timestamps();
         
-            $table->unique(['user_id', 'review_id']);
+            $table->unique(['customer_id', 'review_id']);
         });
     }
 

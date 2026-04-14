@@ -14,20 +14,7 @@ class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains , SoftDeletes;
 
-    protected $fillable = ['name', 'status', 'data'];
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'tenant_users')
-        ->using(TenantUser::class)
-        ->withPivot('role')
-        ->withTimestamps();
-    }
-
-    public function owner()
-    {
-        return $this->users()->wherePivot('role', UserRole::TENANT);
-    }
+    protected $fillable = ['name', 'status', 'owner_id'];
 
     protected $casts = [
         'status' => TenantStatus::class,
@@ -39,7 +26,21 @@ class Tenant extends BaseTenant
             'id',
             'name',
             'status',
+            'owner_id',
         ];
+    }
+    
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'tenant_users')
+        ->using(TenantUser::class)
+        ->withPivot('role')
+        ->withTimestamps();
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
     
     // internal name

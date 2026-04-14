@@ -6,16 +6,16 @@ use Filament\Support\Contracts\HasLabel;
 
 enum TenantUserRole: int implements HasLabel
 {
-    case CUSTOMER = 0;
+    case STAFF = 0;
     case MANAGER = 20;
-    case ADMIN = 99;
+    case OWNER = 99;
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::CUSTOMER => 'Customer',
+            self::STAFF => 'Staff',
             self::MANAGER => 'Manager',
-            self::ADMIN => 'System Admin',
+            self::OWNER => 'Owner',
         };
     }
 }

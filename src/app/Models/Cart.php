@@ -11,8 +11,8 @@ class Cart extends Model
     use HasUuids;
     use BelongsToTenant;
     
-    protected $fillable = ['user_id'];
+    protected $fillable = ['customer_id'];
 
-    public function user() { return $this->belongsTo(User::class); }
+    public function customer(){ return $this->belongsTo(Customer::class); }
     public function items() { return $this->hasMany(CartItem::class); }
 }

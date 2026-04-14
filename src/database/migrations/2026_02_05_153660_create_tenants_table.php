@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('name', 100);
             $table->enum('status', ['active', 'inactive', 'pending', 'banned', 'maintenance'])->default('active');
+            $table->foreignUuid('owner_id')->references('id')->on('users');
             $table->jsonb('data')->nullable();
             $table->timestamps();
             $table->softDeletes();

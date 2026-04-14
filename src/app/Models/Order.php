@@ -15,7 +15,7 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id',
+        'customer_id',
         'shipping_address_id',
         'total_price',
         'discount',
@@ -32,8 +32,7 @@ class Order extends Model
         'status' => OrderStatus::class,
     ];
 
-    public function tenant() { return $this->belongsTo(Tenant::class); }
-    public function user() { return $this->belongsTo(User::class); }
+    public function customer() { return $this->belongsTo(Customer::class); }
     public function items(){ return $this->hasMany(OrderItem::class); }
     public function shippingAddress()
     {

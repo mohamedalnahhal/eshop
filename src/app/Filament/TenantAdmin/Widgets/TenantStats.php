@@ -3,9 +3,8 @@
 namespace App\Filament\TenantAdmin\Widgets;
 
 use App\Enums\OrderStatus;
-use App\Enums\TenantUserRole;
 use App\Models\Order;
-use App\Models\TenantUser;
+use App\Models\Customer;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
@@ -30,8 +29,7 @@ class TenantStats extends BaseWidget
             ->groupBy('date')
             ->pluck('total', 'date');
 
-        $dailyCustomers = TenantUser::where('role', TenantUserRole::CUSTOMER)
-            ->where('created_at', '>=', $start)
+        $dailyCustomers = Customer::where('created_at', '>=', $start)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy('date')
             ->pluck('total', 'date');
@@ -48,7 +46,7 @@ class TenantStats extends BaseWidget
 
         $totalOrders = Order::count();
 
-        $totalCustomers = TenantUser::where('role', TenantUserRole::CUSTOMER)->count();
+        $totalCustomers = Customer::count();
 
         return [
             Stat::make(__('Total Sales'), number_format($totalSales, 2) . ' ₪')
