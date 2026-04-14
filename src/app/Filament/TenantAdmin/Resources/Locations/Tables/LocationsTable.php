@@ -31,14 +31,38 @@ class LocationsTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('address.city')
-                    ->label('City')
+                TextColumn::make('address.country')
+                    ->label('Country')
+                    ->searchable()
                     ->sortable(),
 
-                TextColumn::make('address.address_line_1')
-                    ->label('Address')
+                TextColumn::make('address.postal_code')
+                    ->label('Postal Code')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('address.city')
+                    ->label('City')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('address.state')
+                    ->label('State')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('address.line_1')
+                    ->label('Line 1')
+                    ->searchable()
+                    ->limit(30),
+                    
+                TextColumn::make('address.line_2')
+                    ->label('Line 2')
+                    ->searchable()
                     ->limit(30)
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+
 
                 TextColumn::make('phone')
                     ->label('Phone')

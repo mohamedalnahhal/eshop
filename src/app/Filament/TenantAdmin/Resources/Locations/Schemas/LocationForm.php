@@ -104,10 +104,16 @@ class LocationForm
                                     ->required()
                                     ->maxLength(100),
 
-                                TextInput::make('address_line_1')
-                                    ->label('Street Address')
+                                Select::make('country')
+                                    ->label('Country')
+                                    ->options(config('countries'))
+                                    ->searchable()
                                     ->required()
-                                    ->maxLength(255),
+                                    ->native(false),
+
+                                TextInput::make('postal_code')
+                                    ->label('Postal Code')
+                                    ->maxLength(20),
 
                                 TextInput::make('city')
                                     ->label('City')
@@ -118,16 +124,14 @@ class LocationForm
                                     ->label('State / Region')
                                     ->maxLength(100),
 
-                                TextInput::make('postal_code')
-                                    ->label('Postal Code')
-                                    ->maxLength(20),
-
-                                Select::make('country')
-                                    ->label('Country')
-                                    ->options(config('countries'))
-                                    ->searchable()
+                                TextInput::make('line_1')
+                                    ->label('Line 1')
                                     ->required()
-                                    ->native(false),
+                                    ->maxLength(255),
+                                    
+                                TextInput::make('line_2')
+                                    ->label('Line 2')
+                                    ->maxLength(255),
 
                                 Select::make('type')
                                     ->label('Address Type')

@@ -3,15 +3,17 @@
 namespace App\Filament\SuperAdmin\Resources\Addresses\Schemas;
 
 use App\Enums\AddressType;
+use App\Models\Customer;
 use App\Models\Location;
-use App\Models\Order;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\MorphToSelect;
-use App\Models\User;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class AddressesForm
 {
@@ -61,14 +63,15 @@ class AddressesForm
                                 MorphToSelect::make('addressable')
                                     ->label('Linked Record')
                                     ->types([
-                                        MorphToSelect\Type::make(User::class)
-                                            ->titleAttribute('username'),
+                                        MorphToSelect\Type::make(Customer::class)
+                                            ->titleAttribute('email')
+                                            ->modifyOptionsQueryUsing(fn (Builder $query) => $query->with('tenant'))
+                                            ->getOptionLabelFromRecordUsing(fn (Model $record): string => "{$record->email} ({$record->tenant?->name})"),
                                             
                                         MorphToSelect\Type::make(Location::class)
-                                            ->titleAttribute('name'),
-                                        
-                                        MorphToSelect\Type::make(Order::class)
-                                            ->titleAttribute('id')
+                                            ->titleAttribute('name')
+                                            ->modifyOptionsQueryUsing(fn (Builder $query) => $query->with('tenant'))
+                                            ->getOptionLabelFromRecordUsing(fn (Model $record): string => "{$record->name} ({$record->tenant?->name})"),
                                     ])
                                     ->searchable()
                                     ->columnSpanFull(),
@@ -82,30 +85,37 @@ class AddressesForm
                     ->schema([
                         Section::make('Location')
                             ->schema([
-                                TextInput::make('address_line_1')
-                                    ->label('Street Address')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->columnSpanFull(),
-
-                                TextInput::make('city')
-                                    ->required()
-                                    ->maxLength(100),
-
-                                TextInput::make('state')
-                                    ->required()
-                                    ->maxLength(100),
-
-                                TextInput::make('postal_code')
-                                    ->required()
-                                    ->maxLength(20),
-
                                 Select::make('country')
                                     ->label('Country')
                                     ->options(config('countries'))
                                     ->searchable()
                                     ->required()
                                     ->native(false),
+
+                                TextInput::make('postal_code')
+                                    ->maxLength(20),
+
+                                TextInput::make('city')
+                                    ->required()
+                                    ->maxLength(100),
+
+                                TextInput::make('state')
+                                    ->maxLength(100),
+
+                                TextInput::make('line_1')
+                                    ->label('Line 1')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                                TextInput::make('line_2')
+                                    ->label('Line 2')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+
+                                Toggle::make('is_default')
+                                    ->label('Default')
+                                    ->default(false)
+                                    ->columnSpanFull(),
                             ])
                             ->columns(2),
                     ]),

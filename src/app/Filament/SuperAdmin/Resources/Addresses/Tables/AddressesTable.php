@@ -12,6 +12,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -50,19 +51,6 @@ class AddressesTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('address_line_1')
-                    ->label('Address')
-                    ->searchable()
-                    ->limit(30),
-
-                TextColumn::make('city')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('state')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('country')
                     ->searchable()
                     ->sortable(),
@@ -71,6 +59,31 @@ class AddressesTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('city')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('state')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('line_1')
+                    ->label('Line 1')
+                    ->searchable()
+                    ->limit(30),
+                    
+                TextColumn::make('line_2')
+                    ->label('Line 2')
+                    ->searchable()
+                    ->limit(30)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                IconColumn::make('is_default')
+                    ->label('Default')
+                    ->boolean()
+                    ->sortable(),
+                
                 TextColumn::make('lat')
                     ->label('Latitude')
                     ->numeric()
