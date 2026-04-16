@@ -5,6 +5,7 @@ namespace App\Filament\TenantAdmin\Widgets;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Services\Money\MoneyService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
@@ -15,12 +16,14 @@ class TenantStats extends BaseWidget
 
     protected function getStats(): array
     {
+        // TODO: get sales from payments and account for each payemnt currency
+        
         $start = Carbon::today()->subDays(6)->startOfDay();
 
         $dailySales = Order::where('status', OrderStatus::DELIVERED)
-            ->where('final_price', '>', 0)
+            ->where('total', '>', 0)
             ->where('created_at', '>=', $start)
-            ->selectRaw('DATE(created_at) as date, SUM(final_price) as total')
+            ->selectRaw('DATE(created_at) as date, SUM(total) as total')
             ->groupBy('date')
             ->pluck('total', 'date');
 
@@ -41,15 +44,15 @@ class TenantStats extends BaseWidget
         $customersChart = $days->map(fn ($d) => (int)  ($dailyCustomers[$d] ?? 0))->values()->toArray();
 
         $totalSales = Order::where('status', OrderStatus::DELIVERED)
-            ->where('final_price', '>', 0)
-            ->sum('final_price');
+            ->where('total', '>', 0)
+            ->sum('total');
 
         $totalOrders = Order::count();
 
         $totalCustomers = Customer::count();
 
         return [
-            Stat::make(__('Total Sales'), number_format($totalSales, 2) . ' ₪')
+            Stat::make(__('Total Sales'), app(MoneyService::class)->format($totalSales))
                 ->description(__('Delivered orders only'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success')

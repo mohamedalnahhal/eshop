@@ -4,6 +4,7 @@ namespace App\Filament\TenantAdmin\Widgets;
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
+use App\Services\Money\MoneyService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -11,15 +12,17 @@ class OrdersOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        // TODO: account for each order currency
+
         $monthlyRevenue = Order::where('status', OrderStatus::DELIVERED)
             ->whereMonth('created_at', now()->month)
-            ->sum('final_price');
+            ->sum('total');
 
         $todayRevenue = Order::where('status', OrderStatus::DELIVERED)
             ->whereDate('created_at', today())
-            ->sum('final_price');
+            ->sum('total');
 
-        $avgOrderValue = Order::where('status', OrderStatus::DELIVERED)->avg('final_price') ?? 0;
+        $avgOrderValue = Order::where('status', OrderStatus::DELIVERED)->avg('total') ?? 0;
 
         return [
             Stat::make(__('Pending Orders'), Order::where('status', OrderStatus::PENDING)->count())
@@ -27,12 +30,12 @@ class OrdersOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
-            Stat::make(__('Revenue Today'), number_format($todayRevenue, 2) . ' ' . config('app.currency', '₪'))
-                ->description(__('This month: ') . number_format($monthlyRevenue, 2))
+            Stat::make(__('Revenue Today'), app(MoneyService::class)->format($todayRevenue))
+                ->description(__('This month: ') . app(MoneyService::class)->format($monthlyRevenue))
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('success'),
 
-            Stat::make(__('Avg. Order Value'), number_format($avgOrderValue, 2) . ' ' . config('app.currency', '₪'))
+            Stat::make(__('Avg. Order Value'), app(MoneyService::class)->format($avgOrderValue))
                 ->description(__('Completed orders only'))
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('info'),

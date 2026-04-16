@@ -119,7 +119,7 @@ new class extends Component
 
             <div class="flex items-center gap-4">
                 <div class="text-theme-5xl font-black text-accent">
-                    {{ tenant()->formatPrice($product->price) }}
+                    {{ app(App\Services\Money\MoneyService::class)->format($product->price) }}
                 </div>
                 @if($product->stock > 0)
                     <div class="badge bg-success/10 text-success">

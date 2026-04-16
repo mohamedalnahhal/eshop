@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->decimal('price', 10, 2);
+            $table->unsignedBigInteger('price');
             $table->integer('stock')->default(0);
             $table->decimal('avg_rating', 3, 2)->default(0);
             $table->unsignedInteger('reviews_count')->default(0);

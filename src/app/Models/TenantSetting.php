@@ -20,6 +20,7 @@ class TenantSetting extends Model
         'contact_phone',
         'language',
         'currency',
+        'currency_decimals',
         'theme_id',
         'supported_languages',
         'default_language',
@@ -28,9 +29,9 @@ class TenantSetting extends Model
     
     protected $casts = [
         'supported_languages' => 'array',
+        'currency_decimals' => 'integer',
         'guest_checkout_enabled' => 'boolean',
     ];
 
-    public function tenant() { return $this->belongsTo(Tenant::class); }
     public function theme() { return $this->belongsTo(Theme::class); }
 }

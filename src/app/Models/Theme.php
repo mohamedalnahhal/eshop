@@ -46,12 +46,6 @@ class Theme extends Model
         'footer'     => 'array',
     ];
 
-    public static function getSymbol(string $currencyCode)
-    {
-        $formatter = new \NumberFormatter("en_US@currency={$currencyCode}", \NumberFormatter::CURRENCY);
-        return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
-    }
-
     // -------------------------------------------------------------------------
     // Defaults
     // -------------------------------------------------------------------------
@@ -60,7 +54,6 @@ class Theme extends Model
     {
         return [
             'position' => 'before',   // 'before' | 'after'
-            'decimals' => 2,
         ];
     }
  

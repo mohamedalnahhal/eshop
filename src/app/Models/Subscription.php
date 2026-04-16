@@ -14,7 +14,7 @@ class Subscription extends Model
     protected $fillable = ['name', 'price', 'duration_days', 'max_products', 'features'];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'integer',
         'duration_days' => 'integer',
         'max_products' => 'integer',
         'features' => 'array',

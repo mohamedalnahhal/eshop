@@ -3,6 +3,7 @@
 namespace App\Filament\TenantAdmin\Resources\Products\Widgets;
 
 use App\Models\Product;
+use App\Services\Money\MoneyService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -16,7 +17,7 @@ class ProductsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-shopping-bag')
                 ->color('info'),
 
-            Stat::make(__('Avg. Price'), number_format(Product::avg('price'), 2) . ' ' . config('app.currency', '₪'))
+            Stat::make(__('Avg. Price'), app(MoneyService::class)->format(Product::avg('price')))
                 ->description(__('Across all products'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('gray'),

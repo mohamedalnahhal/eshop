@@ -16,8 +16,9 @@ return new class extends Migration {
             $table->uuidMorphs('paymentable');
             $table->string('payment_method', 50);
             $table->foreign('payment_method')->references('payment_method')->on('payment_methods');
-            $table->decimal('amount', 10, 2);
-            $table->string('currency', 3)->default('USD');
+            $table->unsignedBigInteger('amount');
+            $table->string('currency', 3); // snapshot
+            $table->unsignedTinyInteger('currency_decimals'); // snapshot
             $table->enum('status', ['pending', 'completed', 'failed', 'refunded']);
             $table->string('transaction_reference', 255);
             $table->jsonb('gateway_response')->nullable();

@@ -28,10 +28,10 @@
             </p>
             <p>
                 <span class="text-theme-xl font-black text-accent">
-                    {{ tenant()->formatPrice($subtotal) }}
+                    {{ app(App\Services\Money\MoneyService::class)->format($subtotal) }}
                 </span>
                 <span class="text-muted text-theme-sm font-semibold whitespace-nowrap">
-                    سعر الوحدة: {{ tenant()->formatPrice($item->unit_price) }}
+                    سعر الوحدة: {{ app(App\Services\Money\MoneyService::class)->format($item->unit_price) }}
                 </span>
             </p>
             

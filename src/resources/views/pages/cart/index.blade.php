@@ -86,7 +86,7 @@ new class extends Component
                         <div class="flex justify-between">
                             <span>{{ __('Subtotal') }}:</span>
                             <span class="font-bold text-theme">
-                                {{ tenant()->formatPrice($subtotal) }}+
+                                {{ app(App\Services\Money\MoneyService::class)->format($subtotal) }}+
                             </span>
                         </div>
                     @endforeach
@@ -100,7 +100,7 @@ new class extends Component
                     <div class="flex justify-between items-center">
                         <span class="text-theme-lg font-bold text-theme">{{ __('Total') }}:</span>
                         <span class="text-theme-2xl font-black text-accent">
-                            {{ tenant()->formatPrice($totalPrice) }}
+                            {{ app(App\Services\Money\MoneyService::class)->format($totalPrice) }}
                         </span>
                     </div>
                 </div>

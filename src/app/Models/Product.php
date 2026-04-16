@@ -31,17 +31,12 @@ class Product extends Model implements TranslatableContract
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'integer',
         'stock' => 'integer',
         'avg_rating' => 'decimal:1',
         'reviews_count' => 'integer',
         'rating_sum' => 'integer',
     ];
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
-    }
 
     public function categories(): BelongsToMany
     {

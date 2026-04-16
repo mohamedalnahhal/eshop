@@ -3,11 +3,14 @@
 namespace App\Filament\TenantAdmin\Widgets;
 
 use App\Models\Order;
+use App\Services\Money\MoneyService;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
 class SalesChart extends ChartWidget
 {
+    // TODO: get sales from payments and account for each payemnt currency
+
     protected ?string $heading = 'Sales — Last 7 Days';
     protected static ?int $sort = 2;
 
@@ -15,9 +18,9 @@ class SalesChart extends ChartWidget
     {
         $start = Carbon::today()->subDays(6)->startOfDay();
 
-        $salesByDay = Order::where('final_price', '>', 0)
+        $salesByDay = Order::where('total', '>', 0)
             ->where('created_at', '>=', $start)
-            ->selectRaw('DATE(created_at) as date, SUM(final_price) as total')
+            ->selectRaw('DATE(created_at) as date, SUM(total) as total')
             ->groupBy('date')
             ->pluck('total', 'date');
 
@@ -34,7 +37,7 @@ class SalesChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label'           => __('Sales (₪)'),
+                    'label'           => __('Sales') . ' (' . app(MoneyService::class)->resolveCurrency() . ')',
                     'data'            => $sales->values()->toArray(),
                     'borderColor'     => '#3b82f6',
                     'fill'            => true,
@@ -58,7 +61,7 @@ class SalesChart extends ChartWidget
     {
         return [
             'scales' => [
-                'y'  => ['type' => 'linear', 'position' => 'left',  'min' => 0, 'title' => ['display' => true, 'text' => '₪']],
+                'y'  => ['type' => 'linear', 'position' => 'left',  'min' => 0, 'title' => ['display' => true, 'text' => ' (' . app(MoneyService::class)->resolveCurrency() . ')']],
                 'y1' => ['type' => 'linear', 'position' => 'right', 'min' => 0, 'grid' => ['drawOnChartArea' => false], 'title' => ['display' => true, 'text' => 'Orders']],
             ],
         ];

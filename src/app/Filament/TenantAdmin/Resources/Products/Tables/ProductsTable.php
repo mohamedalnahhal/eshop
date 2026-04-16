@@ -2,6 +2,7 @@
 
 namespace App\Filament\TenantAdmin\Resources\Products\Tables;
 
+use App\Services\Money\MoneyService;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Notifications\Notification;
@@ -40,7 +41,8 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('price')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->getStateUsing(fn ($record, MoneyService $moneyService) => $moneyService->format($record->price)),
                 TextColumn::make('stock')
                     ->numeric()
                     ->sortable()

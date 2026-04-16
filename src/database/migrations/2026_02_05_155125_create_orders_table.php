@@ -20,11 +20,12 @@ return new class extends Migration
             $table->string('guest_phone')->nullable();
             $table->jsonb('shipping_address'); // snapshot, no FK
             $table->jsonb('billing_address')->nullable(); // snapshot, no FK
-            $table->decimal('total_price', 10, 2);   
-            $table->decimal('discount', 10, 2)->default(0.00);
-            $table->decimal('final_price', 10, 2);    
+            $table->unsignedBigInteger('subtotal')->default(0);
+            $table->unsignedBigInteger('shipping_fees')->default(0);
+            $table->unsignedBigInteger('discount')->default(0);
+            $table->unsignedBigInteger('total')->default(0);
             $table->string('currency', 3); // snapshot
-            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']);
+            $table->unsignedTinyInteger('currency_decimals'); // snapshot
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();

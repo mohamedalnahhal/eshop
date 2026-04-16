@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_default')->default(false);
 
             /**
-             * currency: { position ('before'|'after'), decimals }
+             * currency: { position ('before'|'after') }
              */
             $table->jsonb('currency')->nullable();
 

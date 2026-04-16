@@ -8,7 +8,6 @@ use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Enums\TenantStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\UserRole;
 
 class Tenant extends BaseTenant
 {
@@ -42,7 +41,7 @@ class Tenant extends BaseTenant
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
-    
+
     // internal name
     public function getSlugAttribute(): string
     {
@@ -104,21 +103,5 @@ class Tenant extends BaseTenant
         ]);
  
         return $new;
-    }
-
-    /**
-     * Format a price amount using this theme's currency config.
-     */
-    public function formatPrice(float $amount)
-    {
-        $c = $this->resolvedTheme()->resolvedCurrency();
-        $code = $this->settings?->currency ?? 'USD';
-        $symbol = Theme::getSymbol($code);
-        $decimals = $c['decimals'] ?? 2;
-        $formatted = number_format($amount, $decimals);
-
-        return $c['position'] === 'before'
-            ? $symbol . $formatted
-            : $formatted . ' ' . $symbol;
     }
 }

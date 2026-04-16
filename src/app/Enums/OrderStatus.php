@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum OrderStatus: string
 {
+    case DRAFT = 'draft';
     case PENDING = 'pending';
     case PROCESSING = 'processing';
     case SHIPPED = 'shipped';
@@ -14,6 +15,7 @@ enum OrderStatus: string
     public function label(): string
     {
         return match($this) {
+            self::DRAFT => 'Draft',
             self::PENDING => 'Pending Payment',
             self::PROCESSING => 'Processing',
             self::SHIPPED => 'Shipped',
@@ -26,6 +28,7 @@ enum OrderStatus: string
     public function color(): string
     {
         return match($this) {
+            self::DRAFT => 'info',
             self::PENDING => 'warning',
             self::PROCESSING => 'info',
             self::SHIPPED => 'primary',
