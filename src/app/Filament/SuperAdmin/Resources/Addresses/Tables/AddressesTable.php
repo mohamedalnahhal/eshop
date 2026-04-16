@@ -69,12 +69,12 @@ class AddressesTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('line_1')
-                    ->label('Line 1')
+                    ->label('Address Line 1')
                     ->searchable()
                     ->limit(30),
                     
                 TextColumn::make('line_2')
-                    ->label('Line 2')
+                    ->label('Address Line 2')
                     ->searchable()
                     ->limit(30)
                     ->toggleable(isToggledHiddenByDefault: true),
