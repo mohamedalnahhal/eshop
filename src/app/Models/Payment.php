@@ -23,8 +23,9 @@ class Payment extends Model
         'amount',
         'currency',
         'status',
+        'payment_type',
+        'parent_payment_id',
         'transaction_reference',
-        'gateway_response',
         'metadata'
     ];
 
