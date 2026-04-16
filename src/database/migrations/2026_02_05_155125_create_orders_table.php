@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('total')->default(0);
             $table->string('currency', 3); // snapshot
             $table->unsignedTinyInteger('currency_decimals'); // snapshot
+            $table->enum('status', ['draft', 'pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']);
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -14,13 +14,18 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'product_id',
+        'product_name',
         'quantity',
-        'unit_price'
+        'unit_price',
+        'price_overwritten',
     ];
 
     protected $casts = [
         'quantity' => 'integer',
         'unit_price' => 'integer',
+        'total' => 'integer',
+        'product_name' => 'array',
+        'price_overwritten' => 'boolean',
     ];
 
     public function getRelationshipToPrimaryModel(): string
