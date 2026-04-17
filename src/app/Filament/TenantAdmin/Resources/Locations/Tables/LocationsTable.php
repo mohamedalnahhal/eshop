@@ -82,6 +82,10 @@ class LocationsTable
                     ->label('Date Added')
                     ->dateTime('Y-m-d')
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('type')
