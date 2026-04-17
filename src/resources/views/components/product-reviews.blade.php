@@ -34,7 +34,7 @@ new class extends Component
             ->toArray();
 
         $this->userReview = auth()->check()
-            ? $this->product->reviews()->where('user_id', auth()->id())->first()
+            ? $this->product->reviews()->where('customer_id', auth()->id())->first()
             : null;
     }
 
@@ -46,7 +46,7 @@ new class extends Component
     public function render()
     {
         $query = Review::where('product_id', $this->product->id)
-            ->with(['user', 'votes']);
+            ->with(['customer', 'votes']);
 
         if ($this->userReview) {
             $query->where('id', '!=', $this->userReview->id);

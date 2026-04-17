@@ -16,7 +16,7 @@ new class extends Component
         $this->product = Product::with([
             'categories',
             'media',
-            'reviews.user',
+            'reviews.customer',
             'translations',
         ])->findOrFail($id);
     }

@@ -15,7 +15,7 @@ new class extends Component
         abort_if(!Auth::check(), 403);
 
         $existing = $this->review->votes()
-            ->where('user_id', Auth::id())
+            ->where('customer_id', Auth::id())
             ->first();
 
         if ($existing && $existing->is_helpful === $isHelpful) {
@@ -35,11 +35,11 @@ new class extends Component
         <div class="flex flex-col gap-2">
             <div class="flex items-center gap-2">
                 <img
-                    src="{{ $review->user->avatar_url }}"
-                    alt="{{ $review->user->username }}"
+                    src="{{ $review->customer->avatar_url }}"
+                    alt="{{ $review->customer->name }}"
                     class="w-6 h-6 rounded-full object-cover"
                 />
-                <h4 class="text-theme font-normal! leading-none">{{ $review->user->username }}</h4>
+                <h4 class="text-theme font-normal! leading-none">{{ $review->customer->name }}</h4>
             </div>
             <x-simple-rating-stars :rating="$review->rating"/>
         </div>

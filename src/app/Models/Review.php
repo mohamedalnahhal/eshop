@@ -10,7 +10,7 @@ class Review extends Model
 {
     use HasUuids;
 
-    protected $fillable = ['product_id', 'user_id', 'rating', 'comment'];
+    protected $fillable = ['product_id', 'customer_id', 'rating', 'comment'];
     
     protected $casts = [
         'rating' => 'integer',
@@ -26,9 +26,9 @@ class Review extends Model
         return $this->belongsTo(Product::class);
     }
     
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function votes()
@@ -43,7 +43,7 @@ class Review extends Model
 
     public function userVote(): ?bool
     {
-        $vote = $this->votes()->where('user_id', Auth::id())->first();
+        $vote = $this->votes()->where('customer_id', Auth::id())->first();
         return $vote?->is_helpful;
     }
 }
