@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\TenantAdmin\Widgets;
+namespace App\Filament\SuperAdmin\Widgets;
 
+use App\Models\Customer;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Tenant;
-use Illuminate\Support\Facades\DB;
 
 class TenantStats extends BaseWidget
 {
@@ -21,16 +21,14 @@ protected static ?int $sort = 1;
 
         $totalSales = Order::where("tenant_id", $tenantId)
             ->where("status", "completed")
-            ->where("final_price", ">", 0)
-            ->sum("final_price");
+            ->where("total", ">", 0)
+            ->sum("total");
 
         $totalOrders = Order::where("tenant_id", $tenantId)->count();
 
         $totalProducts = Product::where("tenant_id", $tenantId)->count();
 
-        $totalCustomers = DB::table("tenant_users")
-            ->where("tenant_id", $tenantId)
-            ->count();
+        $totalCustomers = Customer::where("tenant_id", $tenantId)->count();
 
         return [
             Stat::make("Total Sales", number_format($totalSales, 2) . " ₪")
