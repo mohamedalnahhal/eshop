@@ -25,6 +25,7 @@ class StockAdjustment extends Model
     protected $casts = [
         'type' => StockAdjustmentType::class,
         'status' => StockAdjustmentStatus::class,
+        'updated_value' => 'integer',
     ];
 
     public function tenant(): BelongsTo
