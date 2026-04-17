@@ -54,4 +54,15 @@ class TenantLocaleService
 
         return $chain;
     }
+
+    public function resolveTranslation(array $translations): string
+    {
+        $locales = $this->getFallbackChain();
+        foreach($locales as $locale){
+            if (!empty($translations[$locale])) {
+                return $translations[$locale];
+            }
+        }
+        return (string) (array_values(array_filter($translations))[0] ?? '');
+    }
 }
