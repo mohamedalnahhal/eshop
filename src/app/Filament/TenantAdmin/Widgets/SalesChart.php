@@ -16,6 +16,7 @@ class SalesChart extends ChartWidget
 
     protected function getData(): array
     {
+        $moneyService = app(MoneyService::class);
         $start = Carbon::today()->subDays(6)->startOfDay();
 
         $salesByDay = Order::where('total', '>', 0)
@@ -31,13 +32,13 @@ class SalesChart extends ChartWidget
 
         $days = collect(range(6, 0))->map(fn ($i) => Carbon::today()->subDays($i));
         $labels = $days->map(fn ($d) => $d->format('D'));
-        $sales  = $days->map(fn ($d) => (float) ($salesByDay[$d->toDateString()] ?? 0));
+        $sales  = $days->map(fn ($d) => (float) $moneyService->format($salesByDay[$d->toDateString()] ?? 0));
         $orders = $days->map(fn ($d) => (int)   ($ordersByDay[$d->toDateString()] ?? 0));
 
         return [
             'datasets' => [
                 [
-                    'label'           => __('Sales') . ' (' . app(MoneyService::class)->resolveCurrency() . ')',
+                    'label'           => __('Sales') . ' (' . $moneyService->resolveCurrency() . ')',
                     'data'            => $sales->values()->toArray(),
                     'borderColor'     => '#3b82f6',
                     'fill'            => true,
