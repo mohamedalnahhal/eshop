@@ -45,7 +45,7 @@ class TenantsTable
                 TextColumn::make('owner_email')
                     ->label('Owner Email')
                     ->getStateUsing(function ($record) {
-                        return $record->owner->first()?->email;
+                        return $record->owner->email;
                     }),
                 TextColumn::make('status')
                     ->badge(),
@@ -75,7 +75,7 @@ class TenantsTable
                     $centralDomain = '.' . config('tenancy.central_domains')[0];
                     
                     $data['subdomain'] = str_replace($centralDomain, '', $domain);
-                    $data['owner_email'] = $record->owner->first()?->email;
+                    $data['owner_email'] = $record->owner->email;
 
                     return $data;
                 })
