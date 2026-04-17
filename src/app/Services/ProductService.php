@@ -24,7 +24,7 @@ class ProductService
                 fn($q, $v) => $q->whereRaw('price <= ?', [(int)$v + 0.99])
             )
             ->when($filters['search'] ?? null,
-                fn($q, $v) => $q->whereTranslation('name', 'like', "%{$v}%", $locale)
+                fn($q, $v) => $q->whereTranslationLike('name', "%{$v}%", $locale)
             )
             ->when($filters['sort'] ?? 'latest', function ($q, $sort) {
                 return match($sort) {
