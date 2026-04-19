@@ -11,6 +11,7 @@ use App\Services\IconService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use App\Http\Middleware\InitializeTenancyForLivewire;
+use App\Http\Middleware\SetTenantLocale;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 ->middleware([
                     'web',
                     InitializeTenancyForLivewire::class,
+                    SetTenantLocale::class,
                 ]);
         });
 
