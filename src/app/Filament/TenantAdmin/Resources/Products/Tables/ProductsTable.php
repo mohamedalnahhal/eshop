@@ -31,7 +31,9 @@ class ProductsTable
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 ImageColumn::make('media.file_path')
                     ->label('image')
                     ->disk('public')
