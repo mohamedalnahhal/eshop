@@ -2,27 +2,64 @@
 
 namespace App\Policies;
 
-use App\Enums\TenantPermission;
-use App\Models\TenantUser;
+use App\Models\Tenant;
 use App\Models\User;
 
 class TenantPolicy
 {
-    protected function tenantUser(User $user): ?TenantUser
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
     {
-        if (! function_exists('tenant') || ! tenant()) {
-            return null;
-        }
-
-        return $user->tenantUserFor(tenant('id'));
+        return $user->isAdmin();
     }
 
     /**
-     * check TenantPermission, falls back to false when there is no tenant context
+     * Determine whether the user can view the model.
      */
-    protected function check(User $user, TenantPermission $permission): bool
+    public function view(User $user, Tenant $tenant): bool
     {
-        if($user->isAdmin()) return true; // super admin
-        return $this->tenantUser($user)?->can($permission) ?? false;
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, Tenant $tenant): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Tenant $tenant): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Tenant $tenant): bool
+    {
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Tenant $tenant): bool
+    {
+        return $user->isAdmin();
     }
 }

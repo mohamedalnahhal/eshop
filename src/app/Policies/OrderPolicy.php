@@ -7,7 +7,7 @@ use App\Enums\TenantPermission;
 use App\Models\Order;
 use App\Models\User;
 
-class OrderPolicy extends TenantPolicy
+class OrderPolicy extends TenancyBasePolicy
 {
     public function viewAny(User $user): bool
     {
