@@ -11,6 +11,7 @@ use App\Services\IconService;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use App\Http\Middleware\InitializeTenancyForLivewire;
+use App\Livewire\TenantAdmin\ThemeEditor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
                     InitializeTenancyForLivewire::class,
                 ]);
         });
+        Livewire::component('theme-editor', ThemeEditor::class);
+        // Livewire::component('theme-text-field', ThemeTextField::class);
+        // Livewire::component('theme-select-field', ThemeSelectField::class);
+        // Livewire::component('theme-color-field', ThemeColorField::class);
 
         FilamentView::registerRenderHook(
             'panels::head.end',
