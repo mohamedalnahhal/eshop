@@ -103,7 +103,7 @@ class OrderService
     {
         $this->validateTransition($order, $status);
 
-        $order->update(['status' => $status]);
+       $order->forceFill(['status' => $status ])->save();
 
         return $order;
     }

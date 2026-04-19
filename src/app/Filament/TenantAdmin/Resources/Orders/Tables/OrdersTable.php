@@ -160,7 +160,7 @@ class OrdersTable
                         ->label('Cancel Order')
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
-                        ->visible(fn ($record) => $record->status === OrderStatus::PENDING)
+                        ->visible(fn ($record) => $record->status === OrderStatus::PROCESSING)
                         ->requiresConfirmation()
                         ->modalHeading('Cancel Order')
                         ->modalDescription('Are you sure you want to cancel this order? This cannot be undone.')

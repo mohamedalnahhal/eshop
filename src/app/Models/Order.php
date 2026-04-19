@@ -24,7 +24,6 @@ class Order extends Model
         'shipping_fees',
         'discount',
         'notes',
-        'status',
     ];
 
     protected $casts = [
