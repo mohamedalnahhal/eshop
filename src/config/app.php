@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Default Currency
+    |--------------------------------------------------------------------------
+    |
+    | Determine the platform fallback default currency for tenants
+    */
+    'default_currency' => 'USD',
+    'default_currency_decimals' => 2,
+
 ];

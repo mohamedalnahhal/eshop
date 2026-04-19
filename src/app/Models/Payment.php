@@ -6,22 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    use SoftDeletes;
+
+    const UPDATED_AT = null;
 
     protected $fillable = [
-        'tenant_id',
         'paymentable_id',
         'paymentable_type',
         'payment_method',
         'amount',
         'currency',
         'status',
+        'payment_type',
+        'parent_payment_id',
         'transaction_reference',
-        'gateway_response',
         'metadata'
     ];
 
@@ -30,13 +34,12 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
+        'amount' => 'integer',
         'gateway_response' => 'array',
         'status' => PaymentStatus::class,
         'metadata' => 'array',
     ];
 
-    public function tenant() { return $this->belongsTo(Tenant::class); }
     public function method() { return $this->belongsTo(PaymentMethod::class, 'payment_method', 'payment_method'); }
     public function paymentable() { return $this->morphTo(); }
 }

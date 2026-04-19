@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\SetTenantLocale;
+use App\Http\Controllers\Auth\Customer\CustomerLoginController;
+use App\Http\Controllers\Auth\Customer\CustomerRegisterController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -10,12 +13,6 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |--------------------------------------------------------------------------
 | Tenant Routes
 |--------------------------------------------------------------------------
-|
-| Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider.
-|
-| Feel free to customize them however you want. Good luck!
-|
 */
 
 Route::middleware([
@@ -23,7 +20,28 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    });
+
+    Route::prefix('{locale}')
+        ->middleware(SetTenantLocale::class)
+        ->group(function () {
+            Route::livewire('/', 'pages::index')->name('shop.index');
+            Route::livewire('/products', 'pages::products.index')->name('shop.products');
+            Route::livewire('/product/{id}', 'pages::products.show')->name('shop.product.show');
+            Route::livewire('/cart', 'pages::cart.index')->name('shop.cart');
+
+            Route::middleware('guest:customer')->group(function () {
+                Route::get('/login',  [CustomerLoginController::class, 'create'])->name('shop.login');
+                Route::post('/login', [CustomerLoginController::class, 'store'])->name('shop.login.store');
+                Route::get('/signup',  [CustomerRegisterController::class, 'create'])->name('shop.signup');
+                Route::post('/signup', [CustomerRegisterController::class, 'store'])->name('shop.signup.store');
+            });
+
+            Route::middleware('auth:customer')->group(function () {
+                Route::post('/logout', [CustomerLoginController::class, 'destroy'])->name('shop.logout');
+                
+                // Route::get('/account', [AccountController::class, 'index'])->name('shop.account');
+                // Route::get('/orders',  [OrderController::class, 'index'])->name('shop.orders');
+            });
+        });
+
 });

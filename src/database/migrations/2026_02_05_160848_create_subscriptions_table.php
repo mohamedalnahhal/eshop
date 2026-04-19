@@ -13,11 +13,12 @@ return new class extends Migration {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name', 100);
-            $table->decimal('price', 10, 2);
+            $table->unsignedBigInteger('price');
             $table->integer('duration_days');
             $table->integer('max_products');
             $table->jsonb('features')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

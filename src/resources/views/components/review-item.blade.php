@@ -1,0 +1,86 @@
+<?php
+
+use Livewire\Component;
+use App\Models\Review;
+use App\Services\ReviewService;
+use Illuminate\Support\Facades\Auth;
+
+new class extends Component
+{
+    public Review $review;
+    public bool $canVote = true;
+
+    public function vote(ReviewService $service, bool $isHelpful): void
+    {
+        abort_if(!Auth::check(), 403);
+
+        $existing = $this->review->votes()
+            ->where('customer_id', Auth::id())
+            ->first();
+
+        if ($existing && $existing->is_helpful === $isHelpful) {
+            $service->removeVote($this->review->id);
+        } else {
+            $service->vote($this->review->id, $isHelpful);
+        }
+
+        $this->review->unsetRelation('votes');
+        $this->review->load('votes');
+    }
+};
+?>
+
+<div class="card p-5">
+    <div class="flex justify-between items-start mb-2 gap-2">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+                <img
+                    src="{{ $review->customer->avatar_url }}"
+                    alt="{{ $review->customer->name }}"
+                    class="w-6 h-6 rounded-full object-cover"
+                />
+                <h4 class="text-theme font-normal! leading-none">{{ $review->customer->name }}</h4>
+            </div>
+            <x-simple-rating-stars :rating="$review->rating"/>
+        </div>
+        <p class="text-theme-sm text-muted">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
+    </div>
+
+    @if($review->comment)
+        <p class="text-theme-sm text-muted">{{ $review->comment }}</p>
+    @endif
+
+    <div class="flex items-end justify-between mt-3">
+        <div class="flex items-center gap-2">
+            <span class="text-theme-xs text-muted">
+                {{ $review->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
+            </span>
+            @if($review->wasEdited())
+                <span class="text-theme-xs text-muted">·</span>
+                <span class="text-theme-xs text-muted italic">
+                    تم التعديل {{ $review->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
+                </span>
+            @endif
+        </div>
+
+        @auth
+        @if($canVote)
+            <div class="flex items-center gap-2 text-theme-sm text-muted">
+                <span>مفيد؟</span>
+                <div class="flex items-center">
+                    <button wire:click="vote(true)"
+                            class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-success/10
+                                {{ $review->userVote() === true ? 'text-success font-bold' : '' }}">
+                        @icon('thumbs-up', 'w-4 h-4')
+                    </button>
+                    <button wire:click="vote(false)"
+                            class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-danger/10
+                                {{ $review->userVote() === false ? 'text-danger font-bold' : '' }}">
+                        @icon('thumbs-up', 'w-4 h-4 rotate-180')
+                    </button>
+                </div>
+            </div>
+        @endif
+        @endauth
+    </div>
+</div>

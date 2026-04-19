@@ -23,4 +23,9 @@ class PaymentMethod extends Model
         'config' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'payment_method', 'payment_method');
+    }
 }

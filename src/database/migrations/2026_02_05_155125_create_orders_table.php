@@ -13,14 +13,23 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->decimal('total_price', 10, 2);   
-            $table->decimal('discount', 10, 2)->default(0.00);
-            $table->decimal('final_price', 10, 2);    
-            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'refunded']);
-            $table->foreignUuid('user_id')->constrained('users');
-            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->foreignUuid('shipping_address_id')->constrained('addresses');
-            $table->timestamp('created_at')->useCurrent();
+            $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('guest_email')->nullable();
+            $table->string('guest_name')->nullable();
+            $table->string('guest_phone')->nullable();
+            $table->jsonb('shipping_address'); // snapshot, no FK
+            $table->jsonb('billing_address')->nullable(); // snapshot, no FK
+            $table->unsignedBigInteger('subtotal')->default(0);
+            $table->unsignedBigInteger('shipping_fees')->default(0);
+            $table->unsignedBigInteger('discount')->default(0);
+            $table->unsignedBigInteger('total')->default(0);
+            $table->string('currency', 3); // snapshot
+            $table->unsignedTinyInteger('currency_decimals'); // snapshot
+            $table->enum('status', ['draft', 'pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']);
+            $table->text('notes')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
-use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
+
+use App\Listeners\LoadTenantTheme;
+use App\Listeners\SetTenantTranslationLocale;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -60,7 +62,11 @@ class TenancyServiceProvider extends ServiceProvider
             ],
 
             Events\BootstrappingTenancy::class => [],
-            Events\TenancyBootstrapped::class => [],
+            Events\TenancyBootstrapped::class => [
+                LoadTenantTheme::class,
+                SetTenantTranslationLocale::class,
+
+            ],
             Events\RevertingToCentralContext::class => [],
             Events\RevertedToCentralContext::class => [],
 

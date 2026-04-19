@@ -13,9 +13,13 @@ return new class extends Migration {
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->string('name', 100);
-            $table->enum('type', ['main', 'sub', 'collection', 'hidden'])->default('main'); 
+            $table->enum('type', ['main', 'sub'])->default('main');
+            $table->foreignUuid('parent_id')
+                ->nullable()
+                ->constrained('categories')
+                ->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

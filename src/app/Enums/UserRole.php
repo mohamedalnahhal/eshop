@@ -2,7 +2,18 @@
 
 namespace App\Enums;
 
-enum UserRole: int {
-  case CUSTOMER = 0;
-  case ADMIN = 99;
+use Filament\Support\Contracts\HasLabel;
+
+enum UserRole: int implements HasLabel
+{
+    case TENANT = 0;
+    case ADMIN = 99;
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::TENANT => 'Tenant',
+            self::ADMIN => 'System Admin',
+        };
+    }
 }

@@ -10,10 +10,19 @@ class Cart extends Model
 {
     use HasUuids;
     use BelongsToTenant;
+    
+    protected $fillable = ['customer_id', 'session_token', 'expires_at'];
 
-    protected $fillable = ['user_id', 'tenant_id'];
-
-    public function user() { return $this->belongsTo(User::class); }
-    public function tenant() { return $this->belongsTo(Tenant::class); }
+    public function customer(){ return $this->belongsTo(Customer::class); }
     public function items() { return $this->hasMany(CartItem::class); }
+
+    public function isGuest()
+    {
+        return is_null($this->customer_id);
+    }
+
+    public function total()
+    {
+        return $this->items->sum(fn ($item) => $item->subtotal());
+    }
 }
