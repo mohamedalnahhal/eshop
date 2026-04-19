@@ -6,7 +6,7 @@ use App\Enums\TenantPermission;
 use App\Models\TenantUser;
 use App\Models\User;
 
-abstract class TenantPolicy
+class TenantPolicy
 {
     protected function tenantUser(User $user): ?TenantUser
     {
