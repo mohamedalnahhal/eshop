@@ -1,6 +1,7 @@
 <?php
 
 use Livewire\Component;
+use App\Exceptions\InsufficientStockException;
 use App\Services\CartService;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -8,6 +9,7 @@ use Livewire\Attributes\On;
 new class extends Component
 {
     protected CartService $service;
+    public string $cartError = '';
 
     public function boot(CartService $service)
     {
@@ -28,20 +30,27 @@ new class extends Component
 
     public function deleteItem(string $itemId)
     {
+        $this->cartError = '';
         $this->service->deleteItem($itemId);
         $this->dispatch('cart-updated');
     }
 
     public function decrementItem(string $itemId)
     {
+        $this->cartError = '';
         $this->service->decrementItem($itemId);
         $this->dispatch('cart-updated');
     }
 
     public function incrementItem(string $itemId)
     {
-        $this->service->incrementItem($itemId);
-        $this->dispatch('cart-updated');
+        $this->cartError = '';
+        try {
+            $this->service->incrementItem($itemId);
+            $this->dispatch('cart-updated');
+        } catch (InsufficientStockException $e) {
+            $this->cartError = $e->getMessage();
+        }
     }
 };
 ?>
@@ -57,6 +66,12 @@ new class extends Component
             {{ __('Home') }}
         </a>
     </div>
+
+    @if($cartError)
+        <div class="text-danger text-theme-sm font-semibold bg-danger/10 border border-danger/30 rounded-theme-md px-4 py-3 mb-6">
+            {{ $cartError }}
+        </div>
+    @endif
 
     @if($this->count > 0)
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

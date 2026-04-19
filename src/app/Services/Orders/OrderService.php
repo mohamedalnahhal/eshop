@@ -2,6 +2,7 @@
 
 namespace App\Services\Orders;
 
+use App\Exceptions\InsufficientStockException;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Enums\OrderStatus;
@@ -46,13 +47,17 @@ class OrderService
     public function addItem(Order $order, Product $product, int $quantity, ?int $overwritePrice): OrderItem
     {
         $this->ensureEditable($order);
-    
+
+        if ($product->stock < $quantity) {
+            throw new InsufficientStockException($product->stock);
+        }
+
         return DB::transaction(function () use ($order, $product, $quantity, $overwritePrice) {
-    
+
             $item = $this->itemService->add($order, $product, $quantity, $overwritePrice);
-    
+
             $this->recalculate($order);
-    
+
             return $item;
         });
     }
@@ -62,6 +67,10 @@ class OrderService
         $order = $item->order;
 
         $this->ensureEditable($order);
+
+        if ($product->stock < $quantity) {
+            throw new InsufficientStockException($product->stock);
+        }
 
         return DB::transaction(function () use ($item, $product, $quantity, $overwritePrice) {
 
@@ -103,9 +112,43 @@ class OrderService
     {
         $this->validateTransition($order, $status);
 
-        $order->update(['status' => $status]);
+        return DB::transaction(function () use ($order, $status) {
+            if ($status === OrderStatus::PENDING) {
+                $this->deductStock($order);
+            }
 
-        return $order;
+            if ($status === OrderStatus::CANCELLED) {
+                $this->restoreStock($order);
+            }
+
+            $order->update(['status' => $status]);
+
+            return $order;
+        });
+    }
+
+    private function deductStock(Order $order): void
+    {
+        $order->load('items.product');
+
+        foreach ($order->items as $item) {
+            if ($item->product->stock < $item->quantity) {
+                throw new InsufficientStockException($item->product->stock);
+            }
+        }
+
+        foreach ($order->items as $item) {
+            $item->product->decrement('stock', $item->quantity);
+        }
+    }
+
+    private function restoreStock(Order $order): void
+    {
+        $order->load('items.product');
+
+        foreach ($order->items as $item) {
+            $item->product->increment('stock', $item->quantity);
+        }
     }
 
     private function ensureEditable(Order $order): void
