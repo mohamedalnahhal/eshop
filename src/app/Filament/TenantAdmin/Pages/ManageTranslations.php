@@ -23,7 +23,8 @@ class ManageTranslations extends Page implements HasTable
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-language';
     protected static ?string $navigationLabel = 'Translations';
     protected static ?string $title = 'Manage Translations';
-    protected static ?int $navigationSort = 3;
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static ?int $navigationSort = 96;
 
     protected string $view = 'filament.tenant-admin.pages.manage-translations';
 
