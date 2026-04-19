@@ -2,6 +2,8 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\TenantPermission;
+use App\Models\TenantSetting;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -11,7 +13,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use App\Models\TenantSetting;
+use Illuminate\Support\Facades\Auth;
 
 class Settings extends Page implements HasForms
 {
@@ -119,5 +121,13 @@ class Settings extends Page implements HasForms
             ->label('Save Settings')
             ->action('save')
             ->color('primary');
+    }
+
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::MANAGE_SETTINGS) ?? false;
     }
 }

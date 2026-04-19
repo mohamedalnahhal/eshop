@@ -2,6 +2,8 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\TenantPermission;
+use App\Models\LanguageLine;
 use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -12,7 +14,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
-use App\Models\LanguageLine;
+use Illuminate\Support\Facades\Auth;
 
 class ManageTranslations extends Page implements HasTable
 {
@@ -107,5 +109,13 @@ class ManageTranslations extends Page implements HasTable
                     }),
                 DeleteAction::make(),
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::MANAGE_SETTINGS) ?? false;
     }
 }

@@ -13,10 +13,11 @@ class Tenant extends BaseTenant
 {
     use HasUuids, HasDomains , SoftDeletes;
 
-    protected $fillable = ['name', 'status', 'owner_id'];
+    protected $fillable = ['name', 'status', 'owner_id', 'data'];
 
     protected $casts = [
         'status' => TenantStatus::class,
+        'data'   => 'array',
     ];
 
     public static function getCustomColumns(): array
@@ -29,6 +30,11 @@ class Tenant extends BaseTenant
         ];
     }
     
+    public function tenantUsers()
+    {
+        return $this->hasMany(TenantUser::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'tenant_users')

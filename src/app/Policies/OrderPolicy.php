@@ -3,64 +3,52 @@
 namespace App\Policies;
 
 use App\Enums\OrderStatus;
-use App\Enums\UserRole;
+use App\Enums\TenantPermission;
 use App\Models\Order;
 use App\Models\User;
 
-class OrderPolicy
+class OrderPolicy extends TenantPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $this->check($user, TenantPermission::VIEW_ORDERS);
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Order $order): bool
     {
-        return true;
+        return $this->check($user, TenantPermission::VIEW_ORDERS);
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
-        return true;
+        return $this->check($user, TenantPermission::MANAGE_ORDERS);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Order $order): bool
     {
+        if (! $this->check($user, TenantPermission::MANAGE_ORDERS)) {
+            return false;
+        }
+
         // Deny editing if the order is not draft
         return $order->status === OrderStatus::DRAFT;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Order $order): bool
     {
-        return $user->role === UserRole::ADMIN;
+        return $this->check($user, TenantPermission::MANAGE_ORDERS);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
+    public function deleteAny(User $user): bool
+    {
+        return $this->check($user, TenantPermission::MANAGE_ORDERS);
+    }
+
     public function restore(User $user, Order $order): bool
     {
-        return $user->role === UserRole::ADMIN;
+        return $this->check($user, TenantPermission::MANAGE_ORDERS);
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Order $order): bool
     {
         return false;
