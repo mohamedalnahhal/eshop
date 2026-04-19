@@ -33,7 +33,9 @@ class TenantsTable
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('domain.domain')
