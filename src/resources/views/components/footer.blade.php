@@ -80,7 +80,7 @@
                                 <a href="{{ $href }}"
                                    wire:navigate
                                    class="text-theme-sm text-on-footer/70 hover:text-on-footer transition-colors flex items-center gap-1.5">
-                                    @icon('chevron-r', 'w-3 h-3 rotate-180 opacity-50')
+                                    @icon('chevron-r', 'w-3 h-3 rtl:rotate-180 opacity-50')
                                     {{ __($link['label']) }}
                                 </a>
                             </li>
@@ -119,7 +119,9 @@
                 <span>© {{ date('Y') }} {{ $name }} — {{ __($fo['copyright_text']) }}</span>
                 <span class="flex items-center gap-1">
                     {{ __('Powered by') }}
-                    @icon('heart', 'w-3.5 h-3.5')
+                    <span class="text-on-footer/80 cursor-pointer hover:text-on-footer transition-colors flex items-center gap-1">
+                        eShop with @icon('heart', 'w-3.5 h-3.5')
+                    </span>
                 </span>
             </div>
         @endif

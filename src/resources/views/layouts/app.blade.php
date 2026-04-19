@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ \App\Helpers\LocaleHelper::isRtl(app()->getLocale()) ? 'rtl' : 'ltr' }}">
 <head>
     @include('partials.head')
 </head>

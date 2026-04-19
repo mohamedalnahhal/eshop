@@ -17,7 +17,7 @@
                  wire:navigate
                  class="btn btn-primary hover:opacity-75 font-bold rounded-cta! transition-all! shadow-glow! hover:-translate-y-0.5">
                   {{ __('CTA Primary Label') }}
-                  @icon('arrow-r', 'w-4 h-4 rotate-180')
+                  @icon('arrow-r', 'w-4 h-4 rtl:rotate-180')
               </a>
               <a href="#categories"
                  class="btn bg-surface-200 hover:bg-surface-300 text-theme font-bold rounded-cta! transition-all! hover:-translate-y-0.5">

@@ -13,7 +13,7 @@
              wire:navigate
              class="btn btn-primary rounded-cta! shadow-glow! font-bold hover:opacity-75 hover:-translate-y-0.5 transition-all!">
               {{ __('Promo CTA') }}
-              @icon('arrow-r', 'w-4 h-4 rotate-180')
+              @icon('arrow-r', 'w-4 h-4 rtl:rotate-180')
           </a>
       @endif
   </div>

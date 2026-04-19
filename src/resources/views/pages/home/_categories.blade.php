@@ -5,7 +5,7 @@
           <a href="{{ route('shop.products') }}" wire:navigate
              class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-colors flex items-center gap-1">
               {{ __('View all') }}
-              @icon('chevron-r', 'w-4 h-4 rotate-180')
+              @icon('chevron-r', 'w-4 h-4 rtl:rotate-180')
           </a>
       @endif
   </div>
@@ -24,7 +24,7 @@
                       </span>
                       <span class="block text-theme-xs text-muted">{{ $category->products_count }} {{ __('Products') }}</span>
                   </div>
-                  @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rotate-180 shrink-0 transition-colors')
+                  @icon('chevron-r', 'w-4 h-4 text-muted group-hover:text-primary! rtl:rotate-180 shrink-0 transition-colors')
               </a>
 
               @if($category->children->isNotEmpty())

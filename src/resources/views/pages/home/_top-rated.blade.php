@@ -10,7 +10,7 @@
           <a href="{{ route('shop.products', ['sort' => 'top_rated']) }}" wire:navigate
              class="text-theme-sm font-semibold text-primary hover:opacity-75 transition-opacity flex items-center gap-1">
               {{ __('View all') }}
-              @icon('chevron-r', 'w-4 h-4 rotate-180')
+              @icon('chevron-r', 'w-4 h-4 rtl:rotate-180')
           </a>
       @endif
   </div>

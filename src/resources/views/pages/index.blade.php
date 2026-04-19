@@ -86,7 +86,7 @@ new class extends Component
                 <input
                     type="text"
                     name="search"
-                    class="input header-input w-full sm:pr-[calc(var(--spacing-header-search-px)+2rem)]! pr-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!"
+                    class="input header-input w-full sm:ps-[calc(var(--spacing-header-search-px)+2rem)]! ps-[calc(var(--spacing-m-header-search-px)+2rem)]! rounded-input-full!"
                     placeholder="{{ __('What are you looking for?') }}">
             </div>
         </form>
