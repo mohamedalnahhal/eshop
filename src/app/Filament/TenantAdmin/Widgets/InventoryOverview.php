@@ -3,6 +3,7 @@
 namespace App\Filament\TenantAdmin\Widgets;
 
 use App\Models\Product;
+use App\Services\Money\MoneyService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,7 @@ class InventoryOverview extends BaseWidget
                 
             Stat::make(__('Value of Stock'), function () {
                 $totalValue = Product::sum(DB::raw('stock * price'));
-                return '$' . number_format($totalValue, 2);
+                return app(MoneyService::class)->format($totalValue);
             })
                 ->description(__('Total assets value'))
                 ->descriptionIcon('heroicon-m-banknotes')
