@@ -17,6 +17,8 @@ class TopProductsChart extends ChartWidget
     {
         // TODO: get sales from payments and account for each payemnt currency
 
+        $moneyService = app(MoneyService::class);
+
         $results = OrderItem::whereHas('order')
             ->selectRaw("
                 COALESCE(product_id, product_name) as product_key,
@@ -34,7 +36,7 @@ class TopProductsChart extends ChartWidget
             $this->hasData = false;
 
             return [
-                'datasets' => [['label' => __('Revenue') . ' (' . app(MoneyService::class)->resolveCurrency() . ')', 'data' => [0]]],
+                'datasets' => [['label' => __('Revenue') . ' (' . $moneyService->resolveCurrency() . ')', 'data' => [0]]],
                 'labels'   => [__('No data')],
             ];
         }
@@ -46,8 +48,8 @@ class TopProductsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => __('Revenue') . ' (' . app(MoneyService::class)->resolveCurrency() . ')',
-                    'data'  => $results->pluck('revenue')->map(fn ($v) => round($v, 2))->toArray(),
+                    'label' => __('Revenue') . ' (' . $moneyService->resolveCurrency() . ')',
+                    'data'  => $results->pluck('revenue')->map(fn ($v) => $moneyService->fromMinor($v))->toArray(),
                     'backgroundColor' => [
                         'rgba(245, 158, 11, 0.8)',
                         'rgba(245, 158, 11, 0.65)',
