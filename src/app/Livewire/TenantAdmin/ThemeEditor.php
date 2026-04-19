@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\TenantAdmin; 
+namespace App\Livewire\TenantAdmin;
 
 use App\Models\Theme;
 use Livewire\Component;
@@ -11,19 +11,18 @@ class ThemeEditor extends Component
     public string $themeId;
     public string $activeTab = 'palette';
 
-    // ── live state (not yet persisted) ──────────────────────────────────────
-    public array $palette   = [];
-    public array $font      = [];
-    public array $buttons   = [];
-    public array $inputs    = [];
-    public array $header    = [];
-    public array $m_header  = [];
-    public array $glows     = [];
-    public array $corners   = [];
-    public array $footer    = [];
+    public array  $palette   = [];
+    public array  $font      = [];
+    public array  $buttons   = [];
+    public array  $inputs    = [];
+    public array  $header    = [];
+    public array  $m_header  = [];
+    public array  $glows     = [];
+    public array  $corners   = [];
+    public array  $footer    = [];
+    public array  $homepage  = [];
     public string $icon_pack = '';
 
-    // ── internal ─────────────────────────────────────────────────────────────
     protected Theme $theme;
 
     public function mount(string $themeId): void
@@ -31,10 +30,8 @@ class ThemeEditor extends Component
         $this->themeId = $themeId;
 
         $this->theme = Theme::where('id', $themeId)
-            ->where(function ($q) {
-                $q->where('tenant_id', tenant()->id)
-                  ->orWhereNull('tenant_id');
-            })->firstOrFail();
+            ->where(fn($q) => $q->where('tenant_id', tenant()->id)->orWhereNull('tenant_id'))
+            ->firstOrFail();
 
         $this->palette   = $this->theme->resolvedPalette();
         $this->font      = $this->theme->resolvedFont();
@@ -45,47 +42,37 @@ class ThemeEditor extends Component
         $this->glows     = $this->theme->resolvedGlows();
         $this->corners   = $this->theme->resolvedCorners();
         $this->footer    = $this->theme->resolvedFooter();
+        $this->homepage  = $this->theme->resolvedHomepage();
         $this->icon_pack = $this->theme->resolvedIconPack();
     }
 
-    // ── compute live CSS to push to preview ──────────────────────────────────
+    // ── Live CSS - يُعاد حسابه مع كل تغيير ──────────────────────────────
     public function getLiveCssProperty(): string
     {
-        $p  = array_merge(Theme::defaultPalette(),  $this->palette);
-        $f  = array_merge(Theme::defaultFont(),     $this->font);
-        $b  = array_merge(Theme::defaultButtons(),  $this->buttons);
-        $i  = array_merge(Theme::defaultInputs(),   $this->inputs);
-        $h  = array_merge(Theme::defaultHeader(),   $this->header);
-        $mh = array_merge(Theme::defaultMobileHeader(), $this->m_header);
-        $g  = array_merge(Theme::defaultGlows(),    $this->glows);
-        $c  = array_merge(Theme::defaultCorners(),  $this->corners);
-        $fo = array_merge(Theme::defaultFooter(),   $this->footer);
-
-        // Reuse the model's method by temporarily overwriting
         $fake = new Theme([
-            'palette'  => $p,
-            'font'     => $f,
-            'buttons'  => $b,
-            'inputs'   => $i,
-            'header'   => $h,
-            'm_header' => $mh,
-            'glows'    => $g,
-            'corners'  => $c,
-            'footer'   => $fo,
+            'palette'   => array_merge(Theme::defaultPalette(),      $this->palette),
+            'font'      => array_merge(Theme::defaultFont(),         $this->font),
+            'buttons'   => array_merge(Theme::defaultButtons(),      $this->buttons),
+            'inputs'    => array_merge(Theme::defaultInputs(),       $this->inputs),
+            'header'    => array_merge(Theme::defaultHeader(),       $this->header),
+            'm_header'  => array_merge(Theme::defaultMobileHeader(), $this->m_header),
+            'glows'     => array_merge(Theme::defaultGlows(),        $this->glows),
+            'corners'   => array_merge(Theme::defaultCorners(),      $this->corners),
+            'footer'    => array_merge(Theme::defaultFooter(),       $this->footer),
         ]);
 
         return $fake->toCssVars();
     }
 
-    // ── save to DB ────────────────────────────────────────────────────────────
+    // ── Save ─────────────────────────────────────────────────────────────
     public function save(): void
     {
         $this->theme = Theme::findOrFail($this->themeId);
 
-        // If global theme, clone it for this tenant first
+        // إذا ثيم عام، نعمل نسخة للتاجر
         if ($this->theme->tenant_id === null) {
             $this->theme = $this->theme->replicate();
-            $this->theme->tenant_id = tenant()->id;
+            $this->theme->tenant_id  = tenant()->id;
             $this->theme->is_default = false;
         }
 
@@ -99,17 +86,19 @@ class ThemeEditor extends Component
             'glows'     => $this->glows,
             'corners'   => $this->corners,
             'footer'    => $this->footer,
+            'homepage'  => $this->homepage,
             'icon_pack' => $this->icon_pack,
         ]);
 
         $this->themeId = $this->theme->id;
 
         Notification::make()
-            ->title('تم حفظ الثيم بنجاح')
+            ->title('تم حفظ الثيم بنجاح ✓')
             ->success()
             ->send();
     }
 
+    // ── Reset ─────────────────────────────────────────────────────────────
     public function resetToDefaults(): void
     {
         $this->palette   = Theme::defaultPalette();
@@ -121,16 +110,12 @@ class ThemeEditor extends Component
         $this->glows     = Theme::defaultGlows();
         $this->corners   = Theme::defaultCorners();
         $this->footer    = Theme::defaultFooter();
+        $this->homepage  = Theme::defaultHomepage();
         $this->icon_pack = Theme::defaultIconPack();
-    }
-
-    public function getPreviewUrlProperty(): string
-    {
-        return route('shop.index', ['locale'=>app(\App\Services\TenantLocaleService::class)->getDefaultLocale()]);
     }
 
     public function render()
     {
-        return view('components.theme-editor');        // return view('livewire.tenant-admin.theme-editor');
+        return view('components.theme-editor');
     }
 }
