@@ -9,8 +9,8 @@ class ReviewVote extends Model
 {
     use HasUuids;
 
-    protected $fillable = ['user_id', 'review_id', 'is_helpful'];
+    protected $fillable = ['customer_id', 'review_id', 'is_helpful'];
 
     public function review() { return $this->belongsTo(Review::class); }
-    public function user() { return $this->belongsTo(User::class); }
+    public function customer() { return $this->belongsTo(Customer::class); }
 }
