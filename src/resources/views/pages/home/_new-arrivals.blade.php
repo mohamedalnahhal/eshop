@@ -1,9 +1,9 @@
 <section>
   <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
-          <h2 class="text-theme-2xl font-bold text-theme">{{ __('Latest') }}</h2>
-          @if(!empty($section['badge_label']))
-              <span class="badge bg-primary text-on-primary">{{ __('New') }}</span>
+          <h2 class="text-theme-2xl font-bold text-theme">{{ __('New Arrivals') }}</h2>
+          @if($section['show_badge'])
+              <span class="badge bg-primary text-on-primary">{{ __('New Badge') }}</span>
           @endif
       </div>
       @if($section['show_view_all'] ?? true)

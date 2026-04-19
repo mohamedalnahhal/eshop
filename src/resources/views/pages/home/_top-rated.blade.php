@@ -2,8 +2,8 @@
   <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
           <h2 class="text-theme-2xl font-bold text-theme">{{ __('Top Rated') }}</h2>
-          @if(!empty($section['badge_label']))
-              <span class="badge bg-gold-surface text-on-gold border border-gold">{{ __('★ Featured') }}</span>
+          @if($section['show_badge'])
+              <span class="badge bg-gold-surface text-on-gold border border-gold">{{ __('★ Featured Badge') }}</span>
           @endif
       </div>
       @if($section['show_view_all'] ?? true)

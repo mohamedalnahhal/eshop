@@ -5,6 +5,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
@@ -22,16 +23,30 @@ class CategoriesTable
     {
         return $table
             ->groups([
-                Group::make('parent.name')
+                Group::make('parent_id')
                 ->label('Parent Category')
                 ->titlePrefixedWithLabel(false)
+                ->getTitleFromRecordUsing(fn ($record) => $record->parent?->name ?? 'Primary')
+                ->orderQueryUsing(function (Builder $query, string $direction) {
+                    $dir = $direction === 'desc' ? 'DESC' : 'ASC';
+                    return $query->orderByRaw(
+                        "(SELECT name FROM category_translations WHERE category_id = categories.id AND locale = ? LIMIT 1) {$dir}",
+                        [app()->getLocale()]
+                    );
+                })
                 ->collapsible(),
             ])
             ->columns([
                 TextColumn::make('name')
                     ->label('Category Name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereTranslationLike('name', "%{$search}%"))
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        $dir = $direction === 'desc' ? 'DESC' : 'ASC';
+                        return $query->orderByRaw(
+                            "(SELECT name FROM category_translations WHERE category_id = categories.id AND locale = ? LIMIT 1) {$dir}",
+                            [app()->getLocale()]
+                        );
+                    }),
                 TextColumn::make('parent.name')
                     ->label('Parent')
                     ->badge()

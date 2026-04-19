@@ -74,16 +74,16 @@ new class extends Component
 
     <div class="lg:col-span-2">
         <div class="flex items-center justify-between border-b border-border pb-4 mb-6">
-            <h2 class="text-theme-2xl font-bold text-theme">آراء الزبائن</h2>
+            <h2 class="text-theme-2xl font-bold text-theme">{{ __('Customer Reviews') }}</h2>
             <div class="relative">
                 <select wire:model.live="reviewSort"
                         wire:loading.attr="disabled"
                         wire:target="reviewSort"
                         class="input w-auto text-muted cursor-pointer appearance-none disabled:opacity-50 disabled:cursor-not-allowed">
-                    <option value="latest">الأحدث</option>
-                    <option value="highest">الأعلى تقييماً</option>
-                    <option value="lowest">الأدنى تقييماً</option>
-                    <option value="helpful">الأكثر إفادة</option>
+                    <option value="latest">{{ __('Latest') }}</option>
+                    <option value="highest">{{ __('Highest Rated') }}</option>
+                    <option value="lowest">{{ __('Lowest Rated') }}</option>
+                    <option value="helpful">{{ __('Most Helpful') }}</option>
                 </select>
                 <div wire:loading wire:target="reviewSort" class="absolute -right-6 top-2">
                     <x-spinner class="h-4 w-4" />
@@ -91,8 +91,8 @@ new class extends Component
             </div>
         </div>
 
-        <div wire:loading.class="opacity-50 pointer-events-none" 
-            wire:target="reviewSort, gotoPage, nextPage, previousPage" 
+        <div wire:loading.class="opacity-50 pointer-events-none"
+            wire:target="reviewSort, gotoPage, nextPage, previousPage"
             class="space-y-4 transition-all duration-200 relative">
             @auth
             @if($canReview)
@@ -103,10 +103,10 @@ new class extends Component
                 <livewire:review-item :review="$review" :key="'review-'.$review->id"/>
             @empty
                 @if($userReview)
-                <p class="text-center py-5 text-muted">تقييمك هو الوحيد، شكراً</p>
+                <p class="text-center py-5 text-muted">{{ __('Your review is the only one, thank you!') }}</p>
                 @else
                 <div class="text-center py-10 rounded-card border-2 border-dashed border-border">
-                    <p class="text-muted">لا توجد تقييمات حتى الآن.</p>
+                    <p class="text-muted">{{ __('No reviews yet.') }}</p>
                 </div>
                 @endif
             @endforelse

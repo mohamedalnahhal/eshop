@@ -24,17 +24,15 @@
             </h3>
             <p class="text-muted text-theme-sm mb-2 line-clamp-1">
                 {{ $item->product->description ? Str::limit($item->product->description, 60) : __('No products found') }}
-
             </p>
             <p>
                 <span class="text-theme-xl font-black text-accent">
                     {{ app(App\Services\Money\MoneyService::class)->format($subtotal) }}
                 </span>
                 <span class="text-muted text-theme-sm font-semibold whitespace-nowrap">
-                    سعر الوحدة: {{ app(App\Services\Money\MoneyService::class)->format($item->unit_price) }}
+                    {{ __('Unit price') }}: {{ app(App\Services\Money\MoneyService::class)->format($item->unit_price) }}
                 </span>
             </p>
-            
         </div>
     </div>
 
@@ -43,17 +41,18 @@
             wire:loading.attr="disabled"
             wire:target="deleteItem('{{ $item->id }}')"
             type="button"
-            class="flex flex-row gap-1 items-center border border-border-input hover:border-danger/40 hover:text-danger hover:bg-danger/10 p-2 rounded-icon transition cursor-pointer" title="حذف المنتج من السلة">
-            {{-- <span >🗑️</span> --}}
+            class="flex flex-row gap-1 items-center border border-border-input hover:border-danger/40 hover:text-danger hover:bg-danger/10 p-2 rounded-icon transition cursor-pointer"
+            title="{{ __('Remove') }}">
             <div wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">
                 @icon('trash', 'w-5 h-5')
             </div>
             
             <x-spinner wire:loading wire:target="deleteItem('{{ $item->id }}')" class="h-5 w-5" />
 
-            <span class="sm:hidden" wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">حذف</span>
-            <span class="sm:hidden text-danger font-bold" wire:loading wire:target="deleteItem('{{ $item->id }}')">جاري...</span>
+            <span class="sm:hidden" wire:loading.remove wire:target="deleteItem('{{ $item->id }}')">{{ __('Remove') }}</span>
+            <span class="sm:hidden text-danger font-bold" wire:loading wire:target="deleteItem('{{ $item->id }}')">{{ __('Loading...') }}</span>
         </button>
+
         <div class="flex flex-row sm:flex-col gap-1">
             <button wire:click="incrementItem('{{ $item->id }}')" 
                     wire:loading.attr="disabled"
@@ -63,7 +62,7 @@
                 <x-spinner wire:loading wire:target="incrementItem('{{ $item->id }}')" class="h-3 w-3" />
             </button>
             <div class="border border-border-input rounded-icon px-4 py-2 sm:py-1 text-theme-sm font-bold text-theme">
-                <span class="sm:hidden">الكمية : </span>
+                <span class="sm:hidden">{{ __('Quantity') }}: </span>
                 {{ $item->quantity }}
             </div>
             <button wire:click="decrementItem('{{ $item->id }}')" 

@@ -55,7 +55,7 @@ new class extends Component
                     
                     @if ($product->categories->count() > 2)
                         <span class="badge bg-secondary text-on-secondary shadow-card border border-border-muted shrink-0">
-                            اخرى
+                            {{ __('Other') }}
                         </span>
                     @endif
                 </div>
@@ -86,7 +86,7 @@ new class extends Component
         <div class="flex gap-2 pt-4 border-t border-border">
             <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
             class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-theme-sm" wire:navigate>
-                {{ __('Home') }}
+                {{ __('View') }}
             </a>
 
             <x-primary-button
@@ -95,7 +95,7 @@ new class extends Component
                 wire:target="addToCart"
                 :disabled="$product->stock == 0"
                 class="grow-0 overflow-hidden text-theme-sm cursor-pointer px-2 py-2">
-                <span wire:loading.remove wire:target="addToCart">{{ __('Cart') }}</span>
+                <span wire:loading.remove wire:target="addToCart">{{ __('Add to cart') }}</span>
                 <div wire:loading.remove wire:target="addToCart">
                     @icon('cart', 'w-4 h-4')
                 </div>

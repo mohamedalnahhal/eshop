@@ -21,6 +21,13 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
+    // Redirect root to default locale
+    Route::get('/', function () {
+        $service = app(\App\Services\TenantLocaleService::class);
+        $locale = $service->getDefaultLocale() ?: 'en';
+        return redirect("/{$locale}");
+    });
+
     Route::prefix('{locale}')
         ->middleware(SetTenantLocale::class)
         ->group(function () {

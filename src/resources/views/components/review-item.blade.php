@@ -43,7 +43,7 @@ new class extends Component
             </div>
             <x-simple-rating-stars :rating="$review->rating"/>
         </div>
-        <p class="text-theme-sm text-muted">{{ $review->helpfulCount() }} وجدوهُ مفيدًا</p>
+        <p class="text-theme-sm text-muted">{{ $review->helpfulCount() }} {{ __('found this helpful') }}</p>
     </div>
 
     @if($review->comment)
@@ -53,12 +53,12 @@ new class extends Component
     <div class="flex items-end justify-between mt-3">
         <div class="flex items-center gap-2">
             <span class="text-theme-xs text-muted">
-                {{ $review->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
+                {{ $review->created_at->locale(app()->getLocale())->diffForHumans() }}
             </span>
             @if($review->wasEdited())
                 <span class="text-theme-xs text-muted">·</span>
                 <span class="text-theme-xs text-muted italic">
-                    تم التعديل {{ $review->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
+                    {{ __('Edited') }} {{ $review->updated_at->locale(app()->getLocale())->diffForHumans() }}
                 </span>
             @endif
         </div>
@@ -66,7 +66,7 @@ new class extends Component
         @auth
         @if($canVote)
             <div class="flex items-center gap-2 text-theme-sm text-muted">
-                <span>مفيد؟</span>
+                <span>{{ __('Helpful?') }}</span>
                 <div class="flex items-center">
                     <button wire:click="vote(true)"
                             class="flex items-center gap-1 px-2 py-1 rounded-icon transition hover:bg-success/10

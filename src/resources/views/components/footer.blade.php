@@ -67,7 +67,7 @@
             @if($fo['show_nav'] && !empty($fo['nav_links']))
                 <div class="flex flex-col gap-4">
                     @if(!empty($fo['nav_title']))
-                        <h3 class="font-bold text-theme-base text-on-footer">{{ $fo['nav_title'] }}</h3>
+                        <h3 class="font-bold text-theme-base text-on-footer">{{ __($fo['nav_title']) }}</h3>
                     @endif
                     <ul class="flex flex-col gap-2">
                         @foreach($fo['nav_links'] as $link)
@@ -81,7 +81,7 @@
                                    wire:navigate
                                    class="text-theme-sm text-on-footer/70 hover:text-on-footer transition-colors flex items-center gap-1.5">
                                     @icon('chevron-r', 'w-3 h-3 rotate-180 opacity-50')
-                                    {{ $link['label'] }}
+                                    {{ __($link['label']) }}
                                 </a>
                             </li>
                         @endforeach
@@ -92,7 +92,7 @@
             @if((int)($fo['columns']) >= 3 && $fo['show_contact'] && ($email || $phone))
                 <div class="flex flex-col gap-4">
                     @if(!empty($fo['contact_title']))
-                        <h3 class="font-bold text-theme-base text-on-footer">{{ $fo['contact_title'] }}</h3>
+                        <h3 class="font-bold text-theme-base text-on-footer">{{ __($fo['contact_title']) }}</h3>
                     @endif
                     <div class="flex flex-col gap-3 text-theme-sm text-on-footer/70">
                         @if($email)
@@ -116,9 +116,9 @@
 
         @if($fo['show_copyright'])
             <div class="border-t border-on-footer/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-theme-xs text-on-footer/50">
-                <span>© {{ date('Y') }} {{ $name }} — {{ $fo['copyright_text'] }}</span>
+                <span>© {{ date('Y') }} {{ $name }} — {{ __($fo['copyright_text']) }}</span>
                 <span class="flex items-center gap-1">
-                    مدعوم بـ
+                    {{ __('Powered by') }}
                     @icon('heart', 'w-3.5 h-3.5')
                 </span>
             </div>

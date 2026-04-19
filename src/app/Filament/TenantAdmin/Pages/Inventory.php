@@ -84,7 +84,7 @@ class Inventory extends Page implements HasTable
                     ->schema([
                         Select::make('product_id')
                             ->label('Product')
-                            ->options(Product::pluck('name', 'id'))
+                            ->options(Product::all()->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                         Select::make('type')

@@ -24,6 +24,7 @@ class SetTenantLocale
         }
 
         app()->setLocale($locale);
+        \Illuminate\Support\Facades\URL::defaults(['locale' => $locale]);
 
         return $next($request);
     }

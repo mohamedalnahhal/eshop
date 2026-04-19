@@ -36,7 +36,7 @@ new class extends Component
         
         if ($this->editing) {
             $service->update($this->userReview, $this->rating, $this->comment ?: null);
-            session()->flash('review_message', 'تم تحديث تقييمك!');
+            session()->flash('review_message', __('Your review has been updated!'));
 
             $this->userReview?->refresh();
             $this->editing = false;
@@ -44,7 +44,7 @@ new class extends Component
         else
         {
             $this->userReview = $service->submit($this->product->id, $this->rating, $this->comment ?: null);
-            session()->flash('review_message', 'تم إرسال تقييمك!');
+            session()->flash('review_message', __('Your review has been submitted!'));
         }
     }
 
@@ -55,7 +55,7 @@ new class extends Component
         $this->userReview = null;
         $this->editing = false;
 
-        session()->flash('review_message', 'تم حذف تقييمك.');
+        session()->flash('review_message', __('Your review has been deleted.'));
     }
 };
 ?>
@@ -70,23 +70,23 @@ new class extends Component
         <div class="flex flex-col gap-2">
             <div class="flex items-center max-sm:items-start gap-2">
                 <img
-                    src="{{ $userReview->user->avatar_url }}"
-                    alt="{{ $userReview->user->username }}"
+                    src="{{ $userReview->customer->avatar_url }}"
+                    alt="{{ $userReview->customer->name }}"
                     class="w-6 h-6 rounded-theme-full object-cover"
                 />
                 <div class="flex flex-row gap-2 max-sm:flex-col max-sm:gap-1">
-                    <h4 class="text-theme font-normal! leading-none">{{ $userReview->user->username }}</h4>
-                    <span class="w-fit badge bg-primary/10 text-primary text-xs! font-medium!">تقييمك</span>
+                    <h4 class="text-theme font-normal! leading-none">{{ $userReview->customer->name }}</h4>
+                    <span class="w-fit badge bg-primary/10 text-primary text-xs! font-medium!">{{ __('Your Review') }}</span>
                 </div>
             </div>
             <x-simple-rating-stars :rating="$userReview->rating"/>
         </div>
 
         <div class="flex flex-row gap-3">
-            <p class="text-sm text-muted">{{ $userReview->helpfulCount() }} وجدوهُ مفيدًا</p>
+            <p class="text-sm text-muted">{{ $userReview->helpfulCount() }} {{ __('found this helpful') }}</p>
             <button wire:click="startEdit"
                     class="p-2 -me-2 -mt-2 rounded-icon bg-surface-100 hover:bg-primary/10 text-muted hover:text-primary! transition cursor-pointer"
-                    title="تعديل تقييمك">
+                    title="{{ __('Edit your review') }}">
                 @icon('pen', 'w-4 h-4')
             </button>
         </div>
@@ -98,12 +98,12 @@ new class extends Component
 
     <div class="flex items-center gap-2 mt-3">
         <span class="text-theme-xs text-muted">
-            {{ $userReview->created_at->locale(tenant()->getLanguage())->diffForHumans() }}
+            {{ $userReview->created_at->locale(app()->getLocale())->diffForHumans() }}
         </span>
         @if($userReview->wasEdited())
             <span class="text-theme-xs text-muted">·</span>
             <span class="text-theme-xs text-muted italic">
-                تم التعديل {{ $userReview->updated_at->locale(tenant()->getLanguage())->diffForHumans() }}
+                {{ __('Edited') }} {{ $userReview->updated_at->locale(app()->getLocale())->diffForHumans() }}
             </span>
         @endif
     </div>
@@ -111,7 +111,7 @@ new class extends Component
 
 @elseif($editing)
 <div class="card p-5 outline-3 outline-primary/20 border-primary/30">
-    <h3 class="text-theme-base font-bold text-theme mb-2">تعديل تقييمك</h3>
+    <h3 class="text-theme-base font-bold text-theme mb-2">{{ __('Edit your review') }}</h3>
 
     <div class="mb-4">
         <div class="flex gap-1" x-data="{ hovered: 0 }">
@@ -129,28 +129,27 @@ new class extends Component
 
     <textarea wire:model="comment" rows="3"
               class="input w-full resize-none text-theme-sm mb-2"
-              placeholder="اكتب رأيك في المنتج هنا..."></textarea>
+              placeholder="{{ __('Write your review here...') }}"></textarea>
 
     <div class="flex gap-2">
-        <x-primary-button 
+        <x-primary-button
             wire:click="submitReview(); $parent.loadStats?.(); $parent.$parent?.refreshReviews();"
             wire:loading.class="opacity-75 pointer-events-none"
-            wire:target="submitReview"
-            >
-            <span wire:loading.remove wire:target="submitReview">تحديث التقييم</span>
+            wire:target="submitReview">
+            <span wire:loading.remove wire:target="submitReview">{{ __('Update Review') }}</span>
             <div wire:loading wire:target="submitReview">
                 <span class="flex flex-row flex-nowrap items-center gap-2">
                     <x-spinner class="h-4 w-4" />
-                    جاري التحديث...
+                    {{ __('Loading...') }}
                 </span>
             </div>
         </x-primary-button>
         <button wire:click="cancelEdit"
                 class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-theme-sm">
-            إلغاء
+            {{ __('Cancel') }}
         </button>
         <button wire:click="deleteReview(); $parent.loadStats?.(); $parent.$parent?.refreshReviews();"
-                wire:confirm="هل تريد حذف تقييمك؟"
+                wire:confirm="{{ __('Are you sure you want to delete your review?') }}"
                 wire:loading.class="opacity-75 pointer-events-none"
                 wire:target="deleteReview"
                 class="btn flex-1 text-center bg-danger hover:opacity-75! text-bg text-theme-sm">
@@ -164,7 +163,7 @@ new class extends Component
 
 @else
 <div class="card p-5">
-    <h3 class="text-theme-base font-bold text-theme mb-2">أضف تقييمك</h3>
+    <h3 class="text-theme-base font-bold text-theme mb-2">{{ __('Add your review') }}</h3>
 
     @if(session('review_message'))
         <div class="bg-success/10 text-success px-4 py-2 rounded-lg mb-4 text-theme-sm font-medium">
@@ -188,17 +187,17 @@ new class extends Component
 
     <textarea wire:model="comment" rows="3"
               class="input w-full resize-none text-theme-sm mb-2"
-              placeholder="اكتب رأيك في المنتج هنا..."></textarea>
+              placeholder="{{ __('Write your review here...') }}"></textarea>
 
-    <x-primary-button 
+    <x-primary-button
         wire:click="submitReview(); $parent.loadStats?.(); $parent.$parent?.refreshReviews();"
         wire:loading.class="opacity-75 pointer-events-none"
         wire:target="submitReview">
-        <span wire:loading.remove wire:target="submitReview">إرسال التقييم</span>
+        <span wire:loading.remove wire:target="submitReview">{{ __('Submit Review') }}</span>
         <div wire:loading wire:target="submitReview">
             <span class="flex flex-row flex-nowrap items-center gap-2">
                 <x-spinner class="h-4 w-4" />
-                جاري الإرسال...
+                {{ __('Loading...') }}
             </span>
         </div>
     </x-primary-button>

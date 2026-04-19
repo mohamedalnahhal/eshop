@@ -21,7 +21,12 @@ class CategoryForm
                 ->schema([
                     TextInput::make("translations.{$locale}.name")
                         ->label('Name')
-                        ->required($locale === app()->getLocale()),
+                        ->required($locale === app()->getLocale())
+                        ->afterStateHydrated(function ($component, $record) use ($locale) {
+                            if ($record) {
+                                $component->state($record->translate($locale, false)?->name ?? '');
+                            }
+                        }),
                 ]);
         }, $locales);
 
@@ -40,7 +45,7 @@ class CategoryForm
 
                 Select::make('parent_id')
                     ->label('Parent Category')
-                    ->relationship('parent', 'name', fn($query) => $query->whereNull('parent_id'))
+                    ->options(fn() => \App\Models\Category::whereNull('parent_id')->get()->pluck('name', 'id'))
                     ->visible(fn(Get $get) => $get('type') === 'sub')
                     ->required(fn(Get $get) => $get('type') === 'sub'),
             ]);

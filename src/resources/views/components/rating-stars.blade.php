@@ -14,5 +14,5 @@
           </span>
       @endfor
   </div>
-  <span class="{{ $size === 'large'? 'text-theme-base' : 'text-theme-sm' }} text-muted">({{ $reviewsCount }} تقييم)</span>
+  <span class="{{ $size === 'large'? 'text-theme-base' : 'text-theme-sm' }} text-muted">({{ $reviewsCount }} {{ __('Reviews') }})</span>
 </div>

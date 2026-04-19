@@ -1,11 +1,10 @@
 @props(['avgRating', 'totalReviews', 'ratingCounts'])
-
 <div class="card p-5 mb-6">
     <div class="flex items-start gap-5 flex-wrap">
         <div class="w-full flex flex-col items-start min-w-20">
-            <h2 class="w-full text-theme-2xl font-bold text-theme mb-4 pb-4 border-b border-border">التقييمات</h2>
+            <h2 class="w-full text-theme-2xl font-bold text-theme mb-4 pb-4 border-b border-border">{{ __('Reviews') }}</h2>
             <x-rating-stars :rating="$avgRating" :reviewsCount="$totalReviews" class="mt-1"/>
-            <span class="text-theme-lg text-muted">{{ number_format($avgRating, 1) }} من 5.0</span>
+            <span class="text-theme-lg text-muted">{{ number_format($avgRating, 1) }} {{ __('out of') }} 5.0</span>
         </div>
       
         <div class="flex-1 min-w-45 space-y-1.5">
