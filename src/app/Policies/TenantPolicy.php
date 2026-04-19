@@ -22,6 +22,7 @@ class TenantPolicy
      */
     protected function check(User $user, TenantPermission $permission): bool
     {
+        if($user->isAdmin()) return true; // super admin
         return $this->tenantUser($user)?->can($permission) ?? false;
     }
 }
