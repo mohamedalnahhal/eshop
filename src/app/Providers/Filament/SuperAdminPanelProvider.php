@@ -33,6 +33,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->bootUsing(function () {
                 Model::unguard();
             })
+            ->authGuard('web')
             ->profile()
             ->passwordReset()
             ->spa()

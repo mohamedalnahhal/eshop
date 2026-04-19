@@ -32,6 +32,7 @@ class TenantAdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->passwordReset()
+            ->authGuard('web')
             ->spa()
             ->favicon(fn () => tenant('logo_url') 
                 ? asset('storage/' . tenant('logo_url')) 

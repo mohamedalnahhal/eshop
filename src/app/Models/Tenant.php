@@ -42,6 +42,17 @@ class Tenant extends BaseTenant
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    public function customers() { return $this->hasMany(Customer::class); }
+    public function domain() { return $this->hasOne(Domain::class); }
+    public function products() { return $this->hasMany(Product::class); }
+    public function orders() { return $this->hasMany(Order::class); }
+    public function locations() { return $this->hasMany(Location::class); }
+    public function carts() { return $this->hasMany(Cart::class); }
+    public function categories() { return $this->hasMany(Category::class); }
+    public function settings() { return $this->hasOne(TenantSetting::class); }
+    public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
+    public function payments() { return $this->hasMany(Payment::class); }
+
     // internal name
     public function getSlugAttribute(): string
     {
@@ -63,16 +74,6 @@ class Tenant extends BaseTenant
     {
         return $this->settings?->favicon_url ?? $value;
     }
-
-    public function domain() { return $this->hasOne(Domain::class); }
-    public function products() { return $this->hasMany(Product::class); }
-    public function orders() { return $this->hasMany(Order::class); }
-    public function locations() { return $this->hasMany(Location::class); }
-    public function carts() { return $this->hasMany(Cart::class); }
-    public function categories() { return $this->hasMany(Category::class); }
-    public function settings() { return $this->hasOne(TenantSetting::class); }
-    public function subscriptions() { return $this->hasMany(TenantSubscription::class); }
-    public function payments() { return $this->hasMany(Payment::class); }
 
     public function getLanguage(string $default = 'ar'): string
     {

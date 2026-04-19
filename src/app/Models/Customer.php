@@ -11,6 +11,19 @@ use App\Enums\Gender;
 class Customer extends Authenticatable
 {
     use HasUuids, BelongsToTenant, SoftDeletes;
+    
+    protected $guard = 'customer';
+ 
+    protected $fillable = [
+        'tenant_id',
+        'name',
+        'email',
+        'password',
+        'avatar',
+        'phone',
+        'gender',
+        'email_verified_at',
+    ];
 
     protected $hidden = ['password', 'remember_token'];
 
