@@ -15,7 +15,7 @@ class ReviewService
 
     public function hasPurchased(string $productId)
     {
-        return Order::where('user_id', Auth::id())
+        return Order::where('customer_id', Auth::id())
             ->whereHas('items', fn($q) => $q->where('product_id', $productId))
             ->where('status', 'completed')
             ->exists();
@@ -23,7 +23,7 @@ class ReviewService
 
     public function hasReviewed(string $productId)
     {
-        return Review::where('user_id', Auth::id())
+        return Review::where('customer_id', Auth::id())
             ->where('product_id', $productId)
             ->exists();
     }
@@ -70,7 +70,7 @@ class ReviewService
     
         return DB::transaction(function () use ($productId, $rating, $comment) {
             $review = Review::create([
-                'user_id'    => Auth::id(),
+                'customer_id'=> Auth::id(),
                 'product_id' => $productId,
                 'rating'     => $rating,
                 'comment'    => $comment,
@@ -110,14 +110,14 @@ class ReviewService
     public function vote(string $reviewId, bool $isHelpful)
     {
         ReviewVote::updateOrCreate(
-            ['user_id' => Auth::id(), 'review_id' => $reviewId],
+            ['customer_id' => Auth::id(), 'review_id' => $reviewId],
             ['is_helpful' => $isHelpful]
         );
     }
 
     public function removeVote(string $reviewId)
     {
-        ReviewVote::where('user_id', Auth::id())
+        ReviewVote::where('customer_id', Auth::id())
             ->where('review_id', $reviewId)
             ->delete();
     }
