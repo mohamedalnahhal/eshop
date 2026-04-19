@@ -34,13 +34,13 @@ new class extends Component
 
     public function decrementItem(string $itemId)
     {
-        $this->service->decrementQuantity($itemId);
+        $this->service->decrementItem($itemId);
         $this->dispatch('cart-updated');
     }
 
     public function incrementItem(string $itemId)
     {
-        $this->service->incrementQuantity($itemId);
+        $this->service->incrementItem($itemId);
         $this->dispatch('cart-updated');
     }
 };
@@ -78,7 +78,7 @@ new class extends Component
                 @endforeach
             </div>
 
-            <div class="card p-5 h-fit sticky top-10">
+            <div class="card p-5 h-fit sticky top-header-hm">
                 <h2 class="text-theme-xl font-bold text-theme mb-6 border-b border-border pb-4">{{ __('Order Summary') }}</h2>
 
                 <div class="space-y-2 mb-6 text-muted text-theme-sm">
