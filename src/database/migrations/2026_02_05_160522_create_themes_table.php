@@ -194,7 +194,7 @@ return new class extends Migration
              *   ]
              * }
              */
-            $table->json('homepage')->nullable();
+            $table->jsonb('homepage')->nullable();
             
             /**
              * footer: {
