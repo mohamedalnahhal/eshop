@@ -149,9 +149,8 @@ class OrderService
     public function changeStatus(Order $order, OrderStatus $status): Order
     {
         $this->validateTransition($order, $status);
-
-        $order->update(['status' => $status]);
-        return $order->refresh();
+        $order->forceFill(['status' => $status ])->save();
+        return $order;
     }
 
     /**
