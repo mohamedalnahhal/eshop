@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use App\Http\Middleware\InitializeTenancyForLivewire;
 use App\Livewire\TenantAdmin\ThemeEditor;
+use App\Services\Shipping\ShippingCalculatorService;
+use App\Services\Checkout\CheckoutService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->extend('translation.loader', function ($loader, $app) {
             return $loader;
         });
+        
+        $this->app->singleton(ShippingCalculatorService::class);
+        $this->app->singleton(CheckoutService::class);
     }
 
     /**

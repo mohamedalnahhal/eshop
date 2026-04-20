@@ -15,6 +15,13 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('shipping_method_id')
+                  ->nullable()
+                  ->after('customer_id')
+                  ->constrained('shipping_methods')
+                  ->onDelete('set null');
+
+            $table->string('shipping_method_name', 100)->nullable(); // snapshot
             $table->string('guest_email')->nullable();
             $table->string('guest_name')->nullable();
             $table->string('guest_phone')->nullable();
