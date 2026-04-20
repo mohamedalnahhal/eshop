@@ -11,16 +11,16 @@ class MoneyService
         $decimals = tenant()->settings?->currency_decimals ?? 2;
         $multiplier = pow(10, $decimals);
 
-        return (int) bcmul((string) $amount, (string) $multiplier, 0);
+        return (int) round($amount * $multiplier);
     }
 
-    public function fromMinor(int $amount): float
+    public function fromMinor(?int $amount): float
     {
         $decimals = tenant()->settings?->currency_decimals ?? 2;
-        return $amount / pow(10, $decimals);
+        return ($amount ?? 0) / pow(10, $decimals);
     }
 
-    public function format(int $amount): string
+    public function format(?int $amount): string
     {
         $code = tenant()->settings?->currency ?? config('app.default_currency');
         $symbol = $this::getSymbol($code);
@@ -34,7 +34,7 @@ class MoneyService
             : $value . ' ' . $symbol;
     }
 
-    public function formatOrderPrice(Order $order, int $amount): string
+    public function formatOrderPrice(Order $order, ?int $amount): string
     {
         $order_currency = $this->resolveOrderCurrency($order);
         $tenant_currency = tenant()->settings?->currency ?? config('app.default_currency');
