@@ -12,6 +12,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -49,6 +50,7 @@ class TenantAdminPanelProvider extends PanelProvider
                 \App\Filament\TenantAdmin\Pages\Settings::class,
             ])
             ->widgets([
+                AccountWidget::class,
                 TenantStats::class,
                 SalesChart::class,
                 TopProductsChart::class
