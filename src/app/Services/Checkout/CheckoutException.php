@@ -28,6 +28,11 @@ class CheckoutException extends RuntimeException
         return new self('Shipping cost changed. Please review your order before placing it.');
     }
 
+    public static function totalMismatch(): self
+    {
+        return new self('Order total changed. Please review your order before placing it.');
+    }
+
     public static function noCart(): self
     {
         return new self('No active cart found. Please add items before checking out.');

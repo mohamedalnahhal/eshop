@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Middleware\SetTenantLocale;
 use App\Http\Controllers\Auth\Customer\CustomerLoginController;
 use App\Http\Controllers\Auth\Customer\CustomerRegisterController;
+use App\Http\Controllers\Checkout\ExpressCheckoutController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -49,6 +50,23 @@ Route::middleware([
                 // Route::get('/account', [AccountController::class, 'index'])->name('shop.account');
                 // Route::get('/orders',  [OrderController::class, 'index'])->name('shop.orders');
             });
+
+            Route::livewire('/checkout', 'pages::checkout.index')->name('shop.checkout');
+ 
         });
 
+    Route::get('/mock-psp/checkout/pay/{token}', function (string $token) {
+        abort(501, 'Payment gateway not yet implemented.');
+    })->name('checkout.pay');
+
+    Route::prefix('checkout/express')
+        ->middleware('throttle:60,1')
+        ->controller(ExpressCheckoutController::class)
+        ->group(function () {
+            Route::post('/shipping-options', 'shippingOptions')
+                ->name('checkout.express.shipping-options');
+
+            Route::post('/confirm', 'confirm')
+                ->name('checkout.express.confirm');
+        });
 });

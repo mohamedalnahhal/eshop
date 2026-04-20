@@ -21,8 +21,25 @@ class ShippingCalculatorService
      */
     public function getAvailableMethods(Cart $cart, string $countryCode): Collection
     {
-        $cartSubtotal = $cart->total();
-        $cartWeightGrams = $this->resolveWeight($cart);
+        return $this->getAvailableMethodsForValues(
+            countryCode: $countryCode,
+            subtotal: $cart->total(),
+            weightGrams: $cart->weight(),
+        );
+    }
+
+    /**
+     * resolve available shipping methods from raw values
+     * used for express-checkout
+     * 
+     * @param string $countryCode  ISO-3166-1 alpha-2 destination country
+     * @return Collection<int, AvailableShippingMethod>
+     */
+    public function getAvailableMethodsForValues(
+        string $countryCode,
+        int $subtotal,
+        int $weightGrams,
+    ): Collection {
 
         $zones = $this->resolveZones($countryCode);
 
@@ -38,7 +55,7 @@ class ShippingCalculatorService
                     continue;
                 }
 
-                $fee = $this->resolveMethodFee($method->rates, $cartSubtotal, $cartWeightGrams);
+                $fee = $this->resolveMethodFee($method->rates, $subtotal, $weightGrams);
 
                 if ($fee === null) {
                     continue;
@@ -51,35 +68,14 @@ class ShippingCalculatorService
         return $available->sortBy('sortOrder')->values();
     }
 
-    private function resolveZones(string $countryCode): Collection
-    {
-        $upper = strtoupper($countryCode);
-
-        /** @var Collection<int, ShippingZone> $allActiveZones */
-        $allActiveZones = ShippingZone::with(['methods.rates'])
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-        
-        $specific = $allActiveZones->filter(
-            fn(ShippingZone $z) => ! $z->isCatchAll() && $z->coversCountry($upper)
-        );
-
-        if ($specific->isNotEmpty()) {
-            return $specific;
-        }
-
-        return $allActiveZones->filter(fn(ShippingZone $z) => $z->isCatchAll());
-    }
-
     /**
      * resolve the applicable fee (in minor units)
      * Returns null when no rate condition matches the cart
      */
-    private function resolveMethodFee(
+    public function resolveMethodFee(
         Collection $rates,
-        int        $subtotal,
-        int        $weightGrams,
+        int $subtotal,
+        int $weightGrams,
     ): ?int {
         /** @var ShippingRate|null $matchedRate */
         $matchedRate = null;
@@ -107,6 +103,27 @@ class ShippingCalculatorService
         };
     }
 
+    private function resolveZones(string $countryCode): Collection
+    {
+        $upper = strtoupper($countryCode);
+
+        /** @var Collection<int, ShippingZone> $allActiveZones */
+        $allActiveZones = ShippingZone::with(['methods.rates'])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        
+        $specific = $allActiveZones->filter(
+            fn(ShippingZone $z) => ! $z->isCatchAll() && $z->coversCountry($upper)
+        );
+
+        if ($specific->isNotEmpty()) {
+            return $specific;
+        }
+
+        return $allActiveZones->filter(fn(ShippingZone $z) => $z->isCatchAll());
+    }
+
     private function rateMatches(ShippingRate $rate, int $subtotal, int $weightGrams): bool
     {
         return match ($rate->rate_type) {
@@ -123,13 +140,5 @@ class ShippingCalculatorService
                 ($rate->condition_min === null || $weightGrams >= $rate->condition_min)
                 && ($rate->condition_max === null || $weightGrams <= $rate->condition_max),
         };
-    }
-
-    private function resolveWeight(Cart $cart): int
-    {
-        return (int) $cart->items->sum(function ($item) {
-            $weight = $item->product?->weight_grams ?? 0;
-            return $weight * $item->quantity;
-        });
     }
 }

@@ -29,4 +29,16 @@ class Cart extends Model
     {
         return (int) $this->items->sum(fn ($item) => $item->subtotal());
     }
+
+    /**
+     * cart should be loaded with `items.product`
+     * befor calling this
+     */
+    public function weight() : int
+    {
+        return (int) $this->items->sum(function ($item) {
+            $weight = $item->product?->weight_grams ?? 0;
+            return $weight * $item->quantity;
+        });
+    }
 }
