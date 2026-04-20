@@ -14,6 +14,7 @@ use App\Http\Middleware\InitializeTenancyForLivewire;
 use App\Livewire\TenantAdmin\ThemeEditor;
 use App\Services\Shipping\ShippingCalculatorService;
 use App\Services\Checkout\CheckoutService;
+use App\Http\Middleware\SetTenantLocale;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
                 ->middleware([
                     'web',
                     InitializeTenancyForLivewire::class,
+                    SetTenantLocale::class,
                 ]);
         });
         Livewire::component('theme-editor', ThemeEditor::class);

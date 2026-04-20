@@ -15,13 +15,15 @@ class SetTenantLocale
 
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->route('locale');
+        $locale = $request->route('locale') ?? session('locale');
 
         $supported = $this->localeService->getSupportedLocales();
 
         if (! $locale || ! in_array($locale, $supported)) {
             $locale = $this->localeService->getDefaultLocale();
         }
+
+        session(['locale' => $locale]);
 
         app()->setLocale($locale);
         \Illuminate\Support\Facades\URL::defaults(['locale' => $locale]);

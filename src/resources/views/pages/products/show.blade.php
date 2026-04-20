@@ -3,6 +3,7 @@
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Review;
+use App\Exceptions\InsufficientStockException;
 use App\Services\CartService;
 use App\Services\ReviewService;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 new class extends Component
 {
     public Product $product;
+    public string $cartError = '';
 
     public function mount(string $id)
     {
@@ -28,9 +30,13 @@ new class extends Component
 
     public function addToCart(CartService $cartService)
     {
-        $cartService->add($this->product->id);
-        $this->dispatch('cart-updated');
-        session()->flash('success', __('Product added to cart successfully!'));
+        $this->cartError = '';
+        try {
+            $cartService->add($this->product->id);
+            $this->dispatch('cart-updated');
+        } catch (InsufficientStockException $e) {
+            $this->cartError = $e->getMessage();
+        }
     }
 };
 ?>
@@ -138,6 +144,18 @@ new class extends Component
                     {{ $product->description ?? __('No products found') }}
                 </p>
             </div>
+
+            @if($cartError)
+                <div class="text-danger text-theme-sm font-semibold bg-danger/10 border border-danger/30 rounded-theme-md px-4 py-2">
+                    {{ $cartError }}
+                </div>
+            @endif
+
+            @if($cartError)
+                <div class="text-danger text-theme-sm font-semibold bg-danger/10 border border-danger/30 rounded-theme-md px-4 py-2">
+                    {{ $cartError }}
+                </div>
+            @endif
 
             <x-primary-button
                 wire:click="addToCart"

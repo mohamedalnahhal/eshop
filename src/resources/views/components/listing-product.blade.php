@@ -1,12 +1,14 @@
 <?php
 
 use Livewire\Component;
+use App\Exceptions\InsufficientStockException;
 use App\Services\CartService;
 
 new class extends Component
 {
     public $product;
-    
+    public string $cartError = '';
+
     public function mount($product)
     {
         $this->product = $product;
@@ -14,9 +16,13 @@ new class extends Component
 
     public function addToCart(CartService $cartService)
     {
-        $cartService->add($this->product->id);
-        $this->dispatch('cart-updated');
-        session()->flash('success', __('Product added to cart successfully!'));
+        $this->cartError = '';
+        try {
+            $cartService->add($this->product->id);
+            $this->dispatch('cart-updated');
+        } catch (InsufficientStockException $e) {
+            $this->cartError = $e->getMessage();
+        }
     }
 };
 ?>
@@ -83,6 +89,12 @@ new class extends Component
             </div>
         </div>
                 
+        @if($cartError)
+            <div class="text-danger text-theme-xs font-semibold bg-danger/10 border border-danger/30 rounded-theme-md px-3 py-2 mt-2">
+                {{ $cartError }}
+            </div>
+        @endif
+
         <div class="flex gap-2 pt-4 border-t border-border">
             <a href="{{ route('shop.product.show', ['id' => $product->id]) }}" 
             class="btn flex-1 text-center bg-surface-200 hover:bg-surface-300 text-theme text-theme-sm" wire:navigate>
