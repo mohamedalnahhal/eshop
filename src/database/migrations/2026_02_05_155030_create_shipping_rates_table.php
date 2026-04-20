@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignUuid('shipping_method_id')->constrained('shipping_methods')->onDelete('cascade');
 
             $table->enum('rate_type', ['flat_rate', 'free', 'price_based', 'weight_based'])->default('flat_rate');
+
+            // TODO: can be static or relative (equation)
+            // equation can introduce sanitization and dynamic execution headache
             $table->unsignedBigInteger('fee')->default(0);
 
             /**
