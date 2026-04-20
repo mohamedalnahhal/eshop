@@ -47,14 +47,14 @@
                             @if($email)
                                 <a href="mailto:{{ $email }}"
                                    class="flex items-center gap-2 hover:text-on-footer transition-colors">
-                                    @icon('mail', 'w-4 h-4 shrink-0')
+                                    @icon('feathericon-mail', 'w-4 h-4 shrink-0')
                                     {{ $email }}
                                 </a>
                             @endif
                             @if($phone)
                                 <a href="tel:{{ $phone }}"
                                    class="flex items-center gap-2 hover:text-on-footer transition-colors">
-                                    @icon('phone', 'w-4 h-4 shrink-0')
+                                    @icon('heroicon-o-phone', 'w-4 h-4 shrink-0')
                                     {{ $phone }}
                                 </a>
                             @endif
@@ -98,14 +98,14 @@
                         @if($email)
                             <a href="mailto:{{ $email }}"
                                class="flex items-center gap-2 hover:text-on-footer transition-colors">
-                                @icon('mail', 'w-4 h-4 shrink-0')
+                                @icon('feathericon-mail', 'w-4 h-4 shrink-0')
                                 {{ $email }}
                             </a>
                         @endif
                         @if($phone)
                             <a href="tel:{{ $phone }}"
                                class="flex items-center gap-2 hover:text-on-footer transition-colors">
-                                @icon('phone', 'w-4 h-4 shrink-0')
+                                @icon('heroicon-o-phone', 'w-4 h-4 shrink-0')
                                 {{ $phone }}
                             </a>
                         @endif
@@ -120,7 +120,7 @@
                 <span class="flex items-center gap-1">
                     {{ __('Powered by') }}
                     <span class="text-on-footer/80 cursor-pointer hover:text-on-footer transition-colors flex items-center gap-1">
-                        eShop with @icon('heart', 'w-3.5 h-3.5')
+                        eShop with @icon('heroicon-o-heart', 'w-3.5 h-3.5')
                     </span>
                 </span>
             </div>
