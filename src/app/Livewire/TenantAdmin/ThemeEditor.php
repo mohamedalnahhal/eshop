@@ -5,11 +5,13 @@ namespace App\Livewire\TenantAdmin;
 use App\Models\Theme;
 use Livewire\Component;
 use Filament\Notifications\Notification;
+use Illuminate\Validation\Rule;
 
 class ThemeEditor extends Component
 {
-    public string $themeId;
+    public string $themeId  = '';
     public string $activeTab = 'palette';
+    public string $themeName = '';
 
     public array  $palette   = [];
     public array  $font      = [];
@@ -32,6 +34,8 @@ class ThemeEditor extends Component
         $this->theme = Theme::where('id', $themeId)
             ->where(fn($q) => $q->where('tenant_id', tenant()->id)->orWhereNull('tenant_id'))
             ->firstOrFail();
+            $this->themeName = $this->theme->name;
+
 
         $this->palette   = $this->theme->resolvedPalette();
         $this->font      = $this->theme->resolvedFont();
@@ -46,7 +50,6 @@ class ThemeEditor extends Component
         $this->icon_pack = $this->theme->resolvedIconPack();
     }
 
-    // ── Live CSS - يُعاد حسابه مع كل تغيير ──────────────────────────────
     public function getLiveCssProperty(): string
     {
         $fake = new Theme([
@@ -61,44 +64,71 @@ class ThemeEditor extends Component
             'footer'    => array_merge(Theme::defaultFooter(),       $this->footer),
         ]);
 
-        return $fake->toCssVars();
+        return $fake->toCssVars(); // :root { ... }
     }
 
-    // ── Save ─────────────────────────────────────────────────────────────
-    public function save(): void
-    {
-        $this->theme = Theme::findOrFail($this->themeId);
+   public function save(): void
+    {   
+        $theme = Theme::where('id', $this->themeId)
+            ->where(fn($q) => $q->where('tenant_id', tenant()->id)->orWhereNull('tenant_id'))
+            ->firstOrFail();
 
-        // إذا ثيم عام، نعمل نسخة للتاجر
-        if ($this->theme->tenant_id === null) {
-            $this->theme = $this->theme->replicate();
-            $this->theme->tenant_id  = tenant()->id;
-            $this->theme->is_default = false;
-        }
-
-        $this->theme->update([
-            'palette'   => $this->palette,
-            'font'      => $this->font,
-            'buttons'   => $this->buttons,
-            'inputs'    => $this->inputs,
-            'header'    => $this->header,
-            'm_header'  => $this->m_header,
-            'glows'     => $this->glows,
-            'corners'   => $this->corners,
-            'footer'    => $this->footer,
-            'homepage'  => $this->homepage,
-            'icon_pack' => $this->icon_pack,
+        $this->validate([
+            'themeName' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('themes', 'name')
+                    ->where('tenant_id', tenant()->id)
+                    // نستخدم المتغير المحلي $theme هنا
+                    ->ignore($theme->tenant_id !== null ? $this->themeId : null)
+            ],
+        ], [
+            'themeName.unique' => 'You already have a theme with this name. Please choose a different name.',
+            'themeName.required' => 'Theme name is required.',
         ]);
 
-        $this->themeId = $this->theme->id;
+        if ($theme->tenant_id === null) {
+            $newTheme = $theme->replicate();
+            $newTheme->tenant_id  = tenant()->id;
+            $newTheme->name       = $this->themeName;
+            $newTheme->is_default = false;
+            $newTheme->palette    = $this->palette;
+            $newTheme->font       = $this->font;
+            $newTheme->buttons    = $this->buttons;
+            $newTheme->inputs     = $this->inputs;
+            $newTheme->header     = $this->header;
+            $newTheme->m_header   = $this->m_header;
+            $newTheme->glows      = $this->glows;
+            $newTheme->corners    = $this->corners;
+            $newTheme->footer     = $this->footer;
+            $newTheme->homepage   = $this->homepage;
+            $newTheme->icon_pack  = $this->icon_pack;
+            $newTheme->save();
+            $this->themeId = (string) $newTheme->id;
+        } else {
+            $theme->update([
+                'name'      => $this->themeName,
+                'palette'   => $this->palette,
+                'font'      => $this->font,
+                'buttons'   => $this->buttons,
+                'inputs'    => $this->inputs,
+                'header'    => $this->header,
+                'm_header'  => $this->m_header,
+                'glows'     => $this->glows,
+                'corners'   => $this->corners,
+                'footer'    => $this->footer,
+                'homepage'  => $this->homepage,
+                'icon_pack' => $this->icon_pack,
+            ]);
+        }
 
         Notification::make()
-            ->title('تم حفظ الثيم بنجاح ✓')
+            ->title('Theme saved successfully ✓')
             ->success()
             ->send();
     }
 
-    // ── Reset ─────────────────────────────────────────────────────────────
     public function resetToDefaults(): void
     {
         $this->palette   = Theme::defaultPalette();
@@ -114,8 +144,26 @@ class ThemeEditor extends Component
         $this->icon_pack = Theme::defaultIconPack();
     }
 
+    public function getPreviewUrlProperty(): string
+    {
+        return route('shop.index', [
+            'locale' => app(\App\Services\TenantLocaleService::class)->getDefaultLocale()
+        ]);
+    }
+
     public function render()
     {
         return view('components.theme-editor');
+    }
+    protected function rules()
+{
+    return [
+        'themeName' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('themes', 'name')->ignore($this->themeId),
+        ],
+    ];
     }
 }
