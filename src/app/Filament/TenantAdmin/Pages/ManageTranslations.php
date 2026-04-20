@@ -70,40 +70,7 @@ class ManageTranslations extends Page implements HasTable
                             ->options(function () {
                                 $dbKeys = LanguageLine::query()->pluck('key', 'key')->toArray();
 
-                                $viewKeys = [
-                                    'Add to cart', 'Add your review', 'All Products',
-                                    'Already have an account?', 'Are you sure you want to delete your review?',
-                                    'Browse all our products', 'Browse Products', 'Cancel', 'Cart',
-                                    'Categories', 'Checkout', 'Clear Filters', 'Confirm Password',
-                                    'Continue with Facebook', 'Continue with Google', 'Create Account',
-                                    'Create one', 'CTA Primary Label', 'CTA Secondary Label',
-                                    'Customer Reviews', 'Edited', 'Edit your review', 'Email Address',
-                                    '★ Featured Badge', 'Forgot password?', 'found this helpful', 'Free',
-                                    'Full Name', 'Helpful?', 'Hero Subtitle', 'Hero Title',
-                                    'Highest Rated', 'Home', 'In stock',
-                                    'Join us today and start shopping!', 'Latest', 'Loading', 'Loading...',
-                                    'Lowest Rated', 'Most Helpful', 'My Account', 'My Orders',
-                                    'New Arrivals', 'New Badge', 'No categories found',
-                                    'No image available', 'No products available', 'No products found',
-                                    'No reviews yet.', 'Order Summary', 'or sign in with email',
-                                    'or sign up with email', 'Other', 'out of', 'Out of stock',
-                                    'Password', 'Powered by', 'Price', 'Price: High to Low',
-                                    'Price: Low to High', 'Product added to cart successfully!',
-                                    'Product Description', 'Product Details', 'Products', 'Promo CTA',
-                                    'Promo Subtitle', 'Promo Title', 'Quantity', 'Remember me',
-                                    'Remove', 'Reviews', 'Shipping', 'Sign in', 'Sign In',
-                                    'Signing out...', 'Sign Out', 'Sign Up', 'Sort by',
-                                    'Submit Review', 'Subtotal', 'Top Rated', 'Total', 'Unit price',
-                                    'Update Review', 'View', 'View all',
-                                    'Welcome back! Sign in to your account.',
-                                    'What are you looking for?', 'Write your review here...',
-                                    'you@example.com',
-                                    'You have not added any products to your cart yet.',
-                                    'Your cart is empty!', 'Your name', 'Your Review',
-                                    'Your review has been deleted.', 'Your review has been submitted!',
-                                    'Your review has been updated!',
-                                    'Your review is the only one, thank you!', 'Zoom',
-                                ];
+                                $viewKeys = config('translation-keys');
 
                                 return collect(array_merge(array_values($dbKeys), $viewKeys))
                                     ->unique()
