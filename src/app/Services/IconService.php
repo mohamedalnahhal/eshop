@@ -51,7 +51,19 @@ class IconService
             }
         
             return $html;
-        } catch (\Exception $e) {
+        }
+        catch (\BladeUI\Icons\Exceptions\SvgNotFound $e) {
+            try{
+                // fallback to original name without prefix
+                return app(IconFactory::class)->svg($name, $classes)->toHtml();
+            }
+            catch (\Exception $e) {
+                // fallback to red triangle
+                return $this->fallback($fullIconString, ['class' => $classes]);
+            }
+        }
+        catch (\Exception $e) {
+            // fallback to red triangle
             return $this->fallback($fullIconString, ['class' => $classes]);
         }
     }
