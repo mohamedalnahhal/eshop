@@ -18,6 +18,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Pages\AdminLogin;
+use App\Filament\SuperAdmin\Widgets\StatsOverview;
+use App\Filament\SuperAdmin\Widgets\TenantsChart;
 use Illuminate\Database\Eloquent\Model;
 
 class SuperAdminPanelProvider extends PanelProvider
@@ -46,10 +48,11 @@ class SuperAdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+                StatsOverview::class,
+                TenantsChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

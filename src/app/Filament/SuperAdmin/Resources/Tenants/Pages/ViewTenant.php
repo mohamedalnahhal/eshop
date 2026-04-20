@@ -4,7 +4,7 @@ namespace App\Filament\SuperAdmin\Resources\Tenants\Pages;
 
 use App\Filament\SuperAdmin\Resources\Tenants\TenantResource;
 use Filament\Resources\Pages\Page;
-use App\Filament\TenantAdmin\Widgets\TenantStats;
+use App\Filament\SuperAdmin\Widgets\TenantStats;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewTenant extends Page
