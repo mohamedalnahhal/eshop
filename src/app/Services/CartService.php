@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Cart;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Session\Session;
@@ -116,8 +115,6 @@ class CartService
             return;
         }
  
-        $product = Product::findOrFail($productId);
- 
         $cartItem = $cart->items()
                          ->where('product_id', $productId)
                          ->first();
@@ -128,7 +125,6 @@ class CartService
             $cart->items()->create([
                 'product_id' => $productId,
                 'quantity'   => $quantity,
-                'unit_price' => $product->price,
             ]);
         }
     }

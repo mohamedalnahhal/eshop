@@ -11,11 +11,10 @@ class CartItem extends Model
     use HasUuids;
     use BelongsToPrimaryModel;
 
-    protected $fillable = ['cart_id', 'product_id', 'quantity', 'unit_price'];
+    protected $fillable = ['cart_id', 'product_id', 'quantity'];
 
     protected $casts = [
         'quantity' => 'integer',
-        'unit_price' => 'integer',
     ];
 
     public function getRelationshipToPrimaryModel(): string
@@ -26,9 +25,17 @@ class CartItem extends Model
     public function cart() { return $this->belongsTo(Cart::class); }
     public function product() { return $this->belongsTo(Product::class); }
 
+    public function unitPrice(): int
+    {
+        return $this->product->price;
+    }
 
+    /**
+     * fetch price live from product
+     * `$this->product->price`
+     */
     public function subtotal()
     {
-        return $this->unit_price * $this->quantity;
+        return $this->unitPrice() * $this->quantity;
     }
 }

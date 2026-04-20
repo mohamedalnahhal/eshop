@@ -21,8 +21,12 @@ class Cart extends Model
         return is_null($this->customer_id);
     }
 
-    public function total()
+    /**
+     * cart should be loaded with `items.product`
+     * befor calling this
+     */
+    public function total() : int
     {
-        return $this->items->sum(fn ($item) => $item->subtotal());
+        return (int) $this->items->sum(fn ($item) => $item->subtotal());
     }
 }
