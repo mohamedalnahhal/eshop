@@ -30,7 +30,7 @@
                     {{ app(App\Services\Money\MoneyService::class)->format($subtotal) }}
                 </span>
                 <span class="text-muted text-theme-sm font-semibold whitespace-nowrap">
-                    {{ __('Unit price') }}: {{ app(App\Services\Money\MoneyService::class)->format($item->unit_price) }}
+                    {{ __('Unit price') }}: {{ app(App\Services\Money\MoneyService::class)->format($item->product->price) }}
                 </span>
             </p>
         </div>
