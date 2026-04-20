@@ -143,6 +143,12 @@ new class extends Component
                 <p class="text-muted leading-relaxed">
                     {{ $product->description ?? __('No products found') }}
                 </p>
+                @if($product->weight_grams !== null)
+                    <div class="mt-3 flex items-center gap-2 text-theme-sm text-muted">
+                        <span class="font-medium text-theme">{{ __('Weight') }}:</span>
+                        <span>{{ number_format($product->weight_grams) }} {{ __('g') }}</span>
+                    </div>
+                @endif
             </div>
 
             @if($cartError)
