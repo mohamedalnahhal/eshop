@@ -17,7 +17,7 @@ return [
   'No image available', 'No products available', 'No products found',
   'No reviews yet.', 'Order Summary', 'or sign in with email',
   'or sign up with email', 'Other', 'out of', 'Out of stock',
-  'Password', 'Powered by', 'Price', 'Price: High to Low',
+  'Password', 'Price', 'Price: High to Low',
   'Price: Low to High', 'Product added to cart successfully!',
   'Product Description', 'Product Details', 'Products', 'Promo CTA',
   'Promo Subtitle', 'Promo Title', 'Quantity', 'Remember me',

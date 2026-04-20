@@ -117,8 +117,8 @@
         @if($fo['show_copyright'])
             <div class="border-t border-on-footer/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-theme-xs text-on-footer/50">
                 <span>© {{ date('Y') }} {{ $name }} — {{ __($fo['copyright_text']) }}</span>
-                <span class="flex items-center gap-1">
-                    {{ __('Powered by') }}
+                <span dir="ltr" class="flex items-center gap-1">
+                    Powered by
                     <span class="text-on-footer/80 cursor-pointer hover:text-on-footer transition-colors flex items-center gap-1">
                         eShop with @icon('heroicon-o-heart', 'w-3.5 h-3.5')
                     </span>
