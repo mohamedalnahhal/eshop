@@ -5,10 +5,12 @@ namespace App\Models;
 use Spatie\TranslationLoader\LanguageLine as BaseLanguageLine;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class LanguageLine extends BaseLanguageLine
 {
     use HasUuids;
+    use BelongsToTenant;
 
     public static function getTranslationsForGroup(string $locale, string $group): array
     {
