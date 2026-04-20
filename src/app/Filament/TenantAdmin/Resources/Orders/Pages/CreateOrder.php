@@ -4,13 +4,11 @@ namespace App\Filament\TenantAdmin\Resources\Orders\Pages;
 
 use App\Filament\TenantAdmin\Resources\Orders\OrderResource;
 use App\Filament\TenantAdmin\Resources\Orders\Traits\HandlesOrderAddressData;
-use App\Models\Product;
 use App\Services\Orders\OrderService;
 use App\Services\Money\MoneyService;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class CreateOrder extends CreateRecord
 {
@@ -88,24 +86,6 @@ class CreateOrder extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        return DB::transaction(function () use ($data) {
-            $orderService = app(OrderService::class);
-    
-            $items = $data['items'] ?? [];
-            unset($data['items']);
-
-            $order = $orderService->create($data, $this->draft);
-        
-            foreach ($items as $item) {
-                $product = Product::find($item['product_id']);
-                $overwritePrice = $item['overwrite_price_value'];
-                $quantity = $item['quantity'] ?? 1;
-                $orderService->addItem($order, $product, $quantity, $overwritePrice);
-            }
-    
-            $orderService->recalculate($order);
-    
-            return $order;
-        });
+        return app(OrderService::class)->create($data, $this->draft);
     }
 }
