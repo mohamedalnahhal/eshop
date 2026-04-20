@@ -9,3 +9,9 @@
         @endforeach
     </select>
 </div>
+<!-- It's located in resources/views/components/theme-select-field.blade.php and is accessed in the editor
+ It's used in tabs like Layout and Font to select specific values, for example:
+
+Font weight: Light / Regular / Bold
+Header position: Static / Sticky / Fixed
+Number of footer columns: 1 / 2 / 3 -->

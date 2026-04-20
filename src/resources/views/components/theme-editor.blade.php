@@ -1,43 +1,82 @@
 <div
-    x-data="{ previewDevice: 'desktop' }"
+    x-data="{
+        previewDevice: 'desktop',
+        iframeLoaded: false,
+
+        init() {
+            Livewire.hook('morph.updated', () => {
+                this.pushCss();
+            });
+        },
+
+        onIframeLoad() {
+            this.iframeLoaded = true;
+            this.pushCss();
+        },
+
+        pushCss() {
+            const iframe = this.$refs.preview;
+            const cssData = document.getElementById('theme-css-data');
+            
+            if (!iframe || !iframe.contentDocument || !cssData) return;
+            
+            let style = iframe.contentDocument.getElementById('__theme_live__');
+            if (!style) {
+                style = iframe.contentDocument.createElement('style');
+                style.id = '__theme_live__';
+                iframe.contentDocument.head.appendChild(style);
+            }
+            
+            style.textContent = cssData.textContent;
+        }
+    }"
     class="flex flex-col h-[calc(100vh-4rem)]"
     dir="rtl"
 >
+    {{-- The hidden element that carries the Livewire-generated CSS --}}
+    <div id="theme-css-data" style="display: none;">
+        {!! $this->liveCss !!}
+    </div>
+
     {{-- TOP BAR --}}
     <div class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         <div class="flex items-center gap-3">
             <a href="{{ route('filament.tenant_admin.pages.themes-page') }}"
                class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
-                @icon('arrow-r', 'w-4 h-4 rotate-180')
-                الثيمات
+                {{-- Use x-filament::icon for the back button--}}
+                <x-filament::icon icon="heroicon-o-arrow-right" class="w-4 h-4 rotate-180" />
+                themes
             </a>
             <span class="text-gray-300">/</span>
-            <span class="text-sm font-semibold text-gray-900 dark:text-white">تخصيص الثيم</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">Theme customization</span>
         </div>
 
         <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-            @foreach([['desktop','computer-desktop','سطح المكتب'],['tablet','device-tablet','تابلت'],['mobile','device-phone-mobile','موبايل']] as [$d,$ic,$lb])
+            @foreach([['desktop','computer-desktop','desktop'],['tablet','device-tablet','tablet'],['mobile','device-phone-mobile','mobile']] as [$d,$ic,$lb])
                 <button @click="previewDevice = '{{ $d }}'"
                         :class="previewDevice === '{{ $d }}' ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700'"
                         class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all">
-                    @icon($ic, 'w-4 h-4') {{ $lb }}
+                    {{-- Use x-filament::icon for the device buttons --}}
+                    <x-filament::icon :icon="'heroicon-o-' . $ic" class="w-4 h-4" /> {{ $lb }}
                 </button>
             @endforeach
         </div>
 
         <div class="flex items-center gap-2">
             <button wire:click="resetToDefaults"
-                    wire:confirm="هل أنت متأكد؟ سيتم إعادة تعيين جميع القيم للافتراضي"
+                    wire:confirm="Are you sure you want to reset all changes? This action cannot be undone."
                     class="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                @icon('arrow-path', 'w-4 h-4') إعادة تعيين
+                {{-- reset button --}}
+                <x-filament::icon icon="heroicon-o-arrow-path" class="w-4 h-4" /> reset
             </button>
             <button wire:click="save" wire:loading.attr="disabled"
                     class="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors shadow-sm">
                 <span wire:loading.remove wire:target="save" class="flex items-center gap-1.5">
-                    @icon('cloud-arrow-up', 'w-4 h-4') حفظ التغييرات
+                    {{-- save button --}}
+                    <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="w-4 h-4" /> save
                 </span>
                 <span wire:loading wire:target="save" class="flex items-center gap-1.5">
-                    <x-spinner class="w-4 h-4" /> جاري الحفظ...
+                    <x-spinner class="w-4 h-4" /> Saving...
                 </span>
             </button>
         </div>
@@ -46,80 +85,102 @@
     {{-- MAIN --}}
     <div class="flex flex-1 overflow-hidden">
 
-        {{-- LEFT: Editor --}}
+       {{-- LEFT: Editor --}}
         <div class="w-80 flex-shrink-0 bg-white dark:bg-gray-900 border-e border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
+            
+            {{--  name theme field --}}
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex-shrink-0">
+                <label for="themeName" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Theme Name
+                </label>
+                <input 
+                    type="text" 
+                    id="themeName" 
+                    wire:model="themeName" 
+                    class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:text-white transition-colors"
+                    placeholder="Enter theme name..."
+                >
+                @error('themeName') 
+                    <span class="text-xs text-red-600 dark:text-red-400 mt-1.5 block font-medium">{{ $message }}</span> 
+                @enderror
+            </div>
+            {{-- end field--}}
+
+            {{-- Tabs --}}
             <div class="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700 px-1 pt-1 gap-0.5 flex-shrink-0 scrollbar-hide">
-                @foreach([['palette','swatch','الألوان'],['font','text-cursor','الخط'],['layout','squares-2x2','التخطيط'],['corners','stop','الزوايا'],['shadows','sparkles','الظلال'],['icons','squares-plus','الأيقونات']] as [$tab,$icon,$label])
+                @foreach([['palette','swatch','Colors'],['font','document-text','Font'],['layout','squares-2x2','Layout'],['corners','stop','Corners'],['shadows','sparkles','Shadows'],['icons','squares-plus','Icons']] as [$tab,$icon,$label])
                     <button wire:click="$set('activeTab', '{{ $tab }}')"
-                            @class(['flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium rounded-t-lg whitespace-nowrap transition-colors border-b-2',
+                            @class([
+                                'flex items-center gap-1.5 px-3 py-2 border-b-2 text-xs font-medium transition-colors whitespace-nowrap',
                                 'border-primary-500 text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20' => $activeTab === $tab,
-                                'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300' => $activeTab !== $tab])>
-                        @icon($icon, 'w-3.5 h-3.5') {{ $label }}
+                                'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' => $activeTab !== $tab,
+                            ])>
+                        {{-- Use x-filament::icon for the tab icons --}}
+                        <x-filament::icon :icon="'heroicon-o-' . $icon" class="w-4 h-4" /> {{ $label }}
                     </button>
                 @endforeach
             </div>
-
             <div class="flex-1 overflow-y-auto p-4 space-y-5">
                 @if($activeTab === 'palette')
-                    <x-theme-editor-section title="ألوان العلامة التجارية">
-                        <x-theme-color-field wire:model.live="palette.primary"      label="الأساسي" />
-                        <x-theme-color-field wire:model.live="palette.on_primary"   label="على الأساسي" />
-                        <x-theme-color-field wire:model.live="palette.secondary"    label="الثانوي" />
-                        <x-theme-color-field wire:model.live="palette.on_secondary" label="على الثانوي" />
-                        <x-theme-color-field wire:model.live="palette.accent"       label="المميز" />
-                        <x-theme-color-field wire:model.live="palette.on_accent"    label="على المميز" />
+                    <x-theme-editor-section title="colors">
+                        <x-theme-color-field wire:model.live="palette.primary"      label="Primary" />
+                        <x-theme-color-field wire:model.live="palette.on_primary"   label="On Primary" />
+                        <x-theme-color-field wire:model.live="palette.secondary"    label="Secondary" />
+                        <x-theme-color-field wire:model.live="palette.on_secondary" label="On Secondary" />
+                        <x-theme-color-field wire:model.live="palette.accent"       label="Accent" />
+                        <x-theme-color-field wire:model.live="palette.on_accent"    label="On Accent" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الخلفيات">
-                        <x-theme-color-field wire:model.live="palette.background"  label="الخلفية" />
-                        <x-theme-color-field wire:model.live="palette.card_bg"     label="خلفية الكارد" />
+                    <x-theme-editor-section title="backgrounds">
+                        <x-theme-color-field wire:model.live="palette.background"  label="Background" />
+                        <x-theme-color-field wire:model.live="palette.card_bg"     label="Card Background" />
                         <x-theme-color-field wire:model.live="palette.surface_100" label="Surface 100" />
                         <x-theme-color-field wire:model.live="palette.surface_200" label="Surface 200" />
                         <x-theme-color-field wire:model.live="palette.surface_300" label="Surface 300" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="النصوص">
-                        <x-theme-color-field wire:model.live="palette.text"       label="النص" />
-                        <x-theme-color-field wire:model.live="palette.text_muted" label="نص باهت" />
+                    <x-theme-editor-section title="Texts">
+                        <x-theme-color-field wire:model.live="palette.text"       label="Text" />
+                        <x-theme-color-field wire:model.live="palette.text_muted" label="Muted Text" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الهيدر">
-                        <x-theme-color-field wire:model.live="palette.header"      label="خلفية الهيدر" />
-                        <x-theme-color-field wire:model.live="palette.on_header"   label="على الهيدر" />
-                        <x-theme-color-field wire:model.live="palette.m_header"    label="هيدر الموبايل" />
-                        <x-theme-color-field wire:model.live="palette.on_m_header" label="على هيدر الموبايل" />
+                    <x-theme-editor-section title="Header">
+                        <x-theme-color-field wire:model.live="palette.header"      label="Header Background" />
+                        <x-theme-color-field wire:model.live="palette.on_header"   label="On Header" />
+                        <x-theme-color-field wire:model.live="palette.m_header"    label="Mobile Header" />
+                        <x-theme-color-field wire:model.live="palette.on_m_header" label="On Mobile Header" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الفوتر">
-                        <x-theme-color-field wire:model.live="palette.footer"    label="خلفية الفوتر" />
-                        <x-theme-color-field wire:model.live="palette.on_footer" label="على الفوتر" />
+                    <x-theme-editor-section title="Footer">
+                        <x-theme-color-field wire:model.live="palette.footer"    label="Footer Background" />
+                        <x-theme-color-field wire:model.live="palette.on_footer" label="On Footer" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="ألوان الحالة">
-                        <x-theme-color-field wire:model.live="palette.success" label="نجاح" />
-                        <x-theme-color-field wire:model.live="palette.warning" label="تحذير" />
-                        <x-theme-color-field wire:model.live="palette.danger"  label="خطر" />
-                        <x-theme-color-field wire:model.live="palette.info"    label="معلومة" />
+                    <x-theme-editor-section title="Status Colors">
+                        <x-theme-color-field wire:model.live="palette.success" label="Success" />
+                        <x-theme-color-field wire:model.live="palette.warning" label="Warning" />
+                        <x-theme-color-field wire:model.live="palette.danger"  label="Danger" />
+                        <x-theme-color-field wire:model.live="palette.info"    label="Info" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الذهبي">
-                        <x-theme-color-field wire:model.live="palette.gold"         label="ذهبي" />
-                        <x-theme-color-field wire:model.live="palette.gold_surface" label="سطح ذهبي" />
-                        <x-theme-color-field wire:model.live="palette.on_gold"      label="على الذهبي" />
+                    <x-theme-editor-section title="Gold">
+                        <x-theme-color-field wire:model.live="palette.gold"         label="Gold" />
+                        <x-theme-color-field wire:model.live="palette.gold_surface" label="Gold Surface" />
+                        <x-theme-color-field wire:model.live="palette.on_gold"      label="On Gold" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الحدود">
-                        <x-theme-color-field wire:model.live="palette.border"       label="حد" />
-                        <x-theme-color-field wire:model.live="palette.border_muted" label="حد باهت" />
-                        <x-theme-color-field wire:model.live="palette.border_input" label="حد المدخل" />
+                    <x-theme-editor-section title="Borders">
+                        <x-theme-color-field wire:model.live="palette.border"       label="Border" />
+                        <x-theme-color-field wire:model.live="palette.border_muted" label="Muted Border" />
+                        <x-theme-color-field wire:model.live="palette.border_input" label="Input Border" />
                     </x-theme-editor-section>
                 @endif
 
                 @if($activeTab === 'font')
-                    <x-theme-editor-section title="العائلة">
-                        <x-theme-text-field wire:model.live="font.primary_family"   label="الخط الأساسي"  placeholder="Tajawal, sans-serif" />
-                        <x-theme-text-field wire:model.live="font.secondary_family" label="خط العناوين"   placeholder="Tajawal, sans-serif" />
+                    <x-theme-editor-section title="Font Families">
+                        <x-theme-text-field wire:model.live="font.primary_family"   label="Primary Font"  placeholder="Tajawal, sans-serif" />
+                        <x-theme-text-field wire:model.live="font.secondary_family" label="Heading Font"   placeholder="Tajawal, sans-serif" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الوزن والمسافات">
-                        <x-theme-select-field wire:model.live="font.base_weight"    label="وزن الجسم"    :options="['300'=>'Light 300','400'=>'Regular 400','500'=>'Medium 500','600'=>'SemiBold 600','700'=>'Bold 700']" />
-                        <x-theme-select-field wire:model.live="font.heading_weight" label="وزن العناوين" :options="['400'=>'Regular 400','500'=>'Medium 500','600'=>'SemiBold 600','700'=>'Bold 700','800'=>'ExtraBold 800','900'=>'Black 900']" />
-                        <x-theme-text-field   wire:model.live="font.line_height"    label="ارتفاع السطر" placeholder="1.6" />
-                        <x-theme-text-field   wire:model.live="font.letter_spacing" label="مسافة الأحرف" placeholder="normal" />
+                    <x-theme-editor-section title="Font Weights and Spacing">
+                        <x-theme-select-field wire:model.live="font.base_weight"    label="Base Weight"    :options="['300'=>'Light 300','400'=>'Regular 400','500'=>'Medium 500','600'=>'SemiBold 600','700'=>'Bold 700']" />
+                        <x-theme-select-field wire:model.live="font.heading_weight" label="Heading Weight" :options="['400'=>'Regular 400','500'=>'Medium 500','600'=>'SemiBold 600','700'=>'Bold 700','800'=>'ExtraBold 800','900'=>'Black 900']" />
+                        <x-theme-text-field   wire:model.live="font.line_height"    label="Line Height" placeholder="1.6" />
+                        <x-theme-text-field   wire:model.live="font.letter_spacing" label="Letter Spacing" placeholder="normal" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="أحجام الخط">
+                    <x-theme-editor-section title="Font Sizes">
                         @foreach(['xs'=>'XS','sm'=>'SM','base'=>'Base','lg'=>'LG','xl'=>'XL','2xl'=>'2XL','3xl'=>'3XL','4xl'=>'4XL'] as $k => $lb)
                             <x-theme-text-field wire:model.live="font.{{ $k }}" label="{{ $lb }}" />
                         @endforeach
@@ -127,54 +188,54 @@
                 @endif
 
                 @if($activeTab === 'layout')
-                    <x-theme-editor-section title="الأزرار">
-                        <x-theme-text-field   wire:model.live="buttons.padding_x"   label="حشوة أفقية"  placeholder="1.25rem" />
-                        <x-theme-text-field   wire:model.live="buttons.padding_y"   label="حشوة رأسية"  placeholder="0.625rem" />
-                        <x-theme-select-field wire:model.live="buttons.font_weight" label="وزن الخط"    :options="['400'=>'400','500'=>'500','600'=>'600','700'=>'700','800'=>'800']" />
+                    <x-theme-editor-section title="Buttons">
+                        <x-theme-text-field   wire:model.live="buttons.padding_x"   label="Horizontal Padding"  placeholder="1.25rem" />
+                        <x-theme-text-field   wire:model.live="buttons.padding_y"   label="Vertical Padding"  placeholder="0.625rem" />
+                        <x-theme-select-field wire:model.live="buttons.font_weight" label="Font Weight"    :options="['400'=>'400','500'=>'500','600'=>'600','700'=>'700','800'=>'800']" />
                         <div class="flex items-center justify-between py-1">
-                            <span class="text-xs text-gray-600 dark:text-gray-400">أحرف كبيرة</span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Uppercase Letters</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" wire:model.live="buttons.uppercase" class="sr-only peer">
                                 <div class="w-9 h-5 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-300 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                             </label>
                         </div>
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="حقول الإدخال">
-                        <x-theme-text-field   wire:model.live="inputs.padding_x"   label="حشوة أفقية" placeholder="0.75rem" />
-                        <x-theme-text-field   wire:model.live="inputs.padding_y"   label="حشوة رأسية" placeholder="0.5rem" />
-                        <x-theme-select-field wire:model.live="inputs.font_weight" label="وزن الخط"   :options="['400'=>'400','500'=>'500','600'=>'600','700'=>'700']" />
+                    <x-theme-editor-section title="Input Fields">
+                        <x-theme-text-field   wire:model.live="inputs.padding_x"   label="Horizontal Padding" placeholder="0.75rem" />
+                        <x-theme-text-field   wire:model.live="inputs.padding_y"   label="Vertical Padding" placeholder="0.5rem" />
+                        <x-theme-select-field wire:model.live="inputs.font_weight" label="Font Weight"   :options="['400'=>'400','500'=>'500','600'=>'600','700'=>'700']" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الهيدر">
-                        <x-theme-text-field   wire:model.live="header.padding_t"     label="حشوة علوية" />
-                        <x-theme-text-field   wire:model.live="header.padding_b"     label="حشوة سفلية" />
-                        <x-theme-text-field   wire:model.live="header.margin_b"      label="مسافة سفلية" />
-                        <x-theme-text-field   wire:model.live="header.gap"           label="المسافة بين العناصر" />
-                        <x-theme-text-field   wire:model.live="header.logo_width"    label="عرض الشعار" />
-                        <x-theme-text-field   wire:model.live="header.logo_hight"    label="ارتفاع الشعار" />
-                        <x-theme-select-field wire:model.live="header.position"      label="الموضع"     :options="['static'=>'Static','sticky'=>'Sticky','fixed'=>'Fixed']" />
-                        <x-theme-text-field   wire:model.live="header.bg_opacity"    label="شفافية الخلفية" />
-                        <x-theme-text-field   wire:model.live="header.backdrop_blur" label="ضبابية الخلفية" />
+                    <x-theme-editor-section title="Header">
+                        <x-theme-text-field   wire:model.live="header.padding_t"     label="Top Padding" />
+                        <x-theme-text-field   wire:model.live="header.padding_b"     label="Bottom Padding" />
+                        <x-theme-text-field   wire:model.live="header.margin_b"      label="Bottom Margin" />
+                        <x-theme-text-field   wire:model.live="header.gap"           label="Gap Between Elements" />
+                        <x-theme-text-field   wire:model.live="header.logo_width"    label="Logo Width" />
+                        <x-theme-text-field   wire:model.live="header.logo_hight"    label="Logo Height" />
+                        <x-theme-select-field wire:model.live="header.position"      label="Position"     :options="['static'=>'Static','sticky'=>'Sticky','fixed'=>'Fixed']" />
+                        <x-theme-text-field   wire:model.live="header.bg_opacity"    label="Background Opacity" />
+                        <x-theme-text-field   wire:model.live="header.backdrop_blur" label="Backdrop Blur" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="الفوتر">
-                        <x-theme-text-field   wire:model.live="footer.padding_t" label="حشوة علوية" />
-                        <x-theme-text-field   wire:model.live="footer.padding_b" label="حشوة سفلية" />
-                        <x-theme-text-field   wire:model.live="footer.margin_t"  label="مسافة علوية" />
-                        <x-theme-select-field wire:model.live="footer.columns"   label="الأعمدة"    :options="[1=>'1 عمود',2=>'2 أعمدة',3=>'3 أعمدة']" />
+                    <x-theme-editor-section title="Footer">
+                        <x-theme-text-field   wire:model.live="footer.padding_t" label="Top Padding" />
+                        <x-theme-text-field   wire:model.live="footer.padding_b" label="Bottom Padding" />
+                        <x-theme-text-field   wire:model.live="footer.margin_t"  label="Top Margin" />
+                        <x-theme-select-field wire:model.live="footer.columns"   label="Columns"    :options="[1=>'1 Column',2=>'2 Columns',3=>'3 Columns']" />
                     </x-theme-editor-section>
                 @endif
 
                 @if($activeTab === 'corners')
-                    <x-theme-editor-section title="عناصر المتجر">
-                        <x-theme-text-field wire:model.live="corners.btn"    label="الأزرار" />
+                    <x-theme-editor-section title="Store Items">
+                        <x-theme-text-field wire:model.live="corners.btn"    label="Buttons" />
                         <x-theme-text-field wire:model.live="corners.cta"    label="CTA" />
-                        <x-theme-text-field wire:model.live="corners.input"  label="حقول الإدخال" />
-                        <x-theme-text-field wire:model.live="corners.card"   label="الكاردز" />
-                        <x-theme-text-field wire:model.live="corners.badge"  label="الشارات" />
-                        <x-theme-text-field wire:model.live="corners.icon"   label="الأيقونات" />
-                        <x-theme-text-field wire:model.live="corners.model"  label="المودال" />
-                        <x-theme-text-field wire:model.live="corners.header" label="الهيدر" />
+                        <x-theme-text-field wire:model.live="corners.input"  label="Input Fields" />
+                        <x-theme-text-field wire:model.live="corners.card"   label="Cards" />
+                        <x-theme-text-field wire:model.live="corners.badge"  label="Badges" />
+                        <x-theme-text-field wire:model.live="corners.icon"   label="Icons" />
+                        <x-theme-text-field wire:model.live="corners.model"  label="Modal" />
+                        <x-theme-text-field wire:model.live="corners.header" label="Header" />
                     </x-theme-editor-section>
-                    <x-theme-editor-section title="أحجام الزوايا">
+                    <x-theme-editor-section title="Corner Sizes">
                         @foreach(['sm','md','lg','xl','2xl','3xl','4xl'] as $size)
                             <x-theme-text-field wire:model.live="corners.{{ $size }}" label="{{ $size }}" />
                         @endforeach
@@ -182,18 +243,18 @@
                 @endif
 
                 @if($activeTab === 'shadows')
-                    <x-theme-editor-section title="الظلال">
-                        <x-theme-text-field wire:model.live="glows.card_shadow"   label="كارد" />
-                        <x-theme-text-field wire:model.live="glows.button_shadow" label="زر" />
-                        <x-theme-text-field wire:model.live="glows.input_shadow"  label="مدخل" />
-                        <x-theme-text-field wire:model.live="glows.header_shadow" label="هيدر" />
-                        <x-theme-text-field wire:model.live="glows.modal_shadow"  label="مودال" />
-                        <x-theme-text-field wire:model.live="glows.glow_shadow"   label="توهج" />
+                    <x-theme-editor-section title="shadows">
+                        <x-theme-text-field wire:model.live="glows.card_shadow"   label="card" />
+                        <x-theme-text-field wire:model.live="glows.button_shadow" label="button" />
+                        <x-theme-text-field wire:model.live="glows.input_shadow"  label="input" />
+                        <x-theme-text-field wire:model.live="glows.header_shadow" label="header" />
+                        <x-theme-text-field wire:model.live="glows.modal_shadow"  label="modal" />
+                        <x-theme-text-field wire:model.live="glows.glow_shadow"   label="glow" />
                     </x-theme-editor-section>
                 @endif
 
                 @if($activeTab === 'icons')
-                    <x-theme-editor-section title="حزمة الأيقونات">
+                    <x-theme-editor-section title="Icon Pack">
                         <div class="grid grid-cols-2 gap-2">
                             @foreach(array_keys(config('icons')) as $pack)
                                 <button wire:click="$set('icon_pack', '{{ $pack }}')"
@@ -211,91 +272,58 @@
             </div>
         </div>
 
-        {{-- RIGHT: Live Preview --}}
+        {{-- RIGHT: iframe Preview --}}
         <div class="flex-1 bg-gray-100 dark:bg-gray-950 flex flex-col overflow-hidden">
+
+            {{-- Preview toolbar --}}
             <div class="flex items-center gap-3 px-4 py-2 bg-gray-200 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 flex-shrink-0">
                 <div class="flex gap-1.5">
                     <div class="w-3 h-3 rounded-full bg-red-400"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
                     <div class="w-3 h-3 rounded-full bg-green-400"></div>
                 </div>
-                <div class="flex-1 bg-white dark:bg-gray-800 rounded-md px-3 py-1 text-xs text-gray-400 font-mono">
-                    {{ tenant('name') }} — Live Preview
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-md px-3 py-1 text-xs text-gray-400 font-mono truncate">
+                    {{ $this->previewUrl }}
                 </div>
+                <a href="{{ $this->previewUrl }}" target="_blank"
+                   class="text-gray-400 hover:text-gray-600 transition-colors shrink-0">
+                    {{-- Open in new tab --}}
+                    <x-filament::icon icon="heroicon-o-arrow-top-right-on-square" class="w-4 h-4" />
+                </a>
             </div>
 
-            <div class="flex-1 overflow-auto p-4 flex justify-center items-start">
-                <div :class="{ 'w-full': previewDevice === 'desktop', 'w-[768px]': previewDevice === 'tablet', 'w-[390px]': previewDevice === 'mobile' }"
-                     class="transition-all duration-300 bg-white rounded-xl shadow-2xl overflow-hidden"
-                     style="min-height: 600px">
-
-                    {{-- ✅ Live CSS - يتحدث مع كل تغيير Livewire --}}
-                    <style>{!! $this->liveCss !!}</style>
-
-                    <div style="font-family: var(--font-primary); color: var(--color-text); background-color: var(--color-bg);">
-
-                        <x-theme-preview.header :header="$header" :palette="$palette" />
-
-                        <div class="px-4 py-8 space-y-12" style="max-width: var(--container, 1280px); margin: 0 auto;">
-
-                            @php
-                                $heroSection = collect($this->homepage['sections'] ?? [])->firstWhere('key', 'hero') ?? [];
-                                $newArrivals = collect($this->homepage['sections'] ?? [])->firstWhere('key', 'new_arrivals') ?? [];
-                                $topRated    = collect($this->homepage['sections'] ?? [])->firstWhere('key', 'top_rated') ?? [];
-                            @endphp
-
-                            @if($heroSection['enabled'] ?? true)
-                                <x-theme-preview.hero :section="$heroSection" />
-                            @endif
-
-                            @if($newArrivals['enabled'] ?? true)
-                                <section>
-                                    <div class="flex items-center justify-between mb-6">
-                                        <div class="flex items-center gap-3">
-                                            <h2 class="text-theme-2xl font-bold text-theme">{{ $newArrivals['title'] ?? 'وصل حديثاً' }}</h2>
-                                            @if($newArrivals['show_badge'] ?? true)
-                                                <span class="badge bg-primary text-on-primary">{{ $newArrivals['badge_label'] ?? 'جديد' }}</span>
-                                            @endif
-                                        </div>
-                                        <span class="text-theme-sm font-semibold text-primary cursor-pointer hover:opacity-75 flex items-center gap-1">
-                                            عرض الكل @icon('chevron-r', 'w-4 h-4 rtl:rotate-180')
-                                        </span>
-                                    </div>
-                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                        @foreach([['منتج أول','149.00','إلكترونيات'],['منتج ثاني','89.00','ملابس'],['منتج ثالث','220.00','أثاث'],['منتج رابع','55.00','إكسسوار']] as [$n,$pr,$cat])
-                                            <x-theme-preview.product-card :name="$n" :price="$pr" :category="$cat" :badge="$newArrivals['badge_label'] ?? 'جديد'" />
-                                        @endforeach
-                                    </div>
-                                </section>
-                            @endif
-
-                            @if($topRated['enabled'] ?? true)
-                                <section>
-                                    <div class="flex items-center justify-between mb-6">
-                                        <div class="flex items-center gap-3">
-                                            <h2 class="text-theme-2xl font-bold text-theme">{{ $topRated['title'] ?? 'الأعلى تقييماً' }}</h2>
-                                            @if($topRated['show_badge'] ?? true)
-                                                <span class="badge bg-gold-surface text-on-gold border border-gold">{{ $topRated['badge_label'] ?? '★ مميز' }}</span>
-                                            @endif
-                                        </div>
-                                        <span class="text-theme-sm font-semibold text-primary cursor-pointer hover:opacity-75 flex items-center gap-1">
-                                            عرض الكل @icon('chevron-r', 'w-4 h-4 rtl:rotate-180')
-                                        </span>
-                                    </div>
-                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                        @foreach([['الأعلى تقييماً','199.00','تقنية'],['مفضل الزبائن','120.00','موضة'],['الأكثر مبيعاً','75.00','منزل'],['اختيار المحررين','340.00','فاخر']] as [$n,$pr,$cat])
-                                            <x-theme-preview.product-card :name="$n" :price="$pr" :category="$cat" />
-                                        @endforeach
-                                    </div>
-                                </section>
-                            @endif
-
+            {{-- iframe wrapper --}}
+            <div class="flex-1 flex items-start justify-center overflow-auto p-4">
+                <div
+                    :class="{
+                        'w-full':     previewDevice === 'desktop',
+                        'w-[768px]':  previewDevice === 'tablet',
+                        'w-[390px]':  previewDevice === 'mobile',
+                    }"
+                    class="transition-all duration-300 h-full relative"
+                >
+                    {{-- Loading overlay --}}
+                    <div x-show="!iframeLoaded"
+                         class="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-900 rounded-xl z-10">
+                        <div class="flex flex-col items-center gap-3 text-gray-400">
+                            <svg class="animate-spin w-8 h-8" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 12 0 12 12h4z"></path>
+                            </svg>
+                            <span class="text-sm">Loading preview...</span>
                         </div>
-
-                        <x-theme-preview.footer :footer="$footer" />
                     </div>
+
+                    <iframe
+                        x-ref="preview"
+                        src="{{ $this->previewUrl }}"
+                        @load="onIframeLoad()"
+                        class="w-full h-full rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700"
+                        style="min-height: calc(100vh - 10rem)"
+                    ></iframe>
                 </div>
             </div>
+            
         </div>
 
     </div>

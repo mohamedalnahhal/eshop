@@ -17,3 +17,5 @@
         />
     </div>
 </div>
+<!-- It's located in resources/views/components/theme-color-field.blade.php and is accessed in the editor
+ and it is used for selecting and displaying color values in the theme editor -->
