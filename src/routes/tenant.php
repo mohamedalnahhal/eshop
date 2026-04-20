@@ -45,9 +45,10 @@ Route::middleware([
 
             Route::middleware('auth:customer')->group(function () {
                 Route::post('/logout', [CustomerLoginController::class, 'destroy'])->name('shop.logout');
-                
+                Route::livewire('/orders', 'pages::orders.index')->name('shop.orders');
+                Route::livewire('/orders/{id}', 'pages::orders.show')->name('shop.order.show');
+
                 // Route::get('/account', [AccountController::class, 'index'])->name('shop.account');
-                // Route::get('/orders',  [OrderController::class, 'index'])->name('shop.orders');
             });
         });
 
