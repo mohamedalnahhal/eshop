@@ -35,6 +35,7 @@ Route::middleware([
             Route::livewire('/products', 'pages::products.index')->name('shop.products');
             Route::livewire('/product/{id}', 'pages::products.show')->name('shop.product.show');
             Route::livewire('/cart', 'pages::cart.index')->name('shop.cart');
+            Route::livewire('/checkout', 'pages::checkout.index')->name('shop.checkout');
 
             Route::middleware('guest:customer')->group(function () {
                 Route::get('/login',  [CustomerLoginController::class, 'create'])->name('shop.login');
