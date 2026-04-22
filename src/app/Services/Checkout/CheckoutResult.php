@@ -10,5 +10,6 @@ final readonly class CheckoutResult
         public Order $order,
         public string $token,
         public int $lockedTotal,
+        public ?string $gatewayUrl = null,
     ) {}
 }

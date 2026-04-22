@@ -2,21 +2,23 @@
 
 namespace App\Services\Checkout;
 
+use App\Contracts\PaymentGatewayContract;
 use App\Models\Cart;
-use App\Models\CheckoutToken;
 use App\Models\Order;
 use App\Models\ShippingMethod;
 use App\Services\Orders\CustomerOrderService;
+use App\Services\Orders\OrderPaymentService;
 use App\Services\Shipping\ShippingCalculatorService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CheckoutService
 {
     public function __construct(
         private readonly CustomerOrderService $customerOrderService,
         private readonly ShippingCalculatorService $shippingCalculator,
+        private readonly OrderPaymentService $orderPaymentService,
+        private readonly PaymentGatewayContract $gateway
     ) {}
 
     /**
@@ -26,7 +28,7 @@ class CheckoutService
      */
     public function process(Cart $cart, CheckoutData $data): CheckoutResult
     {
-        return DB::transaction(function () use ($cart, $data): CheckoutResult {
+        $result = DB::transaction(function () use ($cart, $data): CheckoutResult {
 
             $cart->load(['items.product.translations', 'items.product.media']);
     
@@ -78,17 +80,19 @@ class CheckoutService
             ){
                 throw CheckoutException::costMismatch();
             }
-            
-            // issue a checkout token for the payment gateway
-            $contactEmail = Auth::guard('customer')->user()?->email ?? $data->email;
-            $token = $this->issueToken($order, $contactEmail, $order->total);
+
+            $checkoutToken = $this->orderPaymentService->createCharge($order, $order->total, $data->paymentMethodId);
 
             return new CheckoutResult(
                 order: $order,
-                token: $token,
+                token: $checkoutToken,
                 lockedTotal: $order->total,
             );
         });
+
+        $result->gatewayUrl = $this->gateway->createCheckoutSession($result->order, $result->token);
+
+        return $result;
     }
 
     /**
@@ -101,7 +105,7 @@ class CheckoutService
      */
     public function processExpress(Cart $cart, CheckoutData $data): CheckoutResult
     {
-        return DB::transaction(function () use ($cart, $data): CheckoutResult {
+        $result = DB::transaction(function () use ($cart, $data): CheckoutResult {
  
             $cart->load(['items.product.translations', 'items.product.media']);
  
@@ -149,14 +153,18 @@ class CheckoutService
                 throw CheckoutException::costMismatch();
             }
 
-            $token = $this->issueToken($order, $data->email, $order->total);
- 
+            $checkoutToken = $this->orderPaymentService->createCharge($order, $order->total, $data->paymentMethodId);
+
             return new CheckoutResult(
                 order: $order,
-                token: $token,
+                token: $checkoutToken,
                 lockedTotal: $order->total,
             );
         });
+
+        $result->gatewayUrl = $this->gateway->createCheckoutSession($result->order, $result->token);
+
+        return $result;
     }
     
     private function buildOrder(
@@ -209,20 +217,5 @@ class CheckoutService
             'country' => $data->country,
             'phone' => $data->phone,
         ];
-    }
-
-    private function issueToken(Order $order, string $email, int $total): string
-    {
-        $raw = Str::random(40);
-
-        CheckoutToken::create([
-            'order_id' => $order->id,
-            'token' => $raw,
-            'locked_total' => $total,
-            'customer_email' => $email,
-            'expires_at' => now()->addMinutes(30),
-        ]);
-
-        return $raw;
     }
 }
