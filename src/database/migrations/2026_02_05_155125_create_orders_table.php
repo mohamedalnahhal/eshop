@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('tracking_number', 32)->unique();
             $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('shipping_method_id')

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
@@ -37,6 +38,17 @@ class Order extends Model
         'shipping_address' => 'array',
         'billing_address'  => 'array',
     ];
+    
+    protected static function booted(): void
+    {
+        static::creating(function (Order $order) {
+            // check if not empty in case of manually providing tracking_number
+            // e.g. migrating orders from another db
+            if (empty($order->tracking_number)) {
+                $order->tracking_number = self::generateUniqueTrackingNumber();
+            }
+        });
+    }
 
     public function customer() { return $this->belongsTo(Customer::class); }
     public function items(){ return $this->hasMany(OrderItem::class); }
@@ -64,5 +76,20 @@ class Order extends Model
     public function getContactPhoneAttribute(): ?string
     {
         return $this->isGuest()? $this->guest_phone : $this->customer->phone;
+    }
+
+    // to use it in routes instead of id e.g. /orders/ORD-2026-A8F9B2C4
+    public function getRouteKeyName(): string
+    {
+        return 'tracking_number';
+    }
+
+    private static function generateUniqueTrackingNumber(): string
+    {
+        do {
+            $trackingNumber = 'ORD-' . date('Y') . '-' . strtoupper(Str::random(8));
+        } while (self::where('tracking_number', $trackingNumber)->exists());
+
+        return $trackingNumber;
     }
 }
