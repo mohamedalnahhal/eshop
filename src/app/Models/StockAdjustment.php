@@ -28,7 +28,7 @@ class StockAdjustment extends Model
         'updated_value' => 'integer',
     ];
 
-public function tenant(): BelongsTo
+    public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
     }
