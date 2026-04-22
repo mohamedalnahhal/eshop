@@ -12,3 +12,5 @@
         {{ $slot }}
     </div>
 </div>
+<!-- It's located in resources/views/components/theme-editor-section.blade.php and is accessed in the editor
+ and  it used for organizing the theme editor content into collapsible sections -->
