@@ -23,9 +23,9 @@ class CheckoutException extends RuntimeException
         return new self('The selected shipping method is no longer available for your address. Please select another.');
     }
 
-    public static function shippingFeeMismatch(): self
+    public static function costMismatch(): self
     {
-        return new self('Shipping cost changed. Please review your order before placing it.');
+        return new self('Order cost changed. Please review your order before placing it.');
     }
 
     public static function totalMismatch(): self

@@ -53,7 +53,7 @@ class CheckoutService
             }
 
             if ($resolvedMethod->fee !== $data->shippingFee) {
-                throw CheckoutException::shippingFeeMismatch();
+                throw CheckoutException::costMismatch();
             }
 
             $shippingFee = $resolvedMethod->fee;
@@ -71,6 +71,14 @@ class CheckoutService
                 notes: $data->notes,
             );
 
+            if(
+                $order->total != $data->total ||
+                $order->currency != $data->currency ||
+                $order->currency_decimals != $data->currencyDecimals
+            ){
+                throw CheckoutException::costMismatch();
+            }
+            
             // issue a checkout token for the payment gateway
             $contactEmail = Auth::guard('customer')->user()?->email ?? $data->email;
             $token = $this->issueToken($order, $contactEmail, $order->total);
@@ -91,7 +99,7 @@ class CheckoutService
      *
      * @throws CheckoutException
      */
-    public function processExpress(Cart $cart, ExpressCheckoutData $data): CheckoutResult
+    public function processExpress(Cart $cart, CheckoutData $data): CheckoutResult
     {
         return DB::transaction(function () use ($cart, $data): CheckoutResult {
  
@@ -117,7 +125,7 @@ class CheckoutService
             );
 
             if ($shippingFee !== $data->shippingFee) {
-                throw CheckoutException::shippingFeeMismatch();
+                throw CheckoutException::costMismatch();
             }
 
             $order = $this->buildOrder(
@@ -133,8 +141,12 @@ class CheckoutService
                 notes: $data->notes,
             );
 
-            if ($order->total !== $data->total) {
-                throw CheckoutException::totalMismatch(); 
+            if(
+                $order->total != $data->total ||
+                $order->currency != $data->currency ||
+                $order->currency_decimals != $data->currencyDecimals
+            ){
+                throw CheckoutException::costMismatch();
             }
 
             $token = $this->issueToken($order, $data->email, $order->total);
@@ -185,7 +197,7 @@ class CheckoutService
         return $order;
     }
 
-    private function buildAddressSnapshot(CheckoutData|ExpressCheckoutData $data): array
+    private function buildAddressSnapshot(CheckoutData $data): array
     {
         return [
             'name' => $data->name,
