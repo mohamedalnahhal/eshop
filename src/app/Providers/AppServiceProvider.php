@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\PaymentGatewayContract;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Colors\Color;
@@ -15,6 +16,7 @@ use App\Livewire\TenantAdmin\ThemeEditor;
 use App\Services\Shipping\ShippingCalculatorService;
 use App\Services\Checkout\CheckoutService;
 use App\Http\Middleware\SetTenantLocale;
+use App\Services\Payment;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,12 @@ class AppServiceProvider extends ServiceProvider
         
         $this->app->singleton(ShippingCalculatorService::class);
         $this->app->singleton(CheckoutService::class);
+
+        $this->app->bind(
+            PaymentGatewayContract::class,
+            Payment\Adapters\MockGatewayAdapter::class,
+            Payment\Adapters\MockExpressGatewayAdapter::class,
+        );
     }
 
     /**
