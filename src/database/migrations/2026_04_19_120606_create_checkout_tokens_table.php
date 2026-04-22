@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('checkout_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->foreignUuid('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignUuid('payment_id')->constrained('payments')->onDelete('cascade');
             $table->string('token', 60)->unique();
-            $table->unsignedBigInteger('locked_total'); // snapshot
-            $table->string('customer_email', 255)->nullable(); // snapshot
             $table->timestamp('expires_at');
             $table->boolean('used')->default(false); // prevents replay attacks
             $table->timestamps();

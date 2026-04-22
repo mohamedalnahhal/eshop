@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class CheckoutToken extends Model
@@ -11,24 +10,20 @@ class CheckoutToken extends Model
     use BelongsToTenant;
 
     protected $fillable = [
-        'tenant_id',
-        'order_id',
+        'payment_id',
         'token',
-        'locked_total',
-        'customer_email',
         'expires_at',
         'used',
     ];
 
     protected $casts = [
-        'locked_total' => 'integer',
         'expires_at' => 'datetime',
         'used' => 'boolean',
     ];
 
-    public function order(): BelongsTo
+    public function payment()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Payment::class);
     }
 
     public function isValid(): bool
