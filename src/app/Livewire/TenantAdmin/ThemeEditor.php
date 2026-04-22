@@ -80,7 +80,6 @@ class ThemeEditor extends Component
                 'max:255',
                 Rule::unique('themes', 'name')
                     ->where('tenant_id', tenant()->id)
-                    // نستخدم المتغير المحلي $theme هنا
                     ->ignore($theme->tenant_id !== null ? $this->themeId : null)
             ],
         ], [
@@ -106,6 +105,7 @@ class ThemeEditor extends Component
             $newTheme->icon_pack  = $this->icon_pack;
             $newTheme->save();
             $this->themeId = (string) $newTheme->id;
+           $savedThemeId  = (string) $newTheme->id;
         } else {
             $theme->update([
                 'name'      => $this->themeName,
@@ -121,10 +121,17 @@ class ThemeEditor extends Component
                 'homepage'  => $this->homepage,
                 'icon_pack' => $this->icon_pack,
             ]);
+            $savedThemeId = $this->themeId;
         }
 
+        tenant()->settings()->updateOrCreate(
+            ['tenant_id' => tenant()->id],
+            ['theme_id'  => $savedThemeId]
+        );
+        tenant()->refresh();
+
         Notification::make()
-            ->title('Theme saved successfully ✓')
+            ->title('Theme saved and activated successfully ✓')
             ->success()
             ->send();
     }
