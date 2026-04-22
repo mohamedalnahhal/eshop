@@ -19,9 +19,4 @@ class Subscription extends Model
         'max_products' => 'integer',
         'features' => 'array',
     ];
-
-    public function payments()
-    {
-        return $this->morphMany(Payment::class, 'paymentable');
-    }
 }

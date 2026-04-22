@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentProvider;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 class PaymentMethod extends Model
 {
-    protected $primaryKey = 'payment_method'; 
-    public $incrementing = false;
-    protected $keyType = 'string';
+    use HasUuids;
+    use BelongsToTenant;
 
     protected $fillable = [
-        'payment_method', 
-        'provider',       
-        'is_active',     
-        'config'          
+        'provider',
+        'name',
+        'is_active',
+        'config'
     ];
 
     protected $hidden = ['config'];
@@ -22,10 +24,11 @@ class PaymentMethod extends Model
     protected $casts = [
         'config' => 'array',
         'is_active' => 'boolean',
+        'provider' => PaymentProvider::class,
     ];
 
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'payment_method', 'payment_method');
+        return $this->hasMany(Payment::class);
     }
 }

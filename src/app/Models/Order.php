@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
+use App\Contracts\Payable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 use App\Enums\OrderStatus;
+use App\Traits\HasPayments;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class Order extends Model
+class Order extends Model implements Payable
 {
     use HasUuids;
     use BelongsToTenant;
     use SoftDeletes;
+    use HasPayments;
 
     protected $fillable = [
         'customer_id',
@@ -52,10 +55,9 @@ class Order extends Model
 
     public function customer() { return $this->belongsTo(Customer::class); }
     public function items(){ return $this->hasMany(OrderItem::class); }
-    public function payments() { return $this->morphMany(Payment::class, 'paymentable'); }
     public function successfulPayment()
     {
-        return $this->morphOne(Payment::class, 'paymentable')->where('status', 'completed');
+        return $this->morphMany(Payment::class, 'payable')->where('status', 'completed');
     }
 
     public function isGuest(): bool

@@ -14,16 +14,18 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->enum('owner_type', ['tenant', 'platform']);
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
-            $table->uuidMorphs('paymentable');
-            $table->string('payment_method', 50);
-            $table->foreign('payment_method')->references('payment_method')->on('payment_methods');
+            $table->uuidMorphs('payable');
+            $table->foreignUuid('payment_method_id')
+                  ->nullable()
+                  ->constrained('payment_methods')
+                  ->nullOnDelete();
             $table->foreignUuid('parent_payment_id')->nullable()->constrained('payments')->nullOnDelete();
             $table->enum('payment_type', ['charge', 'refund']);
             $table->unsignedBigInteger('amount');
             $table->string('currency', 3); // snapshot
             $table->unsignedTinyInteger('currency_decimals'); // snapshot
             $table->enum('status', ['pending', 'completed', 'failed']);
-            $table->string('transaction_reference', 255);
+            $table->string('transaction_reference', 255)->nullable();
             $table->jsonb('gateway_response')->nullable();
             $table->jsonb('metadata')->nullable();
             $table->timestamp('created_at')->useCurrent();

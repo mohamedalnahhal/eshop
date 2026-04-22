@@ -17,8 +17,8 @@ class Payment extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'paymentable_id',
-        'paymentable_type',
+        'payable_id',
+        'payable_type',
         'payment_method',
         'amount',
         'currency',
@@ -41,5 +41,5 @@ class Payment extends Model
     ];
 
     public function method() { return $this->belongsTo(PaymentMethod::class, 'payment_method', 'payment_method'); }
-    public function paymentable() { return $this->morphTo(); }
+    public function payable() { return $this->morphTo(); }
 }
