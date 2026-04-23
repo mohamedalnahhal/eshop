@@ -108,8 +108,9 @@ class ShippingCalculatorService
         $upper = strtoupper($countryCode);
 
         /** @var Collection<int, ShippingZone> $allActiveZones */
-        $allActiveZones = ShippingZone::with(['methods.rates'])
-            ->where('is_active', true)
+        $allActiveZones = ShippingZone::with(['methods.rates'=> function ($query) {
+            $query->orderBy('sort_order', 'asc');
+        }])->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
         
@@ -126,19 +127,16 @@ class ShippingCalculatorService
 
     private function rateMatches(ShippingRate $rate, int $subtotal, int $weightGrams): bool
     {
-        return match ($rate->rate_type) {
-
-            ShippingRateType::FLAT_RATE,
-            ShippingRateType::FREE =>
-                true,
-
-            ShippingRateType::PRICE_BASED =>
-                ($rate->condition_min === null || $subtotal >= $rate->condition_min)
-                && ($rate->condition_max === null || $subtotal <= $rate->condition_max),
-
-            ShippingRateType::WEIGHT_BASED =>
-                ($rate->condition_min === null || $weightGrams >= $rate->condition_min)
-                && ($rate->condition_max === null || $weightGrams <= $rate->condition_max),
+        $minOk = $rate->condition_min === null || match ($rate->rate_type) {
+            ShippingRateType::WEIGHT_BASED => $weightGrams >= $rate->condition_min,
+            default => $subtotal >= $rate->condition_min,
         };
+    
+        $maxOk = $rate->condition_max === null || match ($rate->rate_type) {
+            ShippingRateType::WEIGHT_BASED => $weightGrams <= $rate->condition_max,
+            default => $subtotal <= $rate->condition_max,
+        };
+    
+        return $minOk && $maxOk;
     }
 }

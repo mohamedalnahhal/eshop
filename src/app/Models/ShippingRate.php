@@ -18,6 +18,7 @@ class ShippingRate extends Model
         'condition_min',
         'condition_max',
         'free_above',
+        'sort_order',
     ];
 
     protected $casts = [
@@ -26,6 +27,7 @@ class ShippingRate extends Model
         'condition_min' => 'integer',
         'condition_max' => 'integer',
         'free_above' => 'integer',
+        'sort_order' => 'integer',
     ];
 
     public function method(): BelongsTo

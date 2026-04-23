@@ -39,6 +39,8 @@ return new class extends Migration
              * null means feature disabled
              */
             $table->unsignedBigInteger('free_above')->nullable();
+            
+            $table->unsignedSmallInteger('sort_order')->default(0);
 
             $table->timestamps();
         });
