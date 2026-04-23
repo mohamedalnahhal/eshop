@@ -4,7 +4,7 @@ namespace App\Listeners\Payment;
 
 use App\Enums\SubscriptionStatus;
 use App\Events\Payment\PaymentSuccess;
-use App\Models\Subscription;
+use App\Models\TenantSubscription;
 
 class HandleSubscriptionPaymentSuccess
 {
@@ -12,7 +12,7 @@ class HandleSubscriptionPaymentSuccess
     {
         $payable = $event->payment->payable;
 
-        if (!$payable instanceof Subscription) return;
+        if (!$payable instanceof TenantSubscription) return;
 
         $payable->update(['status' => SubscriptionStatus::ACTIVE]);
     }
