@@ -16,7 +16,7 @@ class LandingController extends Controller
         $stats    = $this->getStats();
         $plans    = Subscription::orderBy('price')->get();
 
-        return view('landing.index', compact('features', 'locale', 'stats', 'plans'));
+        return view('pages.landing.index', compact('features', 'locale', 'stats', 'plans'));
     }
 
     public function switchLang(string $lang)

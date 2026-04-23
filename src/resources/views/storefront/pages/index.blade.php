@@ -63,10 +63,10 @@ new class extends Component
         ]);
     }
 
-    public function render()
-    {
-        return view('pages.index');
-    }
+    // public function render()
+    // {
+    //     return view('pages.index');
+    // }
 
 };
 ?>
@@ -95,19 +95,19 @@ new class extends Component
     @foreach($this->sections as $section)
         @switch($section['key'])
             @case('hero')
-                @include('pages.home._hero', ['section' => $section])
+                @include('storefront.components.home._hero', ['section' => $section])
                 @break
             @case('categories')
-                @include('pages.home._categories', ['section' => $section])
+                @include('storefront.components.home._categories', ['section' => $section])
                 @break
             @case('new_arrivals')
-                @include('pages.home._new-arrivals', ['section' => $section])
+                @include('storefront.components.home._new-arrivals', ['section' => $section])
                 @break
             @case('top_rated')
-                @include('pages.home._top-rated', ['section' => $section])
+                @include('storefront.components.home._top-rated', ['section' => $section])
                 @break
             @case('promo_banner')
-                @include('pages.home._promo-banner', ['section' => $section])
+                @include('storefront.components.home._promo-banner', ['section' => $section])
                 @break
         @endswitch
     @endforeach

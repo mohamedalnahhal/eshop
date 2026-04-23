@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ \App\Helpers\LocaleHelper::isRtl(app()->getLocale()) ? 'rtl' : 'ltr' }}">
 <head>
-    @include('partials.head')
+    @include('storefront.partials.head')
 </head>
 
 <body class="text-theme-base">

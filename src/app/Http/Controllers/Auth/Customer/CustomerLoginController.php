@@ -14,7 +14,7 @@ class CustomerLoginController extends Controller
 {
     protected string $guard = 'customer';
     protected string $redirectTo = '/';
-    protected string $loginView = 'pages.auth.login';
+    protected string $loginView = 'storefront.auth.login';
 
     public function create(): View
     {

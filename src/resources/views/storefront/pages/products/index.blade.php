@@ -79,7 +79,7 @@ new class extends Component
 
     public function render()
     {
-        return view('pages.products.index', [
+        return view('storefront.pages.products.index', [
             'products'   => $this->products,
             'categories' => Category::with('translations')->orderByTranslation('name')->get(),
             'isEmpty'    => $this->products->isEmpty(),
