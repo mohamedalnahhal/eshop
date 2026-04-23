@@ -68,7 +68,7 @@ new class extends Component
                 <a href="{{ route('shop.orders', ['locale' => app()->getLocale()]) }}"
                    wire:navigate
                    class="flex items-center gap-3 px-4 py-2.5 text-theme-sm text-theme hover:bg-surface-100 transition-colors">
-                    @icon('bag', 'w-4 h-4 text-muted')
+                    @icon('order', 'w-4 h-4 text-muted')
                     {{ __('Order History') }}
                 </a>
 

@@ -51,6 +51,12 @@ new class extends Component
                 @endphp
                 <div class="card p-5 flex flex-col sm:flex-row sm:items-center gap-4 justify-between" wire:key="order-{{ $order->id }}">
                     <div class="flex flex-col gap-1">
+                        <div class="flex flex-row gap-2">
+                            <span class="text-muted">{{ __('Order Number') }}</span>
+                            <span dir="ltr" class="text-bold rtl:text-end">
+                                {{ '#' . strtoupper(substr($order->tracking_number, 9)) }}
+                            </span>
+                        </div>
                         <div class="text-muted text-theme-xs">
                             {{ $order->created_at->format('d M Y, H:i') }}
                         </div>
@@ -87,7 +93,7 @@ new class extends Component
     @else
         <div class="p-16 text-center max-w-2xl mx-auto mt-10">
             <div class="w-fit mx-auto mb-6 opacity-60">
-                @icon('bag', 'w-16 h-16')
+                @icon('order', 'w-16 h-16')
             </div>
             <h2 class="text-theme-2xl font-bold text-theme mb-4">{{ __('No orders yet!') }}</h2>
             <p class="text-muted mb-8 text-theme-lg">{{ __('You have not placed any orders yet.') }}</p>

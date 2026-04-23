@@ -21,7 +21,7 @@ new class extends Component
 <x-slot name="top">
     <x-breadcrumbs :links="[
         __('Order History') => route('shop.orders', ['locale' => app()->getLocale()]),
-        __('Order Details') => null,
+        strtoupper(substr($this->order->tracking_number, 9)) => null,
     ]" />
 </x-slot>
 
@@ -31,7 +31,9 @@ new class extends Component
         <div>
             <h1 class="text-theme-2xl font-bold text-theme">{{ __('Order Details') }}</h1>
             <p class="text-muted text-theme-sm mt-1">
-                #{{ strtoupper(substr($this->order->id, 0, 8)) }}
+                <span dir="ltr" class="text-theme rtl:text-end">
+                    {{ '#' . strtoupper(substr($this->order->tracking_number, 9)) }}
+                </span>
                 &middot;
                 {{ $this->order->created_at->format('d M Y, H:i') }}
             </p>
@@ -79,9 +81,9 @@ new class extends Component
                             @if($image)
                                 <img src="{{ asset('storage/' . $image->file_path) }}"
                                      alt="{{ $productName }}"
-                                     class="w-16 h-16 object-cover rounded-theme-sm flex-shrink-0" />
+                                     class="w-16 h-16 object-cover rounded-theme-sm shrink-0" />
                             @else
-                                <div class="w-16 h-16 bg-border rounded-theme-sm flex-shrink-0 flex items-center justify-center text-muted">
+                                <div class="w-16 h-16 bg-border rounded-theme-sm shrink-0 flex items-center justify-center text-muted">
                                     @icon('bag', 'w-6 h-6')
                                 </div>
                             @endif
@@ -95,7 +97,7 @@ new class extends Component
                                 </p>
                             </div>
 
-                            <div class="font-bold text-theme text-theme-base flex-shrink-0">
+                            <div class="font-bold text-theme text-theme-base shrink-0">
                                 {{ app(App\Services\Money\MoneyService::class)->formatOrderPrice($this->order, $item->total) }}
                             </div>
                         </div>
