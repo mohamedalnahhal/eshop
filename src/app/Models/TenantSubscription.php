@@ -25,4 +25,28 @@ class TenantSubscription extends Model implements Payable
     ];
 
     public function subscription() { return $this->belongsTo(Subscription::class); }
+
+    public function isActive(): bool
+    {
+        return $this->status === SubscriptionStatus::ACTIVE
+            && $this->ends_at->isFuture();
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->ends_at->isPast()
+            || $this->status === SubscriptionStatus::EXPIRED;
+    }
+
+    public function daysRemaining(): int
+    {
+        if ($this->ends_at->isPast()) return 0;
+        return (int) now()->diffInDays($this->ends_at);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', SubscriptionStatus::ACTIVE)
+            ->where('ends_at', '>', now());
+    }
 }
