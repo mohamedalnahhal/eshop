@@ -50,7 +50,7 @@ class Settings extends Page implements HasForms
         return $schema
             ->components([
                 FileUpload::make('logo_url')
-                ->label('tenant Logo')
+                ->label('Shop Logo')
                 ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'])
                 ->image()
                 ->disk('public_central')

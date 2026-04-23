@@ -10,9 +10,9 @@ use Filament\Notifications\Notification;
 class ThemesPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-paint-brush';
-    protected static ?string $navigationLabel = 'themes';
-    protected static string|\UnitEnum|null $navigationGroup = 'setting sotre';
-    protected static ?int $navigationSort = 10;
+    protected static ?string $navigationLabel = 'Themes';
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static ?int $navigationSort = 96;
     protected string $view = 'filament.tenant-admin.pages.themes-page';
 
     public function getThemes(): Collection
@@ -32,23 +32,18 @@ class ThemesPage extends Page
     {
         $theme = Theme::findOrFail($themeId);
 
-        // 1. تحديث الإعدادات في قاعدة البيانات
         tenant()->settings()->updateOrCreate(
             ['tenant_id' => tenant()->id],
             ['theme_id'  => $themeId]
         );
 
-        // 2. تحديث كائن التينانت في الذاكرة لمسح البيانات القديمة
-        // هذا السطر يضمن أن دالة resolvedTheme() ستجلب الثيم الجديد
         tenant()->refresh(); 
 
-        // 3. إظهار إشعار النجاح
         Notification::make()
             ->title('theme activated: ' . $theme->name)
             ->success()
             ->send();
 
-        // 4. إجبار واجهة Livewire على إعادة التحديث فورا لتنتقل علامة Active
         $this->dispatch('$refresh');
     }
 
@@ -59,7 +54,7 @@ class ThemesPage extends Page
                 ->label('new theme')
                 ->icon('heroicon-o-plus')
                 ->color('primary')
-                ->form([
+                ->schema([
                     TextInput::make('name')
                         ->label('theme name')
                         ->placeholder('example: eshop theme')
