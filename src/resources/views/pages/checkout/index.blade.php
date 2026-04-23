@@ -137,52 +137,7 @@ new class extends Component
     #[Computed]
     public function countries(): array
     {
-        return [
-            'SA' => __('Saudi Arabia'),
-            'AE' => __('United Arab Emirates'),
-            'KW' => __('Kuwait'),
-            'QA' => __('Qatar'),
-            'BH' => __('Bahrain'),
-            'OM' => __('Oman'),
-            'JO' => __('Jordan'),
-            'EG' => __('Egypt'),
-            'IQ' => __('Iraq'),
-            'SY' => __('Syria'),
-            'LB' => __('Lebanon'),
-            'YE' => __('Yemen'),
-            'MA' => __('Morocco'),
-            'TN' => __('Tunisia'),
-            'DZ' => __('Algeria'),
-            'LY' => __('Libya'),
-            'SD' => __('Sudan'),
-            'PS' => __('Palestine'),
-            'US' => __('United States'),
-            'GB' => __('United Kingdom'),
-            'DE' => __('Germany'),
-            'FR' => __('France'),
-            'IT' => __('Italy'),
-            'ES' => __('Spain'),
-            'NL' => __('Netherlands'),
-            'BE' => __('Belgium'),
-            'CH' => __('Switzerland'),
-            'AT' => __('Austria'),
-            'SE' => __('Sweden'),
-            'NO' => __('Norway'),
-            'DK' => __('Denmark'),
-            'PL' => __('Poland'),
-            'TR' => __('Turkey'),
-            'PK' => __('Pakistan'),
-            'IN' => __('India'),
-            'BD' => __('Bangladesh'),
-            'CN' => __('China'),
-            'JP' => __('Japan'),
-            'KR' => __('South Korea'),
-            'MY' => __('Malaysia'),
-            'SG' => __('Singapore'),
-            'AU' => __('Australia'),
-            'CA' => __('Canada'),
-            'ZA' => __('South Africa'),
-        ];
+        return config('countries');
     }
 
     public function selectAddress(string $id): void
