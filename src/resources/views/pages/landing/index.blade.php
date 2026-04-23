@@ -389,7 +389,7 @@
                 </ul>
 
                 <x-button type="primary" href="/register" :full="true"
-                    class="{{ $hot ? 'bg-white text-slate-900 hover:bg-blue-50' : '' }}">
+                    class="{{ $hot ? 'bg-white text-slate-900! hover:bg-blue-50 hover:text-white!' : '' }}">
                     {{ $cta }}
                 </x-button>
             </div>
