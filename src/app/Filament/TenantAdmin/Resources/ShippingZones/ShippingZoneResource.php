@@ -20,7 +20,7 @@ class ShippingZoneResource extends Resource
 {
     protected static ?string $model = ShippingZone::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-globe-americas';
-    protected static string|UnitEnum|null $navigationGroup = 'Store Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Shop';
 
     protected static ?string $modelLabel = 'Shipping Rule';
     protected static ?string $pluralModelLabel = 'Shipping Rules';
