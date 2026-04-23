@@ -29,9 +29,9 @@ class OrdersTable
                     ->collapsible(),
             ])
             ->columns([
-                TextColumn::make('id')
-                    ->label('Order ID')
-                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                TextColumn::make('tracking_number')
+                    ->label('Order #')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -8))
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
@@ -97,7 +97,8 @@ class OrdersTable
                     ->sortable()
                     ->getStateUsing(fn ($record, MoneyService $moneyService) => $moneyService->formatOrderPrice($record, $record->total)),
                 TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state->label()),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
