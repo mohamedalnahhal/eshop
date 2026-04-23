@@ -192,6 +192,10 @@ new class extends Component
         $this->selectedShippingMethodId = null;
     }
 
+    public function hideAddressForm() {
+        $this->showAddressForm = false;
+    }
+
     public function selectShippingMethod(string $id): void
     {
         $this->selectedShippingMethodId = $id;
@@ -470,18 +474,28 @@ new class extends Component
                         </div>
 
                         {{-- Save address button --}}
-                        <div class="pt-2">
+                        <div class="pt-2 flex flex-row gap-2">
                             <button type="button"
                                     wire:click="saveAddress"
                                     wire:loading.attr="disabled"
                                     wire:target="saveAddress"
-                                    class="btn btn-primary px-6 flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                                    class="btn btn-primary disabled:opacity-60 disabled:cursor-not-allowed">
                                 <x-spinner wire:loading wire:target="saveAddress" class="w-4 h-4" />
                                 <span wire:loading.remove wire:target="saveAddress">
                                     @icon('check', 'w-4 h-4')
                                 </span>
                                 {{ __('Save Address') }}
                             </button>
+
+                            @if($this->addresses->isNotEmpty())
+                                <button type="button"
+                                        wire:click="hideAddressForm"
+                                        wire:loading.attr="disabled"
+                                        wire:target="saveAddress"
+                                        class="btn btn-secondary disabled:opacity-60 disabled:cursor-not-allowed">
+                                    {{ __('Cancel') }}
+                                </button>
+                            @endif
                         </div>
                     </div>
                 @endif
