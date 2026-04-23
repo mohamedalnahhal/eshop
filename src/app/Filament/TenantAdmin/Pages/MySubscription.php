@@ -13,7 +13,7 @@ class MySubscription extends Page
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
     protected static ?string $navigationLabel = 'My Subscription';
     protected static ?int $navigationSort = 98;
-    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static string|\UnitEnum|null $navigationGroup = 'Financials';
     protected static ?string $title = 'My Subscription';
     protected string $view = 'filament.tenant-admin.pages.my-subscription';
 
