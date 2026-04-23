@@ -45,6 +45,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post('/livewire/update', $handle)
+                ->middleware([
+                    'web',
+                    InitializeTenancyForLivewire::class,
+                    SetTenantLocale::class,
+                ]);
+        });
+
         FilamentColor::register([
             'primary'   => 'oklch(0.55 0.25 262.87)',
             'danger'    => Color::Red,
