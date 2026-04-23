@@ -27,14 +27,7 @@ class ShippingZoneForm
                         ->label('Countries')
                         ->multiple()
                         ->searchable()
-                        ->options([
-                            'PS' => 'Palestine',
-                            'SA' => 'Saudi Arabia',
-                            'AE' => 'United Arab Emirates',
-                            'JO' => 'Jordan',
-                            'EG' => 'Egypt',
-                            'US' => 'United States',
-                        ])
+                        ->options(config('countries'))
                         ->required(),
 
                     Toggle::make('is_active')

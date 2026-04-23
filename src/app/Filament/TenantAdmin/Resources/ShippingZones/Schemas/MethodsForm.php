@@ -2,6 +2,8 @@
 
 namespace App\Filament\TenantAdmin\Resources\ShippingZones\Schemas;
 
+use App\Enums\ShippingRateType;
+use App\Services\Money\MoneyService;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -47,12 +49,7 @@ class MethodsForm
                         ->schema([
                             Select::make('rate_type')
                                 ->label('Rate Type')
-                                ->options([
-                                    'flat_rate' => 'Flat Rate',
-                                    'free' => 'Free Shipping',
-                                    'price_based' => 'Based on Order Price',
-                                    'weight_based' => 'Based on Order Weight',
-                                ])
+                                ->options(ShippingRateType::class)
                                 ->required()
                                 ->default('flat_rate')
                                 ->live(),
@@ -61,22 +58,38 @@ class MethodsForm
                                 ->label('Shipping Fee')
                                 ->numeric()
                                 ->required()
-                                ->hidden(fn (Get $get) => $get('rate_type') === 'free'),
+                                ->hidden(fn (Get $get) => $get('rate_type') === ShippingRateType::FREE)
+                                ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
+                                ->dehydrateStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->toMinor((float) $state)),
 
                             TextInput::make('free_above')
                                 ->label('Free Shipping Above')
                                 ->numeric()
-                                ->hidden(fn (Get $get) => $get('rate_type') !== 'free'),
+                                ->hidden(fn (Get $get) => $get('rate_type') === ShippingRateType::FREE)
+                                ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
+                                ->dehydrateStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->toMinor((float) $state)),
 
                             TextInput::make('condition_min')
                                 ->label('Min Condition')
                                 ->numeric()
-                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), ['price_based', 'weight_based'], true)),
+                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), [ShippingRateType::PRICE_BASED, ShippingRateType::WEIGHT_BASED], true))
+                                ->formatStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
+                                    ? $state 
+                                    : app(MoneyService::class)->fromMinor((int) $state))
+                                ->dehydrateStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
+                                    ? $state 
+                                    : app(MoneyService::class)->toMinor((float) $state)),
 
                             TextInput::make('condition_max')
                                 ->label('Max Condition')
                                 ->numeric()
-                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), ['price_based', 'weight_based'], true)),
+                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), [ShippingRateType::PRICE_BASED, ShippingRateType::WEIGHT_BASED], true))
+                                ->formatStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
+                                    ? $state 
+                                    : app(MoneyService::class)->fromMinor((int) $state))
+                                ->dehydrateStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
+                                    ? $state 
+                                    : app(MoneyService::class)->toMinor((float) $state)),
                         ]),
                 ]),
         ]);
