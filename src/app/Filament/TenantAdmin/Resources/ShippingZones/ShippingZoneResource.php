@@ -22,8 +22,8 @@ class ShippingZoneResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-globe-americas';
     protected static string|UnitEnum|null $navigationGroup = 'Store Settings';
 
-    protected static ?string $modelLabel = 'Shipping Zone';
-    protected static ?string $pluralModelLabel = 'Shipping Zones';
+    protected static ?string $modelLabel = 'Shipping Rule';
+    protected static ?string $pluralModelLabel = 'Shipping Rules';
     protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
