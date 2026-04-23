@@ -16,6 +16,10 @@ class ShippingZonesTable
     {
         return $table
             ->columns([
+                TextColumn::make('sort_order')
+                    ->label('Sort Order')
+                    ->numeric(),
+                    
                 TextColumn::make('name')
                     ->label('Zone Name')
                     ->searchable()

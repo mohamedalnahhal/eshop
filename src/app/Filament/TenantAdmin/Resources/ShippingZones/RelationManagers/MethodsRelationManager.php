@@ -27,6 +27,10 @@ class MethodsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label('Sort')
+                    ->numeric(),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Method Name')
                     ->weight('bold'),
@@ -49,6 +53,7 @@ class MethodsRelationManager extends RelationManager
                 Actions\BulkActionGroup::make([
                     Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->reorderable('sort_order');
     }
 }

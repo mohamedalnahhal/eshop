@@ -21,15 +21,24 @@ class ShippingZoneForm
                         ->label('Zone Name')
                         ->placeholder('e.g., Domestic, Europe, Rest of World')
                         ->required()
-                        ->maxLength(100),
+                        ->maxLength(100)
+                        ->columnSpanFull(),
 
                     Select::make('countries')
                         ->label('Countries')
                         ->multiple()
                         ->searchable()
                         ->options(config('countries'))
-                        ->required(),
+                        ->helperText("Empty list means all countries"),
 
+                    TextInput::make('sort_order')
+                        ->label('Sort Order')
+                        ->numeric()
+                        ->integer()
+                        ->default(0)
+                        ->minValue(0)
+                        ->helperText('Lower numbers appear first to the customer.'),
+                        
                     Toggle::make('is_active')
                         ->label('Active')
                         ->default(true)

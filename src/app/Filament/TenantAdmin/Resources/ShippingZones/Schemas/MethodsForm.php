@@ -30,6 +30,14 @@ class MethodsForm
                         ->label('Estimated Delivery Time')
                         ->maxLength(100),
 
+                    TextInput::make('sort_order')
+                        ->label('Sort Order')
+                        ->numeric()
+                        ->integer()
+                        ->default(0)
+                        ->minValue(0)
+                        ->helperText('Lower numbers appear first to the customer.'),
+
                     Textarea::make('description')
                         ->label('Description')
                         ->maxLength(255)
@@ -41,11 +49,12 @@ class MethodsForm
 
                     Repeater::make('rates')
                         ->relationship('rates')
-                        ->label('Rates Conditions')
+                        ->label('Rate Rules')
                         ->addActionLabel('Add Rate Rule')
                         ->columns(2)
                         ->columnSpanFull()
                         ->collapsible()
+                        ->reorderable('sort_order')
                         ->schema([
                             Select::make('rate_type')
                                 ->label('Rate Type')
