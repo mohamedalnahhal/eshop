@@ -76,6 +76,13 @@ class ProductForm
                             ->required()
                             ->numeric()
                             ->default(0),
+
+                        TextInput::make('weight_grams')
+                            ->label('Weight (grams)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->suffix('g')
+                            ->placeholder('Optional'),
                     ]),
 
                 Section::make('Photo Gallery')
