@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('tracking_number', 32)->unique();
             $table->foreignUuid('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('customer_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('shipping_method_id')
+                  ->nullable()
+                  ->constrained('shipping_methods')
+                  ->onDelete('set null');
+            $table->string('shipping_method_name', 100)->nullable(); // snapshot
             $table->string('guest_email')->nullable();
             $table->string('guest_name')->nullable();
             $table->string('guest_phone')->nullable();

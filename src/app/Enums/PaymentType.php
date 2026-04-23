@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum PaymentOwnerType: string
+enum PaymentType: string
 {
     case CHARGE = 'charge';
     case REFUND = 'refund';

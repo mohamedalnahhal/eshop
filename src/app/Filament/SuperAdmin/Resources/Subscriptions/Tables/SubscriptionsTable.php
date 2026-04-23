@@ -28,9 +28,13 @@ class SubscriptionsTable
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),

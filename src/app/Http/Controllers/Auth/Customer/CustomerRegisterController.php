@@ -14,7 +14,7 @@ class CustomerRegisterController extends Controller
 {
     protected string $guard = 'customer';
     protected string $redirectTo = '/';
-    protected string $registerView = 'pages.auth.signup';
+    protected string $registerView = 'storefront.auth.signup';
 
     public function create(): View
     {

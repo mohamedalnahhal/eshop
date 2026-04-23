@@ -25,6 +25,7 @@ class Product extends Model implements TranslatableContract
     protected $fillable = [
         'price',
         'stock',
+        'weight_grams',
         'avg_rating',
         'reviews_count',
         'rating_sum'
@@ -33,6 +34,7 @@ class Product extends Model implements TranslatableContract
     protected $casts = [
         'price' => 'integer',
         'stock' => 'integer',
+        'weight_grams' => 'integer',
         'avg_rating' => 'decimal:1',
         'reviews_count' => 'integer',
         'rating_sum' => 'integer',

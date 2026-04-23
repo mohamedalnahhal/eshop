@@ -6,7 +6,7 @@ use App\Enums\TenantPermission;
 use App\Models\Location;
 use App\Models\User;
 
-class LocationPolicy extends TenantPolicy
+class LocationPolicy extends TenancyBasePolicy
 {
     public function viewAny(User $user): bool
     {

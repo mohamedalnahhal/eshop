@@ -11,6 +11,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Grouping\Group;
+use App\Enums\OrderStatus;
+use App\Services\Orders\OrderService;
+use Filament\Notifications\Notification;
+use Filament\Actions\Action;
 
 class OrdersTable
 {
@@ -25,13 +29,15 @@ class OrdersTable
                     ->collapsible(),
             ])
             ->columns([
-                TextColumn::make('id')
-                    ->label('Order ID')
-                    ->formatStateUsing(fn ($state) => '...' . substr($state, -7))
+                TextColumn::make('tracking_number')
+                    ->label('Order #')
+                    ->formatStateUsing(fn ($state) => '...' . substr($state, -8))
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 TextColumn::make('customer.email')
                     ->searchable()
                     ->getStateUsing(function ($record) {
@@ -91,7 +97,8 @@ class OrdersTable
                     ->sortable()
                     ->getStateUsing(fn ($record, MoneyService $moneyService) => $moneyService->formatOrderPrice($record, $record->total)),
                 TextColumn::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state->label()),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -105,7 +112,59 @@ class OrdersTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-               ActionGroup::make([
+                Action::make('markAsPending')
+                    ->label('Mark as Pending')
+                    ->icon('heroicon-o-clock')
+                    ->color('warning')
+                    ->visible(fn ($record) => $record->status === OrderStatus::DRAFT)
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        app(OrderService::class)->changeStatus($record, OrderStatus::PENDING);
+                        Notification::make()->title('Order moved to Pending')->success()->send();
+                    }),
+                Action::make('markAsProcessing')
+                    ->label('Process Order')
+                    ->icon('heroicon-o-cog')
+                    ->color('info')
+                    ->visible(fn ($record) => $record->status === OrderStatus::PENDING)
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        app(OrderService::class)->changeStatus($record, OrderStatus::PROCESSING);
+                        Notification::make()->title('Order is now Processing')->success()->send();
+                    }),
+                Action::make('markAsShipped')
+                    ->label('Ship Order')
+                    ->icon('heroicon-o-truck')
+                    ->color('primary')
+                    ->visible(fn ($record) => $record->status === OrderStatus::PROCESSING)
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        app(OrderService::class)->changeStatus($record, OrderStatus::SHIPPED);
+                        Notification::make()->title('Order Shipped')->success()->send();
+                    }),
+                Action::make('markAsDelivered')
+                    ->label('Mark Delivered')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->status === OrderStatus::SHIPPED)
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        app(OrderService::class)->changeStatus($record, OrderStatus::DELIVERED);
+                        Notification::make()->title('Order Delivered')->success()->send();
+                    }),
+                Action::make('cancelOrder')
+                    ->label('Cancel Order')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn ($record) => $record->status === OrderStatus::PENDING)
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel Order')
+                    ->modalDescription('Are you sure you want to cancel this order? This cannot be undone.')
+                    ->action(function ($record) {
+                        app(OrderService::class)->changeStatus($record, OrderStatus::CANCELLED);
+                        Notification::make()->title('Order Cancelled')->success()->send();
+                    }),
+                ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
                 ]),

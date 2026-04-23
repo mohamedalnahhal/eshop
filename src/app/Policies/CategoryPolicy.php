@@ -6,7 +6,7 @@ use App\Enums\TenantPermission;
 use App\Models\Category;
 use App\Models\User;
 
-class CategoryPolicy extends TenantPolicy
+class CategoryPolicy extends TenancyBasePolicy
 {
     public function viewAny(User $user): bool
     {

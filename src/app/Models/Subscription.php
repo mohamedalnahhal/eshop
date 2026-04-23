@@ -20,8 +20,13 @@ class Subscription extends Model
         'features' => 'array',
     ];
 
-    public function payments()
+    public function tenantSubscriptions()
     {
-        return $this->morphMany(Payment::class, 'paymentable');
+        return $this->hasMany(TenantSubscription::class);
+    }
+
+    public function getFormattedPriceAttribute(): string
+    {
+        return '$' . number_format($this->price / 100, 2);
     }
 }

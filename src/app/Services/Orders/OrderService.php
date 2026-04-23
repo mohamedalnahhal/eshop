@@ -3,21 +3,22 @@
 namespace App\Services\Orders;
 
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 use App\Models\Product;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 class OrderService
 {
-    public function __construct(
-      private OrderItemService $itemService
-    ) {}
-
-    public function create(array $data, ?bool $draft = true): Order
+    /**
+     * @param array{items?: array<int, array{product_id: string, quantity: int, overwrite_price_value: int|null}>, ...} $data
+     */
+    public function create(array $data, bool $draft = true): Order
     {
         return DB::transaction(function () use ($data, $draft) {
+            $itemsData = $data['items'] ?? [];
+            unset($data['items']);
+
             $order = new Order;
 
             $order->fill($data);
@@ -30,96 +31,156 @@ class OrderService
 
             $order->save();
 
+            $products = $this->loadProducts($itemsData);
+
+            $subtotal = 0;
+
+            foreach ($itemsData as $row) {
+                $product = $products->get($row['product_id']);
+
+                if (!$product) {
+                    continue;
+                }
+
+                $overridePrice = $row['overwrite_price_value'] ?? null;
+                $unitPrice = $this->resolvePrice($product, $overridePrice);
+                $quantity = (int) ($row['quantity'] ?? 1);
+
+                $item = $order->items()->create([
+                    'product_id' => $product->id,
+                    'product_name' => $product->translations->pluck('name', 'locale')->toArray(),
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'price_overwritten' => $overridePrice !== null
+                ]);
+    
+                $item->forceFill([
+                    'total' => $unitPrice * $quantity
+                ])->save();
+                
+                $subtotal += $item->total;
+            }
+
+            $order->forceFill([
+                'subtotal' => $subtotal,
+                'shipping_fees' => $order->shipping_fees,
+                'discount' => $order->discount ?? 0,
+                'total' => max($subtotal + $order->shipping_fees - ($order->discount ?? 0), 0),
+            ])->save();
+
             return $order;
         });
     }
 
+    /**
+     * @param array{items?: array<int, array{id?: string, product_id: string, quantity: int, overwrite_price_value: int|null}>, ...} $data
+     */
     public function update(Order $order, array $data): Order
     {
         $this->ensureEditable($order);
 
-        $order->forceFill($data);
+        return DB::transaction(function () use ($order, $data): Order {
+            $itemsData = $data['items'] ?? [];
+            unset($data['items']);
 
-        return $order->refresh();
-    }
+            $order->fill($data)->save();
 
-    public function addItem(Order $order, Product $product, int $quantity, ?int $overwritePrice): OrderItem
-    {
-        $this->ensureEditable($order);
-    
-        return DB::transaction(function () use ($order, $product, $quantity, $overwritePrice) {
-    
-            $item = $this->itemService->add($order, $product, $quantity, $overwritePrice);
-    
-            $this->recalculate($order);
-    
-            return $item;
+            $submittedIds = collect($itemsData)
+                ->pluck('id')
+                ->filter()
+                ->values()
+                ->all();
+
+            $order->items()->whereNotIn('id', $submittedIds)->delete();
+
+            $products = $this->loadProducts($itemsData);
+
+            $subtotal = 0;
+
+            foreach ($itemsData as $row) {
+                $product = $products->get($row['product_id']);
+
+                if (!$product) {
+                    continue;
+                }
+
+                $quantity = (int) ($row['quantity'] ?? 1);
+                $overridePrice = $row['overwrite_price_value'] ?? null;
+                $unitPrice = $this->resolvePrice($product, $overridePrice);
+                $item = null;
+                if (!empty($row['id'])) {
+                    $item = $order->items()->find($row['id']);
+                }
+                if ($item) {
+                    $item->fill([
+                        'product_id' => $product->id,
+                        'product_name' => $product->translations->pluck('name', 'locale')->toArray(),
+                        'quantity' => $quantity,
+                        'unit_price' => $unitPrice,
+                        'total' => $unitPrice * $quantity,
+                        'price_overwritten' => $overridePrice !== null
+                    ]);
+                } else {
+                    $item = $order->items()->create([
+                        'product_id' => $product->id,
+                        'product_name' => $product->translations->pluck('name', 'locale')->toArray(),
+                        'quantity' => $quantity,
+                        'unit_price' => $unitPrice,
+                        'price_overwritten' => $overridePrice  !== null
+                    ]);
+                }
+                $item->forceFill([
+                    'total' => $unitPrice * $quantity
+                ])->save();
+                $subtotal += $item->total;
+            }
+
+            $order->forceFill([
+                'subtotal' => $subtotal,
+                'shipping_fees' => $order->shipping_fees,
+                'discount' => $order->discount ?? 0,
+                'total' => max($subtotal + $order->shipping_fees - ($order->discount ?? 0), 0),
+            ])->save();
+
+            return $order->refresh();
         });
-    }
-
-    public function updateItem(OrderItem $item, Product $product, int $quantity, ?int $overwritePrice): OrderItem
-    {
-        $order = $item->order;
-
-        $this->ensureEditable($order);
-
-        return DB::transaction(function () use ($item, $product, $quantity, $overwritePrice) {
-
-            $item = $this->itemService->update($item, $product, $quantity, $overwritePrice);
-
-            $this->recalculate($item->order);
-
-            return $item;
-        });
-    }
-
-    public function removeItem(OrderItem $item): void
-    {
-        $order = $item->order;
-
-        $this->ensureEditable($order);
-
-        DB::transaction(function () use ($item, $order) {
-            $item = $this->itemService->delete($item, $order);
-            $this->recalculate($order);
-        });
-    }
-
-    public function recalculate(Order $order): void
-    {
-        $subtotal = $order->items()->sum('total');
-
-        $total = $subtotal
-            + $order->shipping_fees
-            - $order->discount;
-
-        $order->forceFill([
-            'subtotal' => $subtotal,
-            'total' => max($total, 0),
-        ])->save();
     }
 
     public function changeStatus(Order $order, OrderStatus $status): Order
     {
         $this->validateTransition($order, $status);
-
-        $order->update(['status' => $status]);
-
+        $order->forceFill(['status' => $status ])->save();
         return $order;
     }
 
-    private function ensureEditable(Order $order): void
+    /**
+     * @param  array<int, array{product_id: string, ...}> $itemsData
+     * @return Collection<string, Product>
+     */
+    private function loadProducts(array $itemsData): Collection
+    {
+        $ids = collect($itemsData)->pluck('product_id')->filter()->unique()->values()->all();
+
+        return Product::with('translations')
+            ->whereIn('id', $ids)
+            ->get()
+            ->keyBy('id');
+    }
+
+    /** @throws \RuntimeException */
+    private function ensureEditable(Order $order)
     {
         if ($order->status !== OrderStatus::DRAFT) {
-            throw new Exception("Order is not editable (not in draft)");
+            throw new \RuntimeException("Order is not editable (not in draft)");
         }
     
         if ($order->payments()->whereNot('status', 'failed')->exists()) {
-            throw new Exception("Order is locked due to payment activity");
+            throw new \RuntimeException("Order is locked due to payment activity");
         }
     }
 
-    private function validateTransition(Order $order, OrderStatus $newStatus): void
+    /** @throws \RuntimeException */
+    private function validateTransition(Order $order, OrderStatus $newStatus)
     {
         $map = [
             OrderStatus::DRAFT->value => [OrderStatus::PENDING],
@@ -129,7 +190,13 @@ class OrderService
         ];
 
         if (!in_array($newStatus, $map[$order->status->value] ?? [])) {
-            throw new Exception("Invalid status transition");
+            throw new \RuntimeException("Invalid status transition");
         }
+    }
+
+    private function resolvePrice(Product $product, ?int $overridePrice): int
+    {
+        // TODO: replace with product pricing service when implemented
+        return $overridePrice ?? $product->price;
     }
 }

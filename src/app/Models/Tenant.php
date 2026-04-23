@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Theme; // تأكد من المسار الصحيح لمودل الثيم عندك
 use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
@@ -85,6 +86,7 @@ class Tenant extends BaseTenant
     {
         return $this->settings?->language ?? $default;
     }
+    
 
     public function resolvedTheme()
     {

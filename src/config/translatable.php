@@ -12,14 +12,7 @@ return [
     | Contains an array with the applications available locales.
     |
     */
-    'locales' => [
-    'en',
-    'ar',
-    'fr',
-    'de',
-    'es',
-    'tr',
-    ],
+    'locales' => array_values(\ResourceBundle::getLocales('')),
 
 
     /*
@@ -160,5 +153,5 @@ return [
     | a separate model's property, just set it here.
     |
      */
-    'translations_wrapper' => null,
+    'translations_wrapper' => 'translations',
 ];

@@ -25,11 +25,21 @@ class ProductForm
                 ->schema([
                     TextInput::make("translations.{$locale}.name")
                         ->label('Product name')
-                        ->required($locale === app()->getLocale()),
+                        ->required($locale === app()->getLocale())
+                        ->afterStateHydrated(function ($component, $record) use ($locale) {
+                            if ($record) {
+                                $component->state($record->translate($locale, false)?->name ?? '');
+                            }
+                        }),
 
                     Textarea::make("translations.{$locale}.description")
                         ->label('Description')
                         ->extraAttributes(LocaleHelper::isRtl($locale) ? ['dir' => 'rtl'] : [])
+                        ->afterStateHydrated(function ($component, $record) use ($locale) {
+                            if ($record) {
+                                $component->state($record->translate($locale, false)?->description ?? '');
+                            }
+                        })
                         ->columnSpanFull(),
                 ]);
         }, $locales);
@@ -46,9 +56,11 @@ class ProductForm
 
                         Select::make('categories')
                             ->label('Categories')
-                            ->relationship('categories', 'name')
+                            ->relationship('categories', 'name', fn ($query) => $query->orderByTranslation('name'))
                             ->multiple()
                             ->preload()
+                            ->getOptionLabelFromRecordUsing(fn (\App\Models\Category $record) => $record->name ?? $record->translate('en')?->name ?? "#{$record->id}")
+                            ->getSearchResultsUsing(fn (string $search) => \App\Models\Category::whereTranslationLike('name', "%{$search}%")->limit(50)->get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
                             ->columnSpanFull(),
@@ -64,6 +76,13 @@ class ProductForm
                             ->required()
                             ->numeric()
                             ->default(0),
+
+                        TextInput::make('weight_grams')
+                            ->label('Weight (grams)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->suffix('g')
+                            ->placeholder('Optional'),
                     ]),
 
                 Section::make('Photo Gallery')

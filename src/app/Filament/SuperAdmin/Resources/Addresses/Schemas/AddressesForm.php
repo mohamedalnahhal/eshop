@@ -5,13 +5,17 @@ namespace App\Filament\SuperAdmin\Resources\Addresses\Schemas;
 use App\Enums\AddressType;
 use App\Models\Customer;
 use App\Models\Location;
+use Dotswan\MapPicker\Fields\Map;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -44,17 +48,45 @@ class AddressesForm
                         Section::make('Coordinates')
                             ->description('Geographic coordinates for mapping.')
                             ->schema([
-                                TextInput::make('lat')
-                                    ->label('Latitude')
-                                    ->numeric()
-                                    ->step('0.00000001'),
+                                Map::make('location')
+                                    ->label('Pick Location on Map')
+                                    ->columnSpanFull()
+                                    ->defaultLocation(latitude: 31.9, longitude: 35.2)
+                                    ->live()
+                                    ->dehydrated(false)
+                                    ->afterStateUpdated(function (?array $state, Set $set) {
+                                        if (isset($state['lat'], $state['lng'])) {
+                                            $set('lat', $state['lat']);
+                                            $set('lng', $state['lng']);
+                                        }
+                                    })
+                                    ->afterStateHydrated(function (?array $state, Set $set, Get $get) {
+                                        $lat = $get('lat');
+                                        $lng = $get('lng');
 
-                                TextInput::make('lng')
-                                    ->label('Longitude')
-                                    ->numeric()
-                                    ->step('0.00000001'),
+                                        if ($lat !== null && $lng !== null) {
+                                            $set('location', [
+                                                'lat' => (float) $lat,
+                                                'lng' => (float) $lng,
+                                            ]);
+                                        }
+                                    }),
+
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('lat')
+                                            ->label('Latitude')
+                                            ->numeric()
+                                            ->step('any')
+                                            ->dehydrated(),
+
+                                        TextInput::make('lng')
+                                            ->label('Longitude')
+                                            ->numeric()
+                                            ->step('any')
+                                            ->dehydrated(),
+                                    ]),
                             ])
-                            ->columns(2)
                             ->collapsed(),
 
                         Section::make('Morph Relation')

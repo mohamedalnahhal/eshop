@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InsufficientStockException;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -115,33 +116,50 @@ class CartService
         if (! $cart) {
             return;
         }
- 
+
         $product = Product::findOrFail($productId);
- 
+
         $cartItem = $cart->items()
                          ->where('product_id', $productId)
                          ->first();
- 
+
+        $currentQty = $cartItem ? $cartItem->quantity : 0;
+
+        if ($product->stock < $currentQty + $quantity) {
+            throw new InsufficientStockException($product->stock);
+        }
+
         if ($cartItem) {
             $cartItem->increment('quantity', $quantity);
         } else {
             $cart->items()->create([
                 'product_id' => $productId,
                 'quantity'   => $quantity,
-                'unit_price' => $product->price,
             ]);
         }
     }
- 
+
     public function incrementItem(string $cartItemId, int $amount = 1): void
     {
         $cart = $this->getCart();
- 
-        if ($cart) {
-            $cart->items()->where('id', $cartItemId)->increment('quantity', $amount);
+
+        if (! $cart) {
+            return;
         }
+
+        $cartItem = $cart->items()->with('product')->find($cartItemId);
+
+        if (! $cartItem) {
+            return;
+        }
+
+        if ($cartItem->product->stock < $cartItem->quantity + $amount) {
+            throw new InsufficientStockException($cartItem->product->stock);
+        }
+
+        $cartItem->increment('quantity', $amount);
     }
- 
+
     public function decrementItem(string $cartItemId, int $amount = 1): void
     {
         $cart = $this->getCart();

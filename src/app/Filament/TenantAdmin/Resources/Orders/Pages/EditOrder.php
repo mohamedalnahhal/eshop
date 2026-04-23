@@ -4,14 +4,12 @@ namespace App\Filament\TenantAdmin\Resources\Orders\Pages;
 
 use App\Enums\OrderStatus;
 use App\Filament\TenantAdmin\Resources\Orders\OrderResource;
-use App\Models\Product;
 use App\Services\Money\MoneyService;
 use App\Services\Orders\OrderService;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class EditOrder extends EditRecord
 {
@@ -110,38 +108,6 @@ class EditOrder extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return DB::transaction(function () use ($record, $data) {
-            $orderService = app(OrderService::class);
-
-            $items = $data['items'] ?? [];
-            unset($data['items']);
-
-            $order = $orderService->update($record, $data);
-
-            $submittedIds = collect($items)->pluck('id')->filter()->all();
-
-            $record->items()->whereNotIn('id', $submittedIds)->each(function ($item) use ($orderService) {
-                $orderService->removeItem($item);
-            });
-
-            foreach ($items as $item) {
-                $product = Product::find($item['product_id']);
-                $overwritePrice = $item['overwrite_price_value'];
-                $quantity = $item['quantity'] ?? 1;
-
-                if (!empty($item['id'])) {
-                    $existingItem = $record->items()->find($item['id']);
-                    if ($existingItem) {
-                        $orderService->updateItem($existingItem, $product, $quantity, $overwritePrice);
-                    }
-                } else {
-                    $orderService->addItem($record, $product, $quantity, $overwritePrice);
-                }
-            }
-
-            $orderService->recalculate($record);
-
-            return $record->refresh();
-        });
+        return app(OrderService::class)->update($record, $data);
     }
 }

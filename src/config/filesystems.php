@@ -29,6 +29,24 @@ return [
     */
 
     'disks' => [
+        'livewire_tmp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/livewire-tmp'),
+        ],
+
+        // Central public disk — not overridden by FilesystemTenancyBootstrapper.
+        // Used for tenant assets (logos, banners) that must be served via the
+        // standard storage symlink (public/storage → storage/app/public).
+        // URL is relative so it resolves correctly on any tenant subdomain
+        // without CORS issues (APP_URL may differ from the tenant's domain).
+        'public_central' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         'local' => [
             'driver' => 'local',

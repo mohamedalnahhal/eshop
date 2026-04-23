@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->unsignedBigInteger('price');
             $table->integer('stock')->default(0);
+            $table->unsignedInteger('weight_grams')->nullable();
             $table->decimal('avg_rating', 3, 2)->default(0);
             $table->unsignedInteger('reviews_count')->default(0);
             $table->unsignedBigInteger('rating_sum')->default(0);

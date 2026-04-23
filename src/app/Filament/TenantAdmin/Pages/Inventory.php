@@ -50,26 +50,107 @@ class Inventory extends Page implements HasTable
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
                     ->options(StockAdjustmentStatus::class)
-                    ->beforeStateUpdated(function ($record, $state) use (&$old) {
-                        $old = $record->status;
-                    })
-                    ->afterStateUpdated(function ($record, $state) use (&$old) {
-                        $status = StockAdjustmentStatus::tryFrom($state);
-                        if ($status === StockAdjustmentStatus::DONE && $old !== StockAdjustmentStatus::DONE) {
-                            $record->product->increment('stock', $record->updated_value);
-                
-                            Notification::make()
-                                ->title('Stock Incremented')
-                                ->success()
-                                ->send();
-                        } elseif ($old === StockAdjustmentStatus::DONE && $status !== StockAdjustmentStatus::DONE) {
-                            $record->product->decrement('stock', $record->updated_value);
-                
-                            Notification::make()
-                                ->title('Stock Decremented')
-                                ->warning()
-                                ->send();
+                    ->beforeStateUpdated(function ($record, $state) {
+                        $oldValue  = $record->status instanceof \BackedEnum ? $record->status->value : (string) $record->status;
+                        $newValue  = $state instanceof \BackedEnum ? $state->value : (string) $state;
+                        $typeValue = $record->type instanceof \BackedEnum ? $record->type->value : (string) $record->type;
+                        $isDamaged = $typeValue === 'damaged';
+
+                        $product   = $record->product;
+
+                        if (! $product || $oldValue === $newValue) {
+                            return;
                         }
+
+                        if ($oldValue === 'done') {
+                            $isDamaged
+                                ? $product->increment('stock', $record->updated_value)
+                                : $product->decrement('stock', $record->updated_value);
+                        }
+
+                        if ($newValue === 'done') {
+                            $isDamaged
+                                ? $product->decrement('stock', $record->updated_value)
+                                : $product->increment('stock', $record->updated_value);
+                        }
+                    })
+                    ->afterStateUpdated(function ($record, $state) {
+                        Notification::make()
+                            ->title('Status Updated')
+                            ->success()
+                            ->send();
+                    }),
+            ])
+            ->actions([
+                Action::make('edit')
+                    ->label('Edit')
+                    ->icon('heroicon-o-pencil-square')
+                    ->fillForm(fn (StockAdjustment $record) => [
+                        'product_id'    => $record->product_id,
+                        'type'          => $record->type->value,
+                        'supplier_id'   => $record->supplier_id,
+                        'updated_value' => $record->updated_value,
+                        'status'        => $record->status->value,
+                    ])
+                    ->schema([
+                        Select::make('product_id')
+                            ->label('Product')
+                            ->options(Product::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->required(),
+                        Select::make('type')
+                            ->label('Type')
+                            ->options(StockAdjustmentType::class)
+                            ->required(),
+                        Select::make('supplier_id')
+                            ->label('Supplier')
+                            ->options(Supplier::pluck('name', 'id'))
+                            ->searchable()
+                            ->nullable(),
+                        TextInput::make('updated_value')
+                            ->label('Quantity')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options(StockAdjustmentStatus::class)
+                            ->required(),
+                    ])
+                    ->action(function (StockAdjustment $record, array $data) {
+                        $oldStatusValue = $record->status instanceof \BackedEnum ? $record->status->value : (string) $record->status;
+                        $newStatusValue = $data['status'] instanceof \BackedEnum ? $data['status']->value : (string) $data['status'];
+                        $newTypeValue   = $data['type'] instanceof \BackedEnum ? $data['type']->value : (string) $data['type'];
+                        $isDamaged      = $newTypeValue === 'damaged';
+                        $oldQty         = $record->updated_value;
+                        $newQty         = (int) $data['updated_value'];
+                        $product        = $record->product;
+
+                        if ($product && $oldStatusValue !== $newStatusValue) {
+                            if ($oldStatusValue === 'done') {
+                                $isDamaged
+                                    ? $product->increment('stock', $oldQty)
+                                    : $product->decrement('stock', $oldQty);
+                            }
+                            if ($newStatusValue === 'done') {
+                                $isDamaged
+                                    ? $product->decrement('stock', $newQty)
+                                    : $product->increment('stock', $newQty);
+                            }
+                        }
+
+                        $record->update([
+                            'product_id'    => $data['product_id'],
+                            'type'          => $data['type'],
+                            'supplier_id'   => $data['supplier_id'] ?? null,
+                            'updated_value' => $newQty,
+                            'status'        => $data['status'],
+                        ]);
+
+                        Notification::make()
+                            ->title('Request Updated Successfully')
+                            ->success()
+                            ->send();
                     }),
             ])
             ->filters([
@@ -84,7 +165,7 @@ class Inventory extends Page implements HasTable
                     ->schema([
                         Select::make('product_id')
                             ->label('Product')
-                            ->options(Product::pluck('name', 'id'))
+                            ->options(Product::all()->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                         Select::make('type')
@@ -95,8 +176,7 @@ class Inventory extends Page implements HasTable
                             ->label('Supplier')
                             ->options(Supplier::pluck('name', 'id'))
                             ->searchable()
-                            ->nullable()
-                            ->hidden(fn ($get) => $get('type') !== StockAdjustmentType::PURCHASE->value),
+                            ->nullable(),
                         TextInput::make('updated_value')
                             ->label('Quantity')
                             ->numeric()
@@ -109,14 +189,27 @@ class Inventory extends Page implements HasTable
                             ->required(),
                     ])
                     ->action(function (array $data) {
+                        $statusValue = $data['status'] instanceof \BackedEnum ? $data['status']->value : (string) $data['status'];
+                        $typeValue   = $data['type'] instanceof \BackedEnum ? $data['type']->value : (string) $data['type'];
+                        $isDamaged   = $typeValue === 'damaged';
+                        $qty         = (int) $data['updated_value'];
 
                         StockAdjustment::create([
                             'product_id'    => $data['product_id'],
                             'type'          => $data['type'],
                             'supplier_id'   => $data['supplier_id'] ?? null,
-                            'updated_value' => $data['updated_value'],
+                            'updated_value' => $qty,
                             'status'        => $data['status'],
                         ]);
+
+                        if ($statusValue === 'done') {
+                            $product = Product::find($data['product_id']);
+                            if ($product) {
+                                $isDamaged
+                                    ? $product->decrement('stock', $qty)
+                                    : $product->increment('stock', $qty);
+                            }
+                        }
 
                         Notification::make()
                             ->title('Request Created Successfully')

@@ -23,7 +23,8 @@ class ManageTranslations extends Page implements HasTable
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-language';
     protected static ?string $navigationLabel = 'Translations';
     protected static ?string $title = 'Manage Translations';
-    protected static ?int $navigationSort = 3;
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static ?int $navigationSort = 97;
 
     protected string $view = 'filament.tenant-admin.pages.manage-translations';
 
@@ -54,17 +55,36 @@ class ManageTranslations extends Page implements HasTable
                         Select::make('locale')
                             ->label('Language')
                             ->options(function () {
-                                return collect(\ResourceBundle::getLocales(''))
+                                $supported = tenant()->settings?->supported_languages ?? [];
+
+                                return collect($supported)
                                     ->mapWithKeys(fn($locale) => [
-                                        $locale => \Locale::getDisplayName($locale, 'en')
+                                        $locale => \Locale::getDisplayName($locale, 'en') . ' (' . $locale . ')',
                                     ])
                                     ->sort()
                                     ->toArray();
                             })
-                            ->searchable()
                             ->required(),
-                        TextInput::make('key')
-                            ->label('Key (e.g. Add to cart)')
+                        Select::make('key')
+                            ->label('Translation Key')
+                            ->options(function () {
+                                $dbKeys = LanguageLine::query()->pluck('key', 'key')->toArray();
+
+                                $viewKeys = config('translation-keys');
+
+                                return collect(array_merge(array_values($dbKeys), $viewKeys))
+                                    ->unique()
+                                    ->sort()
+                                    ->mapWithKeys(fn($key) => [$key => $key])
+                                    ->toArray();
+                            })
+                            ->searchable()
+                            ->createOptionForm([
+                                TextInput::make('key')
+                                    ->label('Custom Key')
+                                    ->required(),
+                            ])
+                            ->createOptionUsing(fn(array $data) => $data['key'])
                             ->required(),
                         TextInput::make('value')
                             ->label('Translation')
@@ -92,14 +112,23 @@ class ManageTranslations extends Page implements HasTable
                     ->label('Edit')
                     ->schema(function ($record) {
                         $locales = array_keys($record->text ?? []);
-                        return collect($locales)->map(fn($locale) =>
+
+                        $keyField = TextInput::make('key')
+                            ->label('Key')
+                            ->default($record->key)
+                            ->required();
+
+                        $translationFields = collect($locales)->map(fn($locale) =>
                             TextInput::make("text.{$locale}")
-                                ->label(strtoupper($locale))
+                                ->label(\Locale::getDisplayName($locale, 'en') . ' (' . strtoupper($locale) . ')')
                                 ->default($record->text[$locale] ?? '')
                         )->toArray();
+
+                        return [$keyField, ...$translationFields];
                     })
                     ->action(function ($record, array $data) {
-                        $record->text = $data['text'];
+                        $record->key  = $data['key'];
+                        $record->text = array_filter($data['text'], fn($v) => $v !== null && $v !== '');
                         $record->save();
 
                         Notification::make()

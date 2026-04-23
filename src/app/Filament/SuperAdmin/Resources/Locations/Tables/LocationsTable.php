@@ -26,7 +26,9 @@ class LocationsTable
                     ->tooltip(fn ($state): string => $state) 
                     ->copyable() 
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->tooltip(fn ($state) => $state)
+                    ->copyableState(fn ($state) => $state),
                 TextColumn::make('tenant.name')
                     ->label('Store Name')
                     ->searchable()
