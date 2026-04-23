@@ -1,22 +1,20 @@
 <?php
-
 namespace App\Filament\TenantAdmin\Pages;
-
 use App\Models\Theme;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Collection;
 use Filament\Notifications\Notification;
 
 class ThemesPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-paint-brush';
-    protected static ?string $navigationLabel = 'المظهر';
-    protected static string|\UnitEnum|null $navigationGroup = 'إعدادات المتجر';
-    // protected static ?string $navigationGroup = 'إعدادات المتجر';
-    protected static ?int $navigationSort = 10;
+    protected static ?string $navigationLabel = 'Themes';
+    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static ?int $navigationSort = 96;
     protected string $view = 'filament.tenant-admin.pages.themes-page';
-    
+
     public function getThemes(): Collection
     {
         return Theme::where(function ($q) {
@@ -33,18 +31,64 @@ class ThemesPage extends Page
     public function setDefault(string $themeId): void
     {
         $theme = Theme::findOrFail($themeId);
-        
-        // Mark as default for this tenant
-        Theme::where('tenant_id', tenant()->id)->update(['is_default' => false]);
-        
-        // If global theme, create a tenant copy or just set a tenant setting
-        tenant()->update(['theme_id' => $themeId]);
 
-        $this->dispatch('theme-changed');
-        
-        \Filament\Notifications\Notification::make()
-            ->title('تم تفعيل الثيم')
+        tenant()->settings()->updateOrCreate(
+            ['tenant_id' => tenant()->id],
+            ['theme_id'  => $themeId]
+        );
+
+        tenant()->refresh(); 
+
+        Notification::make()
+            ->title('theme activated: ' . $theme->name)
             ->success()
             ->send();
+
+        $this->dispatch('$refresh');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('createTheme')
+                ->label('new theme')
+                ->icon('heroicon-o-plus')
+                ->color('primary')
+                ->schema([
+                    TextInput::make('name')
+                        ->label('theme name')
+                        ->placeholder('example: eshop theme')
+                        ->required()
+                        ->maxLength(100),
+                ])
+                ->action(function (array $data) {
+                    $theme = Theme::create([
+                        'tenant_id'  => tenant()->id,
+                        'name'       => $data['name'],
+                        'is_default' => false,
+                        'icon_pack'  => Theme::defaultIconPack(),
+                        'currency'   => Theme::defaultCurrency(),
+                        'palette'    => Theme::defaultPalette(),
+                        'font'       => Theme::defaultFont(),
+                        'buttons'    => Theme::defaultButtons(),
+                        'inputs'     => Theme::defaultInputs(),
+                        'header'     => Theme::defaultHeader(),
+                        'm_header'   => Theme::defaultMobileHeader(),
+                        'glows'      => Theme::defaultGlows(),
+                        'corners'    => Theme::defaultCorners(),
+                        'footer'     => Theme::defaultFooter(),
+                        'homepage'   => Theme::defaultHomepage(),
+                    ]);
+
+                    Notification::make()
+                        ->title('theme created: ' . $theme->name)
+                        ->success()
+                        ->send();
+
+                    return redirect()->to(
+                        ThemeEditorPage::getUrl() . '?themeId=' . $theme->id
+                    );
+                }),
+        ];
     }
 }

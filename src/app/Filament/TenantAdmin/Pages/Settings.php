@@ -11,8 +11,9 @@ use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Auth;
 
 class Settings extends Page implements HasForms
@@ -48,6 +49,15 @@ class Settings extends Page implements HasForms
 
         return $schema
             ->components([
+                FileUpload::make('logo_url')
+                ->label('Shop Logo')
+                ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'])
+                ->image()
+                ->disk('public_central')
+                ->visibility('public')
+                ->directory('tenant-logos')
+                ->imageEditor()
+                ->columnSpanFull(),
                 Section::make('Shop Identity')
                     ->icon('heroicon-o-building-storefront')
                     ->columns(2)

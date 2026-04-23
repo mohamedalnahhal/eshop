@@ -12,6 +12,8 @@ use Stancl\Tenancy\Events;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
 
+use App\Listeners\FixTenantPublicDiskUrl;
+use App\Listeners\RevertPublicDiskUrl;
 use App\Listeners\LoadTenantTheme;
 use App\Listeners\SetTenantTranslationLocale;
 
@@ -65,10 +67,12 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenancyBootstrapped::class => [
                 LoadTenantTheme::class,
                 SetTenantTranslationLocale::class,
-
+                FixTenantPublicDiskUrl::class,
             ],
             Events\RevertingToCentralContext::class => [],
-            Events\RevertedToCentralContext::class => [],
+            Events\RevertedToCentralContext::class => [
+                RevertPublicDiskUrl::class,
+            ],
 
             // Resource syncing
             Events\SyncedResourceSaved::class => [
