@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Middleware\SetTenantLocale;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +17,12 @@ use App\Listeners\FixTenantPublicDiskUrl;
 use App\Listeners\RevertPublicDiskUrl;
 use App\Listeners\LoadTenantTheme;
 use App\Listeners\SetTenantTranslationLocale;
+use App\Livewire\TenantAdmin\ThemeEditor;
+use App\Services\IconService;
+use Filament\Support\Facades\FilamentView;
+use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -95,6 +102,39 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
+        
+        Livewire::setUpdateRoute(function ($handle) {
+            return Route::post('/livewire/update', $handle)
+                ->middleware([
+                    'web',
+                    InitializeTenancyByDomain::class,
+                    SetTenantLocale::class,
+                ]);
+        });
+        Livewire::component('theme-editor', ThemeEditor::class);
+        // Livewire::component('theme-text-field', ThemeTextField::class);
+        // Livewire::component('theme-select-field', ThemeSelectField::class);
+        // Livewire::component('theme-color-field', ThemeColorField::class);
+
+        FilamentView::registerRenderHook(
+            'panels::head.end',
+            fn (): string => Blade::render('@vite(\'resources/css/app.css\')'),
+        );
+
+        Blade::directive('icon', function ($expression) {
+            // @icon('cart')
+            // @icon('cart', 'w-5 h-5')
+            if (str_contains($expression, '$')) {
+                return "<?php echo app(\App\Services\IconService::class)->render({$expression}); ?>";
+            }
+        
+            $parts = str_getcsv($expression, ",");
+
+            $name = trim($parts[0] ?? '', " '\"");
+            $classes = trim($parts[1] ?? '', " '\"");
+
+            return app(IconService::class)->render($name, $classes);
+        });
     }
 
     protected function bootEvents()
