@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Subscription;
+use App\Models\Tenant;
+use App\Models\TenantSubscription;
+use App\Models\Theme;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -31,10 +35,10 @@ class LandingController extends Controller
     private function getStats(): array
     {
         return [
-            'tenants'     => 7,
-            'subscribers' => 7,
-            'themes'      => 12,
-            'payments'    => 8,
+            'tenants' => Tenant::all()->count(),
+            'subscribers' => TenantSubscription::where('status', SubscriptionStatus::ACTIVE)->count(),
+            'themes' => Theme::where('tenant_id', null)->count(),
+            'payments' => 8,
         ];
     }
 
