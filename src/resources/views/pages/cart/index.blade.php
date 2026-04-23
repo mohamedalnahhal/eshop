@@ -120,10 +120,12 @@ new class extends Component
                     </div>
                 </div>
 
-                <x-primary-button>
+                <a href="{{ route('shop.checkout', ['locale' => app()->getLocale()]) }}"
+                   wire:navigate
+                   class="w-full btn btn-primary hover:opacity-75 shadow-glow! flex justify-center items-center gap-2">
                     <span>{{ __('Checkout') }}</span>
                     @icon('card', 'w-5 h-5')
-                </x-primary-button>
+                </a>
             </div>
         </div>
     @else
