@@ -30,7 +30,7 @@
 
 <div {{ $attributes->merge(['class' => "group relative flex flex-col gap-5 p-7 rounded-[2rem] $bg $colSpan overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/5"]) }}>
     {{-- decorative blob --}}
-    <div class="absolute -end-8 -top-8 w-40 h-40 rounded-full opacity-[.07] bg-current {{ $accent }} pointer-events-none"></div>
+    <div class="absolute -inset-e-8 -top-8 w-40 h-40 rounded-full opacity-[.07] bg-current {{ $accent }} pointer-events-none"></div>
 
     <div class="flex items-start justify-between">
         <div class="p-3 rounded-2xl bg-white/80 shadow-sm {{ $accent }}">{!! $svg !!}</div>

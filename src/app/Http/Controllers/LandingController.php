@@ -89,7 +89,7 @@ class LandingController extends Controller
                 'bg'       => 'bg-amber-50',
                 'accent'   => 'text-amber-600',
                 'badge_bg' => 'bg-amber-100 text-amber-700',
-                'size'     => 'normal',
+                'size'     => 'large',
             ],
             [
                 'icon'        => 'zap',

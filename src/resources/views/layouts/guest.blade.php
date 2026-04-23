@@ -9,49 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="{{ $description ?? (app()->getLocale() === 'ar' ? 'eShop — منصة التجارة الإلكترونية متعددة المتاجر' : 'eShop — Multi-tenant E-commerce Platform') }}" />
     <title>{{ $title ?? 'eShop' }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo.svg') }}" />
 
-    {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    @if(app()->getLocale() === 'ar')
-        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    @else
-        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Tailwind (swap for compiled asset in production) --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: {{ app()->getLocale() === 'ar'
-                            ? "['Cairo','sans-serif']"
-                            : "['Geist','sans-serif']" }},
-                        display: {{ app()->getLocale() === 'ar'
-                            ? "['Cairo','sans-serif']"
-                            : "['Geist','sans-serif']" }},
-                    },
-                    colors: {
-                        brand: {
-                            50:  '#eff6ff',
-                            100: '#dbeafe',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        },
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                    },
-                },
-            },
-        }
-    </script>
-
-    @stack('styles')
+    @livewireStyles
 
     <style>
         ::selection { background: #dbeafe; color: #1e3a5f; }
@@ -80,6 +42,6 @@
 
     {{ $slot }}
 
-    @stack('scripts')
+    @livewireScripts
 </body>
 </html>
