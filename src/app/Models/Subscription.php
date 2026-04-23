@@ -19,4 +19,14 @@ class Subscription extends Model
         'max_products' => 'integer',
         'features' => 'array',
     ];
+
+    public function tenantSubscriptions()
+    {
+        return $this->hasMany(TenantSubscription::class);
+    }
+
+    public function getFormattedPriceAttribute(): string
+    {
+        return '$' . number_format($this->price / 100, 2);
+    }
 }

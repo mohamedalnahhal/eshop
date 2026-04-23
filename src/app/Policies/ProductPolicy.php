@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Enums\TenantPermission;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\Subscription\SubscriptionService;
 
 class ProductPolicy extends TenancyBasePolicy
 {
@@ -20,7 +21,20 @@ class ProductPolicy extends TenancyBasePolicy
 
     public function create(User $user): bool
     {
-        return $this->check($user, TenantPermission::EDIT_PRODUCTS);
+        if (!$this->check($user, TenantPermission::EDIT_PRODUCTS)) {
+            return false;
+        }
+
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        $tenant = tenant();
+        if ($tenant && app(SubscriptionService::class)->hasReachedProductLimit($tenant)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function update(User $user, Product $product): bool
