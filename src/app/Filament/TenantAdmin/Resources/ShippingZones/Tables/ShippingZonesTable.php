@@ -30,7 +30,9 @@ class ShippingZonesTable
                     ->label('Countries')
                     ->badge()
                     ->separator(',')
-                    ->limitList(3),
+                    ->limitList(3)
+                    ->default('All Countries')
+                    ->color(fn ($state) => $state === 'All Countries' ? 'gray' : 'primary'),
 
                 TextColumn::make('methods_count')
                     ->counts('methods')
@@ -51,8 +53,6 @@ class ShippingZonesTable
             ->filters([
                 TrashedFilter::make(),
             ])
-
-            
             ->recordActions([
                 EditAction::make(),
                 ActionGroup::make([
@@ -60,7 +60,6 @@ class ShippingZonesTable
                     EditAction::make(),
                 ]),
             ])
-            
             ->reorderable('sort_order');
     }
 }

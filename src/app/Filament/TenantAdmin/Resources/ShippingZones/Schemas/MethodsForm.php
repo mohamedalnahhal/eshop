@@ -55,52 +55,115 @@ class MethodsForm
                         ->columnSpanFull()
                         ->collapsible()
                         ->reorderable('sort_order')
+                        ->cloneable()
+                        ->itemLabel(fn (array $state): string => ($state['rate_type']->getLabel() ?? 'Rate Rule'))
                         ->schema([
                             Select::make('rate_type')
                                 ->label('Rate Type')
                                 ->options(ShippingRateType::class)
                                 ->required()
-                                ->default('flat_rate')
-                                ->live(),
+                                ->default(ShippingRateType::FLAT_RATE)
+                                ->live()
+                                ->columnSpanFull(),
 
                             TextInput::make('fee')
                                 ->label('Shipping Fee')
                                 ->numeric()
-                                ->required()
+                                ->minValue(0)
+                                ->required(fn (Get $get) => $get('rate_type') !== ShippingRateType::FREE)
                                 ->hidden(fn (Get $get) => $get('rate_type') === ShippingRateType::FREE)
+                                ->prefix(fn () => self::currencySymbol())
                                 ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
-                                ->dehydrateStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->toMinor((float) $state)),
+                                ->dehydrateStateUsing(fn ($state) => blank($state) ? 0 : app(MoneyService::class)->toMinor((float) $state))
+                                ->columnSpanFull(),
 
                             TextInput::make('free_above')
-                                ->label('Free Shipping Above')
+                                ->label('Free Shipping Above (optional)')
                                 ->numeric()
+                                ->minValue(0)
                                 ->hidden(fn (Get $get) => $get('rate_type') === ShippingRateType::FREE)
+                                ->helperText("Leave empty for no free threshold")
+                                ->prefix(fn () => self::currencySymbol())
                                 ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
-                                ->dehydrateStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->toMinor((float) $state)),
+                                ->dehydrateStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->toMinor((float) $state))
+                                ->columnSpanFull(),
 
                             TextInput::make('condition_min')
-                                ->label('Min Condition')
+                                ->label(fn (Get $get) => self::conditionLabel($get('rate_type'), 'min'))
+                                ->helperText("Leave empty for no lower limit")
                                 ->numeric()
-                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), [ShippingRateType::PRICE_BASED, ShippingRateType::WEIGHT_BASED], true))
-                                ->formatStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
-                                    ? $state 
-                                    : app(MoneyService::class)->fromMinor((int) $state))
-                                ->dehydrateStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
-                                    ? $state 
-                                    : app(MoneyService::class)->toMinor((float) $state)),
+                                ->minValue(0)
+                                ->prefix(fn (Get $get) => self::conditionPrefix($get('rate_type')))
+                                ->formatStateUsing(fn ($state, Get $get) => self::formatCondition($state, $get('rate_type')))
+                                ->dehydrateStateUsing(fn ($state, Get $get) => self::dehydrateCondition($state, $get('rate_type'))),
 
                             TextInput::make('condition_max')
-                                ->label('Max Condition')
+                                ->label(fn (Get $get) => self::conditionLabel($get('rate_type'), 'max'))
+                                ->helperText("Leave empty for no upper limit")
                                 ->numeric()
-                                ->hidden(fn (Get $get) => ! in_array($get('rate_type'), [ShippingRateType::PRICE_BASED, ShippingRateType::WEIGHT_BASED], true))
-                                ->formatStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
-                                    ? $state 
-                                    : app(MoneyService::class)->fromMinor((int) $state))
-                                ->dehydrateStateUsing(fn ($state, Get $get) => (blank($state) || $get('rate_type') !== ShippingRateType::PRICE_BASED) 
-                                    ? $state 
-                                    : app(MoneyService::class)->toMinor((float) $state)),
+                                ->minValue(0)
+                                ->prefix(fn (Get $get) => self::conditionPrefix($get('rate_type')))
+                                ->formatStateUsing(fn ($state, Get $get) => self::formatCondition($state, $get('rate_type')))
+                                ->dehydrateStateUsing(fn ($state, Get $get) => self::dehydrateCondition($state, $get('rate_type'))),
                         ]),
                 ]),
         ]);
+    }
+
+    private static function conditionLabel(?ShippingRateType $rateType, string $side): string
+    {
+        if($side === 'min'){
+            return match ($rateType) {
+                ShippingRateType::WEIGHT_BASED => 'Min Weight (g)',
+                default => 'Min Order Subtotal',
+            };
+        }
+        else {
+            return match ($rateType) {
+                ShippingRateType::WEIGHT_BASED => 'Max Weight (g)',
+                default => 'Max Order Subtotal',
+            };
+        }
+    }
+
+    private static function conditionPrefix(?ShippingRateType $rateType): ?string
+    {
+        if ($rateType === ShippingRateType::WEIGHT_BASED) {
+            return 'g';
+        }
+
+        return self::currencySymbol();
+    }
+
+    private static function formatCondition(mixed $state, ?ShippingRateType $rateType): mixed
+    {
+        if (blank($state)) {
+            return null;
+        }
+
+        if ($rateType === ShippingRateType::WEIGHT_BASED) {
+            return (int) $state;
+        }
+
+        return app(MoneyService::class)->fromMinor((int) $state);
+    }
+
+    private static function dehydrateCondition(mixed $state, ?ShippingRateType $rateType): mixed
+    {
+        if (blank($state)) {
+            return null;
+        }
+
+        if ($rateType === ShippingRateType::WEIGHT_BASED) {
+            return (int) $state;
+        }
+
+        return app(MoneyService::class)->toMinor((float) $state);
+    }
+
+    private static function currencySymbol(): string
+    {
+        $code = tenant()?->settings?->currency ?? config('app.default_currency', 'USD');
+        return MoneyService::getSymbol($code);
     }
 }
