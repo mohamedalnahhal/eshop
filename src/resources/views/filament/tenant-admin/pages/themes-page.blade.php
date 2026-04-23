@@ -23,7 +23,7 @@
                 ])>
                     {{-- Active badge --}}
                     @if($isActive)
-                        <div class="absolute top-3 start-3 z-10 flex items-center gap-1 bg-primary-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                        <div class="absolute top-3 inset-s-3 z-10 flex items-center gap-1 bg-primary-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
                             @icon('check', 'w-3 h-3')
                             Active
                         </div>
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         {{-- Color dots --}}
-                        <div class="absolute bottom-2 start-3 flex gap-1.5">
+                        <div class="absolute bottom-2 inset-s-3 flex gap-1.5">
                             @foreach(['primary','accent','success','warning'] as $key)
                                 <div class="w-4 h-4 rounded-full border-2 border-white/50 shadow-sm"
                                      style="background-color: {{ $palette[$key] }}"></div>
@@ -84,7 +84,7 @@
                             {{-- Customize --}}
                             <a href="{{ \App\Filament\TenantAdmin\Pages\ThemeEditorPage::getUrl() . '?themeId=' . $theme->id }}"
                                class="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                @icon('paint-brush', 'w-3.5 h-3.5')
+                                @icon('heroicon-o-paint-brush', 'w-3.5 h-3.5')
                                 Customize
                             </a>
 
@@ -109,7 +109,7 @@
 
             {{-- Create new theme card - open same action --}}
             <div wire:click="mountAction('createTheme')"
-                 class="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors flex flex-col items-center justify-center gap-3 min-h-[220px] group cursor-pointer">
+                 class="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors flex flex-col items-center justify-center gap-3 min-h-55 group cursor-pointer">
                 <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 transition-colors">
                     @icon('plus', 'w-6 h-6 text-gray-400 group-hover:text-primary-500 transition-colors')
                 </div>

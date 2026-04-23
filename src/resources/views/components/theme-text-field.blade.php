@@ -1,7 +1,7 @@
 @props(['label', 'placeholder' => ''])
 
 <div class="flex items-center gap-2 py-1">
-    <label class="w-28 flex-shrink-0 text-xs text-gray-600 dark:text-gray-400 leading-tight">{{ $label }}</label>
+    <label class="w-28 shrink-0 text-xs text-gray-600 dark:text-gray-400 leading-tight">{{ $label }}</label>
     <input type="text"
            {{ $attributes->only(['wire:model', 'wire:model.live']) }}
            placeholder="{{ $placeholder }}"

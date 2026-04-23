@@ -31,7 +31,7 @@
         }
     }"
     class="flex flex-col h-[calc(100vh-4rem)]"
-    dir="rtl"
+    dir="ltr"
 >
     {{-- The hidden element that carries the Livewire-generated CSS --}}
     <div id="theme-css-data" style="display: none;">
@@ -39,20 +39,22 @@
     </div>
 
     {{-- TOP BAR --}}
-    <div class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shrink-0">
         <div class="flex items-center gap-3">
             <a href="{{ route('filament.tenant_admin.pages.themes-page') }}"
                class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
                 {{-- Use x-filament::icon for the back button--}}
+                Themes
                 <x-filament::icon icon="heroicon-o-arrow-right" class="w-4 h-4 rotate-180" />
-                themes
             </a>
             <span class="text-gray-300">/</span>
-            <span class="text-sm font-semibold text-gray-900 dark:text-white">Theme customization</span>
+            <span wire:model="themeName" class="text-sm text-gray-500">Theme Name</span>
+            <span class="text-gray-300">/</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">Customization</span>
         </div>
 
         <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-            @foreach([['desktop','computer-desktop','desktop'],['tablet','device-tablet','tablet'],['mobile','device-phone-mobile','mobile']] as [$d,$ic,$lb])
+            @foreach([['desktop','computer-desktop','Desktop'],['tablet','device-tablet','Tablet'],['mobile','device-phone-mobile','Mobile']] as [$d,$ic,$lb])
                 <button @click="previewDevice = '{{ $d }}'"
                         :class="previewDevice === '{{ $d }}' ? 'bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700'"
                         class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all">
@@ -67,13 +69,13 @@
                     wire:confirm="Are you sure you want to reset all changes? This action cannot be undone."
                     class="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 {{-- reset button --}}
-                <x-filament::icon icon="heroicon-o-arrow-path" class="w-4 h-4" /> reset
+                <x-filament::icon icon="heroicon-o-arrow-path" class="w-4 h-4" /> Reset
             </button>
             <button wire:click="save" wire:loading.attr="disabled"
                     class="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors shadow-sm">
                 <span wire:loading.remove wire:target="save" class="flex items-center gap-1.5">
                     {{-- save button --}}
-                    <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="w-4 h-4" /> save
+                    <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="w-4 h-4" /> Save
                 </span>
                 <span wire:loading wire:target="save" class="flex items-center gap-1.5">
                     <x-spinner class="w-4 h-4" /> Saving...
@@ -86,10 +88,10 @@
     <div class="flex flex-1 overflow-hidden">
 
        {{-- LEFT: Editor --}}
-        <div class="w-80 flex-shrink-0 bg-white dark:bg-gray-900 border-e border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
+        <div class="w-80 shrink-0 bg-white dark:bg-gray-900 border-e border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
             
             {{--  name theme field --}}
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex-shrink-0">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shrink-0">
                 <label for="themeName" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Theme Name
                 </label>
@@ -97,7 +99,7 @@
                     type="text" 
                     id="themeName" 
                     wire:model="themeName" 
-                    class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:text-white transition-colors"
+                    class="block p-2 w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:text-white transition-colors"
                     placeholder="Enter theme name..."
                 >
                 @error('themeName') 
@@ -107,7 +109,7 @@
             {{-- end field--}}
 
             {{-- Tabs --}}
-            <div class="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700 px-1 pt-1 gap-0.5 flex-shrink-0 scrollbar-hide">
+            <div class="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700 px-1 pt-1 gap-0.5 shrink-0 scrollbar-hide">
                 @foreach([['palette','swatch','Colors'],['font','document-text','Font'],['layout','squares-2x2','Layout'],['corners','stop','Corners'],['shadows','sparkles','Shadows'],['icons','squares-plus','Icons']] as [$tab,$icon,$label])
                     <button wire:click="$set('activeTab', '{{ $tab }}')"
                             @class([
@@ -196,7 +198,7 @@
                             <span class="text-xs text-gray-600 dark:text-gray-400">Uppercase Letters</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" wire:model.live="buttons.uppercase" class="sr-only peer">
-                                <div class="w-9 h-5 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-300 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                                <div class="w-9 h-5 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-300 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary-600 after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                             </label>
                         </div>
                     </x-theme-editor-section>
@@ -276,7 +278,7 @@
         <div class="flex-1 bg-gray-100 dark:bg-gray-950 flex flex-col overflow-hidden">
 
             {{-- Preview toolbar --}}
-            <div class="flex items-center gap-3 px-4 py-2 bg-gray-200 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 flex-shrink-0">
+            <div class="flex items-center gap-3 px-4 py-2 bg-gray-200 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 shrink-0">
                 <div class="flex gap-1.5">
                     <div class="w-3 h-3 rounded-full bg-red-400"></div>
                     <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
@@ -297,8 +299,8 @@
                 <div
                     :class="{
                         'w-full':     previewDevice === 'desktop',
-                        'w-[768px]':  previewDevice === 'tablet',
-                        'w-[390px]':  previewDevice === 'mobile',
+                        'w-3xl':  previewDevice === 'tablet',
+                        'w-97.5':  previewDevice === 'mobile',
                     }"
                     class="transition-all duration-300 h-full relative"
                 >
