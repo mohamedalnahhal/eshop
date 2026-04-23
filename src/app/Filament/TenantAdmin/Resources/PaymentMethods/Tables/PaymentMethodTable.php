@@ -28,7 +28,7 @@ class PaymentMethodTable
 
                 TextColumn::make('config')
                     ->label('Config Keys')
-                    ->formatStateUsing(fn ($state) => $state ? count($state) . ' ' . str('key')->plural(count($state)) : '—')
+                    // ->formatStateUsing(fn ($state) => $state ? count($state) . ' ' . str('key')->plural(count($state)) : '—')
                     ->color('gray'),
 
                 IconColumn::make('is_active')

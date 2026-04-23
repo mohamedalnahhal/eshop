@@ -20,7 +20,7 @@ class PaymentMethodResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
     protected static ?int $navigationSort = 96;
-    protected static string|\UnitEnum|null $navigationGroup = 'Shop Settings';
+    protected static string|\UnitEnum|null $navigationGroup = 'Financials';
     protected static ?string $navigationLabel = 'Payment Methods';
     protected static ?string $modelLabel = 'Payment Method';
     protected static ?string $pluralModelLabel = 'Payment Methods';
