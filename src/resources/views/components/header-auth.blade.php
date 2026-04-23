@@ -64,13 +64,13 @@ new class extends Component
                     {{ __('My Account') }}
                 </a> --}}
 
-                {{-- Orders --}}
-                {{-- <a href="{{ route('shop.orders', ['locale' => app()->getLocale()]) }}"
+                {{-- Order History --}}
+                <a href="{{ route('shop.orders', ['locale' => app()->getLocale()]) }}"
                    wire:navigate
                    class="flex items-center gap-3 px-4 py-2.5 text-theme-sm text-theme hover:bg-surface-100 transition-colors">
                     @icon('bag', 'w-4 h-4 text-muted')
-                    {{ __('My Orders') }}
-                </a> --}}
+                    {{ __('Order History') }}
+                </a>
 
                 <div class="border-t border-border mt-1 pt-1">
                     <button wire:click="logout"
