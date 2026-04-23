@@ -72,7 +72,7 @@ class MerchantRegisterController extends Controller
 
         $subdomain = $request->subdomain;
         $centralDomain = config('tenancy.central_domains')[0];
-        $tenantUrl = 'http://' . $subdomain . '.' . $centralDomain . '/admin';
+        $tenantUrl = 'http://' . $subdomain . '.' . $centralDomain . ':' . env('APP_PORT') . '/admin';
 
         return redirect($tenantUrl)
             ->with('success', 'Your store was created! Welcome aboard.');

@@ -48,6 +48,6 @@ class MerchantLoginController extends Controller
             ])->onlyInput('email');
         }
 
-        return redirect('http://' . $domain->domain . '/admin');
+        return redirect('http://' . $domain->domain . ':' . env('APP_PORT') . '/admin');
     }
 }
