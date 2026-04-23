@@ -22,7 +22,6 @@ use App\Services\IconService;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -103,14 +102,6 @@ class TenancyServiceProvider extends ServiceProvider
 
         $this->makeTenancyMiddlewareHighestPriority();
         
-        Livewire::setUpdateRoute(function ($handle) {
-            return Route::post('/livewire/update', $handle)
-                ->middleware([
-                    'web',
-                    InitializeTenancyByDomain::class,
-                    SetTenantLocale::class,
-                ]);
-        });
         Livewire::component('theme-editor', ThemeEditor::class);
         // Livewire::component('theme-text-field', ThemeTextField::class);
         // Livewire::component('theme-select-field', ThemeSelectField::class);
