@@ -1,5 +1,5 @@
 <div class="flex items-center gap-2 group">
-    <img src="http://localhost:7000/images/logo.svg" alt="eShop" class="h-8 w-auto">
+    <img src="{{ tenant('logo_url') ? asset('storage/' . tenant('logo_url')) : asset('images/logo.svg') }}" alt="eShop" class="h-8 w-auto">
     @guest
     <span class="text-xl font-semibold text-slate-900">{{ tenant('name') ?? 'eShop\'s Shop' }}</span>
     @else
