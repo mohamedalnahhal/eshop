@@ -15,6 +15,7 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->string('locale', 8);
             $table->string('name', 100);
+            $table->timestamps();
 
             $table->unique(['category_id', 'locale']);
             $table->index(['category_id', 'locale']);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('locale', 8);
             $table->string('name', 100);
             $table->text('description')->nullable();
+            $table->timestamps();
 
             $table->unique(['product_id', 'locale']);
             $table->index(['product_id', 'locale']);

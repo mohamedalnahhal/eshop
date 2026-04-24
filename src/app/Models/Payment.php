@@ -12,7 +12,6 @@ class Payment extends Model
 {
     use HasUuids;
     use BelongsToTenant;
-    use SoftDeletes;
 
     const UPDATED_AT = null;
 
@@ -40,6 +39,6 @@ class Payment extends Model
         'metadata' => 'array',
     ];
 
-    public function method() { return $this->belongsTo(PaymentMethod::class, 'payment_method', 'payment_method'); }
+    public function method() { return $this->belongsTo(PaymentMethod::class); }
     public function payable() { return $this->morphTo(); }
 }

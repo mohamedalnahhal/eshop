@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->string('group')->index();
             $table->string('key');
-            $table->json('text');
+            $table->jsonb('text');
             $table->timestamps();
         });
     }

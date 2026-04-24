@@ -29,7 +29,6 @@ return new class extends Migration {
             $table->jsonb('gateway_response')->nullable();
             $table->jsonb('metadata')->nullable();
             $table->timestamp('created_at')->useCurrent();
-            $table->softDeletes();
         });
     }
 
