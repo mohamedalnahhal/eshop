@@ -18,7 +18,7 @@ class TenantLocaleService
             return $supported;
         }
 
-        return config('translatable.locales', ['en', 'ar']);
+        return [$tenant->settings?->default_language ?? 'en'];
     }
 
     public function getDefaultLocale(): string
