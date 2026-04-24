@@ -9,14 +9,17 @@ use App\Models\Tenant;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class TenantResource extends Resource
 {
     protected static ?string $model = Tenant::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static string|\UnitEnum|null $navigationGroup = 'Platform';
+
+    protected static ?string $modelLabel = 'Shop';
+    protected static ?string $pluralModelLabel = 'Shops';
 
     protected static ?string $recordTitleAttribute = 'name';
 

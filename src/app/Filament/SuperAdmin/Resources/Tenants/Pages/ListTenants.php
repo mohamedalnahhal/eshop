@@ -19,7 +19,7 @@ class ListTenants extends ListRecords
     {
         return [
             CreateAction::make()
-                ->label('Create Tenant')
+                ->label('New Shop')
                 ->using(function (array $data, string $model): Model {
                 return DB::transaction(function () use ($data, $model) {
                     $owner = User::where('email', $data['owner_email'])->first();

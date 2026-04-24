@@ -16,7 +16,7 @@ class TenantSubscriptionForm
         return $schema
             ->components([
                 Select::make('tenant_id')
-                    ->label('Tenant')
+                    ->label('Shop')
                     ->options(fn () => Tenant::query()->pluck('name', 'id')->toArray())
                     ->searchable()
                     ->required(),

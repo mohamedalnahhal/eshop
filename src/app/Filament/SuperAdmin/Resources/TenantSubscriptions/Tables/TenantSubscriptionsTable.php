@@ -22,7 +22,7 @@ class TenantSubscriptionsTable
         return $table
             ->columns([
                 TextColumn::make('tenant.name')
-                    ->label('Tenant')
+                    ->label('Shop Name')
                     ->searchable()
                     ->sortable(),
 

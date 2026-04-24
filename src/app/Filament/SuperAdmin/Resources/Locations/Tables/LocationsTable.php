@@ -30,7 +30,7 @@ class LocationsTable
                     ->tooltip(fn ($state) => $state)
                     ->copyableState(fn ($state) => $state),
                 TextColumn::make('tenant.name')
-                    ->label('Store Name')
+                    ->label('Shop Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('name')

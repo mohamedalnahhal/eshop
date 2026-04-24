@@ -11,6 +11,9 @@ class ViewTenant extends Page
 {
     use InteractsWithRecord;
 
+    protected static ?string $navigationLabel = 'Shop Details';
+    protected static ?string $title = 'Shop Details';
+
     protected static string $resource = TenantResource::class;
 
     public function mount(int | string $record): void

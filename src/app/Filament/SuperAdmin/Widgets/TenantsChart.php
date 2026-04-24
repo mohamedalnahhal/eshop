@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class TenantsChart extends ChartWidget
 {
-    protected ?string $heading = "New Stores This Year";
+    protected ?string $heading = "New Shops This Year";
 
     protected function getData(): array
     {
@@ -25,7 +25,7 @@ class TenantsChart extends ChartWidget
         return [
             "datasets" => [
                 [
-                    "label" => "New Stores",
+                    "label" => "New Shops",
                     "data" => $data->values()->toArray(),
                     "borderColor" => "#3b82f6",
                     "backgroundColor" => "rgba(59, 130, 246, 0.1)",

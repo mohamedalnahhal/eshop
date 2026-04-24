@@ -6,11 +6,10 @@ use App\Enums\SubscriptionStatus;
 use App\Models\TenantSubscription;
 use App\Services\Subscription\SubscriptionService;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Auth;
 
 class MySubscription extends Page
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-star';
     protected static ?string $navigationLabel = 'My Subscription';
     protected static ?int $navigationSort = 98;
     protected static string|\UnitEnum|null $navigationGroup = 'Financials';

@@ -13,7 +13,7 @@ class LocationForm
         return $schema
             ->components([
                 Select::make('tenant_id')
-                    ->label('Its store')
+                    ->label('Shop')
                     ->relationship('tenant', 'name') 
                     ->searchable()
                     ->preload()

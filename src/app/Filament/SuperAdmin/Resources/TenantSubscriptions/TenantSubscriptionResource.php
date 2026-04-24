@@ -11,7 +11,6 @@ use App\Models\TenantSubscription;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,17 +18,19 @@ class TenantSubscriptionResource extends Resource
 {
     protected static ?string $model = TenantSubscription::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationLabel = 'Tenant Subscriptions';
+    protected static ?string $navigationLabel = 'Shop Subscriptions';
+    protected static ?string $modelLabel = 'Subscription';
+    protected static ?string $pluralModelLabel = 'Subscriptions';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Billing';
+    protected static string|\UnitEnum|null $navigationGroup = 'Financials';
 
     protected static ?int $navigationSort = 10;
 
     public static function getRecordTitle(?Model $record): string
     {
-        if (!$record) return 'Tenant Subscription';
+        if (!$record) return 'Shop Subscription';
 
         $tenantName = $record->tenant?->name ?? $record->tenant_id;
         $planName   = $record->subscription?->name ?? '';
