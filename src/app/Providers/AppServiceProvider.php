@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         FilamentColor::register([
-            'primary'   => 'oklch(0.55 0.25 262.87)',
+            'primary'   => Color::Blue,
             'danger'    => Color::Red,
             'gray'      => Color::Slate,
             'info'      => Color::Blue,
