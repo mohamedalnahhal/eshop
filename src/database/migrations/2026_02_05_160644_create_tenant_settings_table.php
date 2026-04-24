@@ -19,7 +19,8 @@ return new class extends Migration {
         $table->text('favicon_url')->nullable();
         $table->string('contact_email')->nullable();
         $table->string('contact_phone')->nullable();
-        $table->string('language', 10)->default('ar');
+        $table->jsonb('supported_languages')->nullable();
+        $table->string('default_language', 10)->nullable();
         $table->string('currency', 3)->default('USD');
         $table->unsignedSmallInteger('currency_decimals')->default(2);
         $table->foreignUuid('theme_id')->nullable()->constrained('themes')->onDelete('set null')->default(null);

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
-class Media extends Model
+class TenantMedia extends Model
 {
     use HasUuids;
     use BelongsToTenant;
@@ -25,5 +25,4 @@ class Media extends Model
     ];
 
     public function mediable() { return $this->morphTo(); }
-    public function tenant() { return $this->belongsTo(Tenant::class); }
 }

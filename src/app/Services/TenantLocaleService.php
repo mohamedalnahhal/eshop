@@ -30,7 +30,6 @@ class TenantLocaleService
         }
 
         return $tenant->settings?->default_language
-            ?? $tenant->settings?->language
             ?? config('app.locale', 'en');
     }
 

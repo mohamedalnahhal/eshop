@@ -12,7 +12,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Review;
 use App\Models\ReviewVote;
-use App\Models\Media;
+use App\Models\TenantMedia;
 use App\Enums\TenantStatus;
 use App\Enums\TenantUserRole;
 use App\Enums\UserRole;
@@ -686,7 +686,7 @@ class DemoSeeder extends Seeder
                     }
 
                     // Placeholder media record
-                    Media::updateOrCreate(
+                    TenantMedia::updateOrCreate(
                         [
                             'mediable_id'    => $product->id,
                             'mediable_type'  => Product::class,

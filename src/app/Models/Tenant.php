@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Theme; // تأكد من المسار الصحيح لمودل الثيم عندك
+use App\Models\Theme;
 use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
@@ -80,11 +80,6 @@ class Tenant extends BaseTenant
     public function getFaviconUrlAttribute($value): ?string
     {
         return $this->settings?->favicon_url ?? $value;
-    }
-
-    public function getLanguage(string $default = 'ar'): string
-    {
-        return $this->settings?->language ?? $default;
     }
     
 

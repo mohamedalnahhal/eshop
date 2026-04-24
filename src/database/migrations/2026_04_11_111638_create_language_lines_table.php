@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('language_lines', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->string('group')->index();
             $table->string('key');
             $table->json('text');

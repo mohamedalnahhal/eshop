@@ -61,6 +61,6 @@ class Product extends Model implements TranslatableContract
 
     public function media(): MorphMany
     {
-        return $this->morphMany(Media::class, 'mediable');
+        return $this->morphMany(TenantMedia::class, 'mediable');
     }
 }

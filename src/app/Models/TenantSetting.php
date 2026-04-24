@@ -18,7 +18,6 @@ class TenantSetting extends Model
         'favicon_url',
         'contact_email',
         'contact_phone',
-        'language',
         'currency',
         'currency_decimals',
         'theme_id',
