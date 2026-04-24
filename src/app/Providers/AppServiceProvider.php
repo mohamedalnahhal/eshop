@@ -6,16 +6,8 @@ use App\Contracts\PaymentGatewayContract;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentView;
-use Illuminate\Support\Facades\Blade;
-use App\Services\IconService;
-use Illuminate\Support\Facades\Route;
-use Livewire\Livewire;
-use App\Http\Middleware\InitializeTenancyForLivewire;
-use App\Livewire\TenantAdmin\ThemeEditor;
 use App\Services\Shipping\ShippingCalculatorService;
 use App\Services\Checkout\CheckoutService;
-use App\Http\Middleware\SetTenantLocale;
 use App\Services\Payment;
 
 class AppServiceProvider extends ServiceProvider
@@ -45,15 +37,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Livewire::setUpdateRoute(function ($handle) {
-            return Route::post('/livewire/update', $handle)
-                ->middleware([
-                    'web',
-                    InitializeTenancyForLivewire::class,
-                    SetTenantLocale::class,
-                ]);
-        });
-
         FilamentColor::register([
             'primary'   => Color::Blue,
             'danger'    => Color::Red,

@@ -1,5 +1,7 @@
 <?php
 
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+
 return [
 
     /*
@@ -129,11 +131,11 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => 'livewire_tmp',
-        'rules' => null,
-        'directory' => null,
-        'middleware' => null,
-        'preview_mimes' => [ 
+        'disk' => env('LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK'), // Example: 'local', 's3'             | Default: 'default'
+        'rules' => null,                                      // Example: ['file', 'mimes:png,jpg'] | Default: ['required', 'file', 'max:12288'] (12MB)
+        'directory' => null,                                  // Example: 'tmp'                     | Default: 'livewire-tmp'
+        'middleware' => ['throttle:60,1', 'universal', InitializeTenancyByDomain::class],
+        'preview_mimes' => [                                  // Supported file types for temporary pre-signed file URLs...
             'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
             'mov', 'avi', 'wmv', 'mp3', 'm4a',
             'jpg', 'jpeg', 'mpga', 'webp', 'wma',
