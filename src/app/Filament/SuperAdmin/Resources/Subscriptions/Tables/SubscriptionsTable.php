@@ -14,7 +14,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\TrashedFilter;
-
+use App\Services\Money\MoneyService;
 
 class SubscriptionsTable
 {
@@ -37,7 +37,8 @@ class SubscriptionsTable
                     ->copyableState(fn ($state) => $state),
                 TextColumn::make('price')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => app(MoneyService::class)->fromMinor($state)),
                 TextColumn::make('duration_days')
                     ->numeric()
                     ->sortable(),
