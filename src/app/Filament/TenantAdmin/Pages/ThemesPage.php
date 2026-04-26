@@ -1,11 +1,13 @@
 <?php
 namespace App\Filament\TenantAdmin\Pages;
+use App\Enums\TenantPermission;
 use App\Models\Theme;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Collection;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class ThemesPage extends Page
 {
@@ -90,5 +92,13 @@ class ThemesPage extends Page
                     );
                 }),
         ];
+    }
+    
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::MANAGE_SETTINGS) ?? false;
     }
 }

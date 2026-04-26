@@ -2,8 +2,10 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\TenantPermission;
 use App\Models\Theme;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class ThemeEditorPage extends Page
 {
@@ -28,6 +30,12 @@ class ThemeEditorPage extends Page
             ->where(fn($q) => $q->where('tenant_id', tenant()->id)->orWhereNull('tenant_id'))
             ->firstOrFail();
     }
-}
 
-// this is comment for how Theme Editor works, not for the page itself, so it should be in the Livewire component, but I put it here to avoid confusion with the main code of the component
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::MANAGE_SETTINGS) ?? false;
+    }
+}

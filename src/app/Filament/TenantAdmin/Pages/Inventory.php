@@ -2,6 +2,7 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
+use App\Enums\TenantPermission;
 use App\Enums\StockAdjustmentStatus;
 use App\Enums\StockAdjustmentType;
 use App\Models\Product;
@@ -17,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Illuminate\Support\Facades\Auth;
 
 class Inventory extends Page implements HasTable
 {
@@ -81,7 +83,7 @@ class Inventory extends Page implements HasTable
                             ->send();
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->label('Edit')
                     ->icon('heroicon-o-pencil-square')
@@ -253,5 +255,13 @@ class Inventory extends Page implements HasTable
         $out = Product::where('stock', '<=', 0)->count();
     
         return "{$out} Out of Stock · {$low} Low Stock";
+    }
+    
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::EDIT_PRODUCTS) ?? false;
     }
 }

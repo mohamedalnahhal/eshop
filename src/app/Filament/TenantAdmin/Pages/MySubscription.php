@@ -2,10 +2,11 @@
 
 namespace App\Filament\TenantAdmin\Pages;
 
-use App\Enums\SubscriptionStatus;
+use App\Enums\TenantPermission;
 use App\Models\TenantSubscription;
 use App\Services\Subscription\SubscriptionService;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class MySubscription extends Page
 {
@@ -35,5 +36,13 @@ class MySubscription extends Page
     {
         if ($this->productLimit === 0) return 0;
         return (int) min(100, round(($this->productCount / $this->productLimit) * 100));
+    }
+
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->tenantUserFor(tenant('id'))
+            ?->can(TenantPermission::MANAGE_SETTINGS) ?? false;
     }
 }
