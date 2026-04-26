@@ -80,11 +80,6 @@
                     @endif
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <p class="text-xs text-gray-500">
-                        Contact your account manager to upgrade or renew your plan.
-                    </p>
-                </div>
             </div>
 
         </div>
