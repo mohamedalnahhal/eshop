@@ -17,7 +17,7 @@ class ProductsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-shopping-bag')
                 ->color('info'),
 
-            Stat::make(__('Avg. Price'), app(MoneyService::class)->format(Product::avg('price')))
+            Stat::make(__('Avg. Price'), app(MoneyService::class)->format(Product::avg('price')??0))
                 ->description(__('Across all products'))
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('gray'),
