@@ -107,7 +107,7 @@ new class extends Component
                     @endforeach
                     <div class="flex justify-between">
                         <span>{{ __('Shipping') }}:</span>
-                        <span class="font-bold text-success">{{ __('Free') }}</span>
+                        <span class="font-bold text-muted">{{ __('Calculated at Next Step') }}</span>
                     </div>
                 </div>
 
