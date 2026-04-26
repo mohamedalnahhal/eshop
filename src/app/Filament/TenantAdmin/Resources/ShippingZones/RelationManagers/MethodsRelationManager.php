@@ -36,7 +36,8 @@ class MethodsRelationManager extends RelationManager
                     ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('estimated_delivery')
-                    ->label('Estimated Delivery'),
+                    ->label('Estimated Delivery')
+                    ->numeric(),
 
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Active')

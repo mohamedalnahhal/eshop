@@ -28,7 +28,10 @@ class MethodsForm
 
                     TextInput::make('estimated_delivery')
                         ->label('Estimated Delivery Time')
-                        ->maxLength(100),
+                        ->numeric()
+                        ->integer()
+                        ->minValue(0)
+                        ->prefix('Days'),
 
                     TextInput::make('sort_order')
                         ->label('Sort Order')
@@ -141,6 +144,8 @@ class MethodsForm
             return null;
         }
 
+        if ($state < 0) return 0;
+        
         if ($rateType === ShippingRateType::WEIGHT_BASED) {
             return (int) $state;
         }

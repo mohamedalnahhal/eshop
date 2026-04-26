@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\LocaleHelper;
+use App\Services\Money\MoneyService;
 
 class ProductForm
 {
@@ -69,7 +70,9 @@ class ProductForm
                             ->label('Price')
                             ->required()
                             ->numeric()
-                            ->prefix('$'),
+                            ->prefix(MoneyService::getSymbol(tenant()->settings?->currency ?? config('app.default_currency', 'USD')))
+                            ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
+                            ->dehydrateStateUsing(fn ($state) => blank($state) ? 0 : app(MoneyService::class)->toMinor((float) $state)),
 
                         TextInput::make('stock')
                             ->label('Stock')

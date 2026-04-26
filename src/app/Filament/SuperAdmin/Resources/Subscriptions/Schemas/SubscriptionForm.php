@@ -2,6 +2,7 @@
 
 namespace App\Filament\SuperAdmin\Resources\Subscriptions\Schemas;
 
+use App\Services\Money\MoneyService;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -25,9 +26,9 @@ class SubscriptionForm
                             ->required()
                             ->numeric()
                             ->minValue(0)
-                            ->prefix('$')
-                            ->helperText('Price in cents (e.g. 2999 = $29.99)')
-                            ->suffix('cents'),
+                            ->prefix(app(MoneyService::class)->getSymbol(config('app.default_currency', 'USD')))
+                            ->formatStateUsing(fn ($state) => blank($state) ? null : app(MoneyService::class)->fromMinor((int) $state))
+                            ->dehydrateStateUsing(fn ($state) => blank($state) ? 0 : app(MoneyService::class)->toMinor((float) $state)),
 
                         TextInput::make('duration_days')
                             ->required()
